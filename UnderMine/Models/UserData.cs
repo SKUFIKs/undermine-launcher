@@ -25,6 +25,10 @@ namespace UnderMine.Models
             string json = JsonSerializer.Serialize(this, options);
             await File.WriteAllTextAsync(SettingsPath, json);
         }
+        private void MemorySlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            
+        }
         
         public static async Task<UserData?> Load()
         {

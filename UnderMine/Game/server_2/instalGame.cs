@@ -21,8 +21,8 @@ namespace UnderMine.Game.server_2
             _serverInfo = serverInfo ?? throw new ArgumentNullException(nameof(serverInfo));
             string launcherDirectory = AppDomain.CurrentDomain.BaseDirectory;
             
-            string gameDirectory = Path.Combine(launcherDirectory, "Games", "server2");
-            _modsDirectory = Path.Combine(launcherDirectory, "mods2");
+            string gameDirectory = Path.Combine(launcherDirectory, "versions", "server");
+            _modsDirectory = Path.Combine(launcherDirectory, "mods");
             
             Directory.CreateDirectory(gameDirectory);
             Directory.CreateDirectory(_modsDirectory);

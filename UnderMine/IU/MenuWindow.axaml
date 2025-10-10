@@ -63,7 +63,7 @@
                         </StackPanel>
                     </RadioButton>
                 </StackPanel>
-                <Panel Width="203" Height="58" Margin="23,40,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <Panel Width="203" Height="58" Margin="23,25,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
                     <Border>
                         <Border.Background>
                             <ImageBrush Source="avares://UnderMine/Assets/UnderMineIcon.jpg" Stretch="Fill"></ImageBrush>
@@ -79,16 +79,26 @@
         <!-- Шаблон панели -->
         <Panel HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662" IsVisible="False">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
-                    Background="#222222" CornerRadius="30">
-
+                    Background="#222222" CornerRadius="15">
             </Border>
+        </Panel>
+        <Panel>
+            <Border VerticalAlignment="Top" HorizontalAlignment="Right" Width="182" Height="65" Margin="0,20,30,0" Background="#222222" CornerRadius="15">
+            </Border>
+            <Panel>
+                <Border Width="45" Height="45" Margin="0,32,159,0" VerticalAlignment="Top" HorizontalAlignment="Right">
+                    <Border.Background>
+                        <ImageBrush Source="avares://UnderMine/Assets/profile.jpg"></ImageBrush>
+                    </Border.Background>
+                </Border>
+            </Panel>
         </Panel>
 
         <!-- Новости проекта -->
         <Panel x:Name="NewsPanel" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
                IsVisible="False">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
-                    Background="#222222" CornerRadius="30">
+                    Background="#222222" CornerRadius="15">
 
             </Border>
         </Panel>
@@ -97,7 +107,7 @@
         <Panel x:Name="SettingsPanel" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
                IsVisible="False">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
-                    Background="#222222" CornerRadius="30">
+                    Background="#222222" CornerRadius="15">
                 <Panel>
                     <Panel>
                         <Label Content="Настройки игры" Classes="BigTitle" Margin="26,20,0,0" FontSize="24"
@@ -108,8 +118,8 @@
                         <Panel VerticalAlignment="Top" HorizontalAlignment="Left" Width="442" Margin="42,85,0,0">
                             <Slider x:Name="MemorySlider" IsSnapToTickEnabled="True" TickPlacement="BottomRight"></Slider>
                         </Panel>
-                        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Margin="500,94,0,0" Width="90"
-                                 Height="22">
+                        <TextBox x:Name="MemoryTextBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="500,94,0,0" Width="90"
+                                 Height="22" IsReadOnly="True">
                         </TextBox>
                         <Panel Height="20" Width="482" Margin="22,125,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
                             <Label x:Name="FirstValue" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,425,0" Content=""></Label>
@@ -122,9 +132,9 @@
                     <Panel>
                         <Label Classes="LiteTitle" Margin="22,165,0,0" Content="Путь установки игры:" FontSize="15"></Label>
                         <Panel VerticalAlignment="Top" HorizontalAlignment="Left" Width="442" Margin="42,195,0,0">
-                            <TextBox></TextBox>
+                            <TextBox x:Name="InstallationPath"></TextBox>
                         </Panel>
-                        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Обзор" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="500,195,0,0" Width="90" Background="SlateGray"
+                        <Button HorizontalAlignment="Left"  x:Name="OverviewSettings" Click="OverviewSettings_OnClick" VerticalAlignment="Top" Content="Обзор" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="500,195,0,0" Width="90" Background="SlateGray"
                                  Height="32">
                         </Button>
                     </Panel>
@@ -138,12 +148,12 @@
                         </Button>
                     </Panel>
                     <Panel Height="45" Width="338" Margin="35,0,0,30" VerticalAlignment="Bottom" HorizontalAlignment="Left">
-                        <RadioButton HorizontalAlignment="Left"
+                        <RadioButton HorizontalAlignment="Left" x:Name="SaveButton"  Click="SaveButton_OnClick"
                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
                                      Width="158" GroupName="SettingsGroup" Classes="menu-btn" IsChecked="True">
                             <TextBlock Text="Сохранить" />
                         </RadioButton>
-                        <RadioButton HorizontalAlignment="Right"
+                        <RadioButton HorizontalAlignment="Right" x:Name="DefaultButton" Click="DefaultButton_OnClick"
                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
                                      Width="158" GroupName="SettingsGroup" Classes="menu-btn">
                             <TextBlock Text="По умолчанию" />
@@ -157,7 +167,7 @@
         <Panel x:Name="ProfilePanel" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
                IsVisible="False">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
-                    Background="#222222" CornerRadius="30">
+                    Background="#222222" CornerRadius="15">
 
             </Border>
         </Panel>
@@ -166,9 +176,9 @@
         <Panel x:Name="PlayServer" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
                IsVisible="False">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
-                    Background="#222222" CornerRadius="30">
+                    Background="#222222" CornerRadius="15">
                 <Panel HorizontalAlignment="Center" VerticalAlignment="Top">
-                    <Label Content="Server 1#" Classes="BigTitle" Margin="0,10,0,0" FontSize="24"
+                    <Label Content="TechnoMagic" Classes="BigTitle" Margin="0,10,0,0" FontSize="24"
                            VerticalAlignment="Top" HorizontalAlignment="Left" />
                     <TextBlock Classes="LiteTitle" Width="830" Margin="0,65,0,0">
                         <Run Text="Technomantica 4.2.0 | " FontWeight="Bold" />
@@ -197,7 +207,7 @@
         <Panel x:Name="WaitingСhoice" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
                IsVisible="False">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
-                    Background="#222222" CornerRadius="30">
+                    Background="#222222" CornerRadius="15">
             </Border>
         </Panel>
 

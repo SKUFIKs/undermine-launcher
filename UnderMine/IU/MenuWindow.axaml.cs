@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -7,6 +8,7 @@ using UnderMine.Game.server_2;
 using UnderMine.Models;
 using UnderMine.Network.Services;
 using UnderMine.Services;
+using System.Reflection;
 
 namespace UnderMine.IU;
 
@@ -19,6 +21,8 @@ public partial class MenuWindow : Window
     private readonly LoginResult _loginResult;
     private SliderValues _sliderValues;
     private MemorySliderConfiguration _memoryConfig;
+    private bool labelsCreated = false;
+    private UserData _userData;
 
     public MenuWindow(Config config, LoginResult loginResult)
     {
@@ -28,6 +32,32 @@ public partial class MenuWindow : Window
         _loginResult = loginResult;
         _ = InitializeMemorySliderAsync();
         InitializeServersAsync();
+        Load_Settings();
+        Installation();
+        MemoryTextBox.Text = $"{MemorySlider.Value:F0} MB";
+        MemorySlider.PropertyChanged += (_, e) =>
+        {
+            if (e.Property.Name == nameof(MemorySlider.Value))
+            {
+                MemoryTextBox.Text = $"{MemorySlider.Value:F0} MB";
+            }
+        };
+    }
+
+    private void Installation()
+    {
+        string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        InstallationPath.Text = baseDirectory;
+    }
+    private async void Load_Settings()
+    {
+        _userData = await UserData.Load();
+        MemorySlider.Value = _userData.MemorySettings;
+            
+        MemorySlider.ValueChanged += (s, e) =>
+        {
+            _userData.MemorySettings = (int)e.NewValue;
+        };
     }
 
     private async Task InitializeMemorySliderAsync()
@@ -165,5 +195,36 @@ public partial class MenuWindow : Window
     {
         var serverId = ServerId;
         StartingTheGame(serverId);
+    }
+
+    private async void SaveButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (_userData != null)
+            await _userData.Save();
+    }
+
+    private async void DefaultButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _userData.MemorySettings = 4096;
+        await _userData.Save();
+        
+        MemorySlider.Value=_userData.MemorySettings;
+        
+        await _userData.Save();
+        
+        MemorySlider.ValueChanged += (s, e) =>
+        {
+            _userData.MemorySettings = (int)e.NewValue;
+        };
+    }
+
+    private void OverviewSettings_OnClick(object? sender, RoutedEventArgs e)
+    {
+        string directoryPath = AppDomain.CurrentDomain.BaseDirectory;
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = directoryPath,
+            UseShellExecute = true
+        });
     }
 }

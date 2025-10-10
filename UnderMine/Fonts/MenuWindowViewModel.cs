@@ -23,8 +23,7 @@ public class MenuWindowViewModel : INotifyPropertyChanged
     public ObservableCollection<Server> Servers { get; } =
         new ObservableCollection<Server>
         {
-            new Server { Name= "Server1", ID = 1 },
-            new Server { Name= "Server2", ID = 2 }
+            new Server { Name= "TechnoMagic", ID = 1 }
         };
 
     public event PropertyChangedEventHandler? PropertyChanged;
