@@ -713,6 +713,22 @@
           }
         }
       },
+      "System.CodeDom/10.0.0-preview.7.25380.108": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/System.CodeDom.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/System.CodeDom.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        }
+      },
       "System.ComponentModel.Annotations/5.0.0": {
         "type": "package",
         "compile": {
@@ -740,6 +756,31 @@
         },
         "build": {
           "buildTransitive/net6.0/_._": {}
+        }
+      },
+      "System.Management/10.0.0-preview.7.25380.108": {
+        "type": "package",
+        "dependencies": {
+          "System.CodeDom": "10.0.0-preview.7.25380.108"
+        },
+        "compile": {
+          "lib/net9.0/System.Management.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/System.Management.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net9.0/System.Management.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
         }
       },
       "System.Reactive/6.0.1": {
@@ -1853,6 +1894,35 @@
         "splat.nuspec"
       ]
     },
+    "System.CodeDom/10.0.0-preview.7.25380.108": {
+      "sha512": "HK+yaHE/PCFrwSCUvSTtZWLFJrZXj2IDvS4AvmJ+qyXlSezRznDxyDndWIZ585LgY8hiIZeaaY36/AKLpsaaPg==",
+      "type": "package",
+      "path": "system.codedom/10.0.0-preview.7.25380.108",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.CodeDom.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.CodeDom.targets",
+        "lib/net10.0/System.CodeDom.dll",
+        "lib/net10.0/System.CodeDom.xml",
+        "lib/net462/System.CodeDom.dll",
+        "lib/net462/System.CodeDom.xml",
+        "lib/net8.0/System.CodeDom.dll",
+        "lib/net8.0/System.CodeDom.xml",
+        "lib/net9.0/System.CodeDom.dll",
+        "lib/net9.0/System.CodeDom.xml",
+        "lib/netstandard2.0/System.CodeDom.dll",
+        "lib/netstandard2.0/System.CodeDom.xml",
+        "system.codedom.10.0.0-preview.7.25380.108.nupkg.sha512",
+        "system.codedom.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "System.ComponentModel.Annotations/5.0.0": {
       "sha512": "dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg==",
       "type": "package",
@@ -1969,6 +2039,38 @@
         "lib/netstandard2.0/System.IO.Pipelines.xml",
         "system.io.pipelines.8.0.0.nupkg.sha512",
         "system.io.pipelines.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "System.Management/10.0.0-preview.7.25380.108": {
+      "sha512": "+va5TouyRhMINxIAtILk1QIQBZsgUcH6G9+N0BiqiR/2HQ9NgFoH5LJcghDa9TG3XN3jekIFhYgcs6l/LEfDVw==",
+      "type": "package",
+      "path": "system.management/10.0.0-preview.7.25380.108",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Management.targets",
+        "lib/net10.0/System.Management.dll",
+        "lib/net10.0/System.Management.xml",
+        "lib/net462/_._",
+        "lib/net8.0/System.Management.dll",
+        "lib/net8.0/System.Management.xml",
+        "lib/net9.0/System.Management.dll",
+        "lib/net9.0/System.Management.xml",
+        "lib/netstandard2.0/System.Management.dll",
+        "lib/netstandard2.0/System.Management.xml",
+        "runtimes/win/lib/net10.0/System.Management.dll",
+        "runtimes/win/lib/net10.0/System.Management.xml",
+        "runtimes/win/lib/net8.0/System.Management.dll",
+        "runtimes/win/lib/net8.0/System.Management.xml",
+        "runtimes/win/lib/net9.0/System.Management.dll",
+        "runtimes/win/lib/net9.0/System.Management.xml",
+        "system.management.10.0.0-preview.7.25380.108.nupkg.sha512",
+        "system.management.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
@@ -2131,7 +2233,8 @@
       "CmlLib.Core >= 4.0.5",
       "CmlLib.Core.Installer.Forge >= 1.1.0",
       "Newtonsoft.Json >= 13.0.4-beta1",
-      "ReactiveUI >= 20.4.1"
+      "ReactiveUI >= 20.4.1",
+      "System.Management >= 10.0.0-preview.7.25380.108"
     ]
   },
   "packageFolders": {
@@ -2224,6 +2327,10 @@
           "ReactiveUI": {
             "target": "Package",
             "version": "[20.4.1, )"
+          },
+          "System.Management": {
+            "target": "Package",
+            "version": "[10.0.0-preview.7.25380.108, )"
           }
         },
         "imports": [

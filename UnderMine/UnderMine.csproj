@@ -23,6 +23,7 @@
         <PackageReference Include="CmlLib.Core.Installer.Forge" Version="1.1.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4-beta1" />
         <PackageReference Include="ReactiveUI" Version="20.4.1" />
+        <PackageReference Include="System.Management" Version="10.0.0-preview.7.25380.108" />
     </ItemGroup>
 
     <!-- Подключаем папки (чтобы они отображались в Rider/VS) -->

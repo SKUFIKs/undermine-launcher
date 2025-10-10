@@ -7,6 +7,7 @@ using UnderMine.Network.AuthService;
 using System.Text.RegularExpressions;
 using Avalonia.Input;
 using UnderMine.Network.Services;
+using UnderMine.Services;
 
 
 namespace UnderMine.IU;
@@ -18,6 +19,7 @@ public partial class AuthWindow : Window
     private UserData _userData = null!;
     private readonly Config _config;
     private LoginResult _loginResult = null!;
+    private CheckEquipment _checkEquipment = null!;
 
     public AuthWindow()
     {
@@ -28,8 +30,18 @@ public partial class AuthWindow : Window
         _userApiService = new UserApiService(_config, loginResult);
         _ = LoadUserSettings();
         PassBox.PasswordChar = '•';
+        SystemScan();
 
     }
+
+    private async void SystemScan()
+    {
+        var systemInfo = new SystemInfo();
+        var check = new CheckEquipment(systemInfo);
+        var info = await check.CheckOperatingSystemAsync();
+        Console.WriteLine($"Объем памяти: {info.TotalMemory} МБ");
+    }
+
 
     private async Task LoadUserSettings()
     {

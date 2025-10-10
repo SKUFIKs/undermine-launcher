@@ -50,5 +50,9 @@ public class LoginResult
     
     [JsonPropertyName("message")]
     public string ErrorMessage { get; init; } = string.Empty;
-    
+}
+
+public class SystemInfo
+{
+    public double TotalMemory { get; set; }
 }

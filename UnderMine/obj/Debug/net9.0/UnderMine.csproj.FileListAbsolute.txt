@@ -83,3 +83,7 @@ C:\Users\Дмитрий\RiderProjects\UnderMine\UnderMine\obj\Debug\net9.0\refin
 C:\Users\Дмитрий\RiderProjects\UnderMine\UnderMine\obj\Debug\net9.0\UnderMine.pdb
 C:\Users\Дмитрий\RiderProjects\UnderMine\UnderMine\obj\Debug\net9.0\UnderMine.genruntimeconfig.cache
 C:\Users\Дмитрий\RiderProjects\UnderMine\UnderMine\obj\Debug\net9.0\ref\UnderMine.dll
+C:\Users\Дмитрий\RiderProjects\UnderMine\UnderMine\obj\Debug\net9.0\UnderMine.sourcelink.json
+C:\Users\Дмитрий\RiderProjects\UnderMine\UnderMine\bin\Debug\net9.0\System.CodeDom.dll
+C:\Users\Дмитрий\RiderProjects\UnderMine\UnderMine\bin\Debug\net9.0\System.Management.dll
+C:\Users\Дмитрий\RiderProjects\UnderMine\UnderMine\bin\Debug\net9.0\runtimes\win\lib\net9.0\System.Management.dll
