@@ -1,0 +1,225 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style Selector="TextBox.custom-textbox">
+        <Setter Property="Background" Value="#3B3B3B"/>
+        <Setter Property="BorderBrush" Value="#747474"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="Montserrat-VariableFont_wght"/>
+        <Setter Property="Padding" Value="5,10"/>
+    </Style>
+    <Style Selector="TextBox.custom-textbox:pointerover">
+        <Setter Property="Background" Value="#3B3B3B"/>
+        <Setter Property="BorderBrush" Value="#747474"/>
+    </Style>
+    
+    <Style Selector="TextBox.custom-textbox:focus">
+        <Setter Property="BorderBrush" Value="#747474"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    
+    <Style Selector="Label.LiteLabel">
+        <Setter Property="FontFamily" Value="Montserrat-VariableFont_wght" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Padding" Value="5,10" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontStyle" Value="Italic" />
+    </Style>
+    
+    <Style Selector="Label.BigTitle">
+        <Setter Property="FontFamily" Value="Montserrat-VariableFont_wght" />
+        <Setter Property="FontSize" Value="40"/>  
+        <Setter Property="FontWeight" Value="ExtraBold" />
+    </Style>
+    <Style Selector="Label.LiteTitle">
+        <Setter Property="FontFamily" Value="Montserrat-VariableFont_wght" />
+        <Setter Property="FontSize" Value="20"/>  
+        <Setter Property="FontWeight" Value="ExtraBold" />
+    </Style>
+    <Style Selector="TextBlock.LiteTitle">
+        <Setter Property="FontFamily" Value="Montserrat-VariableFont_wght"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    <Style Selector="Button.custom-Link">
+        <Setter Property="FontFamily" Value="Montserrat-VariableFont_wght"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Padding" Value="5,10"/>
+        <Setter Property="FontWeight" Value="Regular"/>
+        <Setter Property="Foreground" Value="#929292"/>
+        <Setter Property="FontStyle" Value="Italic"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="Button.custom-Link:pointerover">
+        <Setter Property="Foreground" Value="#5C5C5C"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    <Style Selector="Button.custom-Link:pressed">
+        <Setter Property="Foreground" Value="#2E2E2E"/>
+    </Style>
+    <Style Selector="TextBox.h1">
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    <Style Selector="Button.custom-Auth">
+        <Setter Property="Width" Value="215"/>
+        <Setter Property="Height" Value="56.25"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontFamily" Value="Montserrat-VariableFont_wght"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Black"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Cursor" Value="Arrow"/>
+
+        <Setter Property="Background">
+            <ImageBrush Source="avares://UnderMine/Assets/authButton.jpg" Stretch="Fill"/>
+        </Setter>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="0">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- Hover -->
+    <Style Selector="Button.custom-Auth:pointerover">
+        <Setter Property="Background">
+            <ImageBrush Source="avares://UnderMine/Assets/authButton_disabled.jpg" Stretch="Fill"/>
+        </Setter>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <!-- Pressed -->
+    <Style Selector="Button.custom-Auth:pressed">
+        <Setter Property="Background">
+            <ImageBrush Source="avares://UnderMine/Assets/authButton_disabled.jpg" Stretch="Fill"/>
+        </Setter>
+    </Style>
+    <Style Selector="Button.Button">
+        <Setter Property="Width" Value="215"/>
+        <Setter Property="Height" Value="56.25"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontFamily" Value="Montserrat-VariableFont_wght"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Black"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Cursor" Value="Arrow"/>
+
+        <Setter Property="Background">
+            <ImageBrush Source="avares://UnderMine/Assets/authButton.jpg" Stretch="Fill"/>
+        </Setter>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="0">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- Hover -->
+    <Style Selector="Button.Button:pointerover">
+        <Setter Property="Background">
+            <ImageBrush Source="avares://UnderMine/Assets/authButton_disabled.jpg" Stretch="Fill"/>
+        </Setter>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <!-- Pressed -->
+    <Style Selector="Button.Button:pressed">
+        <Setter Property="Background">
+            <ImageBrush Source="avares://UnderMine/Assets/authButton_disabled.jpg" Stretch="Fill"/>
+        </Setter>
+    </Style>
+    <!-- Стиль для боковых кнопок меню -->
+    <Style Selector="RadioButton.menu-btn">
+        <Setter Property="Width" Value="215"/>
+        <Setter Property="Height" Value="56.25"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontFamily" Value="Montserrat-VariableFont_wght"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Background" Value="Transparent"/>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="10"
+                        Padding="10">
+                    <ContentPresenter 
+                        Content="{TemplateBinding Content}" 
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        RecognizesAccessKey="True"
+                        TextBlock.Foreground="{TemplateBinding Foreground}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- Hover -->
+    <Style Selector="RadioButton.menu-btn:pointerover /template/ Border#border">
+        <Setter Property="Background" Value="#2A2A2A"/>
+    </Style>
+
+    <!-- Checked (активная кнопка) -->
+    <Style Selector="RadioButton.menu-btn:checked /template/ Border#border">
+        <Setter Property="Background" Value="#E76F2A"/>
+    </Style>
+</Styles>

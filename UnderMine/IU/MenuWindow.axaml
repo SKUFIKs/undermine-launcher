@@ -1,0 +1,181 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="UnderMine.IU.MenuWindow"
+        xmlns:vm="clr-namespace:UnderMine.Fonts"
+        Width="1177" Height="662"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+        Background="Transparent"
+        Title="UnderMine">
+
+    <Panel>
+        <Border CornerRadius="30" BorderThickness="0" ClipToBounds="True">
+            <Border.Background>
+                <ImageBrush Source="avares://UnderMine/Assets/backgroundMenu.jpg"
+                            Stretch="Fill" />
+            </Border.Background>
+            <!-- Боковая панель -->
+            <Panel Height="657" Width="263" Margin="0,-4,0,0"
+                   HorizontalAlignment="Left" VerticalAlignment="Center">
+                <StackPanel Spacing="10" Margin="40">
+
+                    <RadioButton x:Name="NewsButton" Click="NewsButton_OnClick" GroupName="MenuGroup"
+                                 Classes="menu-btn" IsChecked="True" Margin="0,140,0,0">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Image Source="avares://UnderMine/Assets/news.jpg" Width="20" Height="20" />
+                            <TextBlock Text="Новости" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="ServerSelectionButton" Click="ServerSelectionButton_OnClick"
+                                 GroupName="MenuGroup" Classes="menu-btn">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Image Source="avares://UnderMine/Assets/servers.jpg" Width="20" Height="20" />
+                            <TextBlock Text="Сервера" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="ProfileButton" Click="ProfileButton_OnClick" GroupName="MenuGroup"
+                                 Classes="menu-btn">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Image Source="avares://UnderMine/Assets/profile.jpg" Width="20" Height="20" />
+                            <TextBlock Text="Профиль" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="SettingsButton" Click="SettingsButton_OnClick" GroupName="MenuGroup"
+                                 Classes="menu-btn">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Image Source="avares://UnderMine/Assets/settings.jpg" Width="20" Height="20" />
+                            <TextBlock Text="Настройки" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="ExitButton" Click="ExitButton_OnClick" GroupName="MenuGroup"
+                                 Classes="menu-btn" Margin="0,90,0,0">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Image Source="avares://UnderMine/Assets/exit.jpg" Width="20" Height="20" />
+                            <TextBlock Text="Выход" />
+                        </StackPanel>
+                    </RadioButton>
+                </StackPanel>
+                <Panel Width="203" Height="58" Margin="23,40,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
+                    <Border>
+                        <Border.Background>
+                            <ImageBrush Source="avares://UnderMine/Assets/UnderMineIcon.jpg" Stretch="Fill"></ImageBrush>
+                        </Border.Background>
+                    </Border>
+                    <Label Classes="LiteTitle" Margin="60,0,0,0" Content="UnderMine" FontSize="20"></Label>
+                    <Label Classes="LiteTitle" Margin="60,25,0,0" Content="Test" FontSize="20"></Label>
+                </Panel>
+
+            </Panel>
+        </Border>
+
+        <!-- Шаблон панели -->
+        <Panel HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662" IsVisible="False">
+            <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
+                    Background="#222222" CornerRadius="30">
+
+            </Border>
+        </Panel>
+
+        <!-- Новости проекта -->
+        <Panel x:Name="NewsPanel" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
+               IsVisible="False">
+            <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
+                    Background="#222222" CornerRadius="30">
+
+            </Border>
+        </Panel>
+
+        <!-- Панель настроек -->
+        <Panel x:Name="SettingsPanel" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
+               IsVisible="True">
+            <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
+                    Background="#222222" CornerRadius="30">
+
+            </Border>
+        </Panel>
+
+        <!-- Игровой профиль -->
+        <Panel x:Name="ProfilePanel" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
+               IsVisible="False">
+            <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
+                    Background="#222222" CornerRadius="30">
+
+            </Border>
+        </Panel>
+
+        <!-- Выбор сервера. Сервер 1 -->
+        <Panel x:Name="PlayServer" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
+               IsVisible="False">
+            <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
+                    Background="#222222" CornerRadius="30">
+                <Panel HorizontalAlignment="Center" VerticalAlignment="Top">
+                    <Label Content="Server 1#" Classes="BigTitle" Margin="0,10,0,0" FontSize="24"
+                           VerticalAlignment="Top" HorizontalAlignment="Left" />
+                    <TextBlock Classes="LiteTitle" Width="830" Margin="0,65,0,0">
+                        <Run Text="Technomantica 4.2.0 | " FontWeight="Bold" />
+                        <Run Text="Магия встречает технологии" />
+                        <LineBreak />
+                        <LineBreak />
+                        Сервер с глубокой техномагией. Создавай механизмы на магии, исследуй изменённый катаклизмом
+                        мир и находи новые рецепты, где паяльник соседствует с магическим кристаллом. Полная
+                        перезагрузка баланса и крафтов. Присоединяйся к выживанию с лором!
+                        <LineBreak />
+                        <LineBreak />
+                        <Run Text="" />
+                        <Run Text="Запуск: 24.10.2023" FontStyle="Italic" />
+                    </TextBlock>
+                    <Button x:Name="PlayButton" Click="PlayButton_OnClick"
+                            Content="Играть"
+                            Margin="10,425,0,0"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Left"
+                            Classes="custom-Auth" />
+                </Panel>
+            </Border>
+        </Panel>
+
+        <!-- Выбор сервера. Ожидание выбора -->
+        <Panel x:Name="WaitingСhoice" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
+               IsVisible="False">
+            <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
+                    Background="#222222" CornerRadius="30">
+
+            </Border>
+        </Panel>
+
+        <!-- Выбор сервера -->
+        <Border x:Name="SelectServer" Height="415" Width="442" Margin="0,0,0,0" Background="#171717" CornerRadius="22" VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="False">
+            <Panel x:DataType="vm:MenuWindowViewModel">
+                <Label Content="UnderMine Test" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" />
+                <Label Content="Выбор сервера" Classes="LiteTitle" Margin="0,60,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" />
+                <Border Height="239" Width="382" Margin="0,15,0,0" Background="#3B3B3B" BorderBrush="#747474" BorderThickness="2" CornerRadius="10" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                    <ListBox ItemsSource="{Binding Servers}"
+                             SelectedItem="{Binding SelectedServer, Mode=TwoWay}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:Server">
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+                <Panel Height="45" Width="338" Margin="0,0,0,20" VerticalAlignment="Bottom">
+                    <RadioButton  x:Name="SelectButton" Click="SelectButton_OnClick"  HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45" Width="158" GroupName="ServerGroup" Classes="menu-btn" IsChecked="True">
+                        <TextBlock Text="Выбрать" />
+                    </RadioButton> 
+                    <RadioButton x:Name="CancelButton" Click="CancelButton_OnClick" HorizontalAlignment="Right" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45" Width="158" GroupName="ServerGroup" Classes="menu-btn">
+                        <TextBlock Text="Отменить" />
+                    </RadioButton>
+                </Panel>
+            </Panel>
+        </Border>
+    </Panel>
+</Window>

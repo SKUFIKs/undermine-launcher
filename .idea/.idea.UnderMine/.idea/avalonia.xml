@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="UnderMine/App.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/Fonts/Sidebar.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/Fonts/StyleAvalonia.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/Fonts/Styles.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/IU/AuthMenu.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/IU/AuthWindow.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/IU/MainMenu.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/IU/MenuWindow.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/IU/SettingsWindow.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/MainWindow.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/Resources.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/Sidebar.axaml" value="UnderMine/UnderMine.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
