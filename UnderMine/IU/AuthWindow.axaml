@@ -192,6 +192,35 @@
                             Click="CloseButton_OnClick" />
                 </Panel>
             </Grid>
+            <Panel x:Name="AgreementPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Width="1058" Height="605" IsVisible="True">
+                <Border VerticalAlignment="Center" HorizontalAlignment="Center" Width="1058" Height="605" Margin="0,0,0,0"
+                        Background="#222222" CornerRadius="15">
+                    <Panel>
+                        <Label Content="UnderMine Test" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+                               HorizontalAlignment="Center" />
+                        <Label Content="Пользовательское соглашение" FontSize="16" Classes="LiteTitle" Margin="0,70,0,0"
+                               VerticalAlignment="Top" HorizontalAlignment="Center" />
+                        <Border VerticalAlignment="Center" HorizontalAlignment="Center" Width="975" Height="385" Margin="0,0,0,15"
+                                Background="#3B3B3B" CornerRadius="10">
+                        </Border>
+                        <Label Content="Я прочитал и соглашаюсь с пользовательским соглашением" Classes="LiteLabel" Margin="85,0,0,78"
+                               VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+                        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="60,0,0,80" x:Name="AgreementCheckBox" Checked="AgreementCheckBox_OnChecked"></CheckBox>
+                        <Panel Height="45" Width="338" Margin="40,0,0,30" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                            <RadioButton HorizontalAlignment="Left" x:Name="AcceptButton"   Click="AcceptButton_OnClick"
+                                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
+                                         Width="158" GroupName="Group" Classes="menu-btn" IsChecked="True">
+                                <TextBlock Text="Продолжить" />
+                            </RadioButton>
+                            <RadioButton HorizontalAlignment="Right" x:Name="RefusalButton"  Click="RefusalButton_OnClick"
+                                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
+                                         Width="158" GroupName="Group" Classes="menu-btn">
+                                <TextBlock Text="Выход" />
+                            </RadioButton>
+                        </Panel>
+                    </Panel>
+                </Border>
+            </Panel>
         </Panel>
     </Border>
 </Window>

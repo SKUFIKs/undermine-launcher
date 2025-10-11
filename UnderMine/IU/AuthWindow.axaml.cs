@@ -31,7 +31,7 @@ public partial class AuthWindow : Window
         _ = LoadUserSettings();
         PassBox.PasswordChar = '•';
         SystemScan();
-
+        ShouldShowEULADialog();
     }
 
     private async void SystemScan()
@@ -67,11 +67,9 @@ public partial class AuthWindow : Window
 
     private async void AuthButton_OnClick(object? sender, RoutedEventArgs e)
     {
-
         var username = LogBox.Text;
         var password = PassBox.Text;
-        
-        
+
 
         if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
         {
@@ -88,6 +86,7 @@ public partial class AuthWindow : Window
             ErrorBox.Text = result.ErrorMessage;
             return;
         }
+
         _loginResult = await Login(username, password);
 
         if (!_loginResult.Success)
@@ -100,7 +99,6 @@ public partial class AuthWindow : Window
         var secondWindow = new MenuWindow(_config, _loginResult);
         secondWindow.Show();
         this.Close();
-        
     }
 
     private async Task<LoginResult> Login(string username, string password)
@@ -133,7 +131,7 @@ public partial class AuthWindow : Window
                     "Вы используете недопустимые символы. Для логина и пароля можно использовать только латинские буквы и цифры."
             };
         }
-        
+
         if (SaveUserBox.IsChecked == true)
         {
             _userData.Username = username;
@@ -141,14 +139,14 @@ public partial class AuthWindow : Window
             _userData.SaveUser = true;
             await _userData.Save();
         }
-        
+
         var loginResult = await _identityService.Login(username, password);
 
         if (!loginResult.Success)
         {
             return loginResult;
         }
-        
+
         _userApiService = new UserApiService(_config, loginResult);
         var serverInfo = await _userApiService.GetServerInfo();
 
@@ -170,16 +168,17 @@ public partial class AuthWindow : Window
 
     private void LogBox_OnTextInput(object? sender, TextInputEventArgs e)
     {
-
     }
+
     private async void RegButton_OnClick(object? sender, RoutedEventArgs e)
     {
         var username = RegLogBox.Text;
         var password = RegPassBox.Text;
         var confirmPassword = ConfPassBox.Text;
-        
 
-        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
+
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password) ||
+            string.IsNullOrWhiteSpace(confirmPassword))
         {
             ErrorPanel.IsVisible = true;
             ErrorBox.Text = "Проверьте правильность введённых данных. Все поля должны быть заполнены.";
@@ -197,14 +196,13 @@ public partial class AuthWindow : Window
 
         if (result.Success)
         {
-            InfoPanel.IsVisible= true;
-            InfoBox.Text= result.ErrorMessage;
+            InfoPanel.IsVisible = true;
+            InfoBox.Text = result.ErrorMessage;
         }
     }
 
     public async Task<LoginResult> RegistrationMetod(string username, string password, string confirmPassword)
     {
-        
         if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
         {
             return new LoginResult
@@ -242,21 +240,21 @@ public partial class AuthWindow : Window
                     "Вы используете недопустимые символы. Можно использовать только латинские буквы и цифры."
             };
         }
-        
+
         var result = await _identityService.Register(username, password);
-        
+
         if (!result.Success)
         {
-            return result; 
+            return result;
         }
-        
+
         return new LoginResult
         {
             Success = true,
             ErrorMessage = "Регистрация прошла успешно."
         };
     }
-    
+
     private void LoginButton_OnClick(object? sender, RoutedEventArgs e)
     {
         RegPanel.IsVisible = false;
@@ -321,6 +319,81 @@ public partial class AuthWindow : Window
         RegPanel.IsVisible = false;
         LogPanel.IsVisible = true;
     }
+    private async void AcceptButton_OnClick(object? sender, RoutedEventArgs e)
+        {
+            if (AgreementCheckBox.IsChecked == true)
+            {
+                var userData = await UserData.Load();
+                if (userData != null)
+                {
+                    await userData.SaveEULAAcceptance(true);
+                    
+                    NavigateToMainWindow();
+                }
+            }
+            else
+            {
+                
+            }
+        }
+
+        private async void RefusalButton_OnClick(object? sender, RoutedEventArgs e)
+        {
+            var userData = await UserData.Load();
+            if (userData != null)
+            {
+                await userData.SaveEULAAcceptance(false);
+            }
+            CloseApplication();
+        }
+
+        public static async Task<bool> ShouldShowEULADialog()
+        {
+            return !await UserData.CheckEULAAccepted();
+        }
+
+        private void AgreementCheckBox_OnChecked(object? sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox checkBox)
+            {
+                bool eulaAccepted = checkBox.IsChecked == true;
+                EluaChecker(eulaAccepted);
+                UpdateButtonsState(eulaAccepted);
+            }
+        }
+
+        private void AgreementCheckBox_OnUnchecked(object? sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox checkBox)
+            {
+                bool eulaAccepted = checkBox.IsChecked == true;
+                EluaChecker(eulaAccepted);
+                UpdateButtonsState(eulaAccepted);
+            }
+        }
+
+        private void UpdateButtonsState(bool eulaAccepted)
+        {
+            if (AcceptButton != null)
+                AcceptButton.IsEnabled = eulaAccepted;
+            
+            if (RefusalButton != null)
+                RefusalButton.IsEnabled = true;
+        }
+
+        private async void EluaChecker(bool eula)
+        {
+            Console.WriteLine($"EULA checkbox state: {eula}");
+            await Task.CompletedTask;
+        }
+
+        private void NavigateToMainWindow()
+        {
+            AgreementPanel.IsVisible = false;
+        }
+
+        private void CloseApplication()
+        {
+            Environment.Exit(0);
+        }
 }
-
-

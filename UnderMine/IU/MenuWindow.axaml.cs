@@ -8,7 +8,6 @@ using UnderMine.Game.server_2;
 using UnderMine.Models;
 using UnderMine.Network.Services;
 using UnderMine.Services;
-using System.Reflection;
 
 namespace UnderMine.IU;
 
@@ -19,10 +18,9 @@ public partial class MenuWindow : Window
     private readonly InstalGame _instalGame2Server = null!;
     private readonly Config _config;
     private readonly LoginResult _loginResult;
-    private SliderValues _sliderValues;
-    private MemorySliderConfiguration _memoryConfig;
-    private bool labelsCreated = false;
-    private UserData _userData;
+    private SliderValues _sliderValues = null!;
+    private MemorySliderConfiguration _memoryConfig = null!;
+    private UserData _userData = null!;
 
     public MenuWindow(Config config, LoginResult loginResult)
     {
@@ -51,7 +49,7 @@ public partial class MenuWindow : Window
     }
     private async void Load_Settings()
     {
-        _userData = await UserData.Load();
+        _userData = await UserData.Load() ?? throw new InvalidOperationException();
         MemorySlider.Value = _userData.MemorySettings;
             
         MemorySlider.ValueChanged += (s, e) =>
@@ -91,7 +89,7 @@ public partial class MenuWindow : Window
         }
 
         _instalGame1Server = new InstalGame1Server(serverInfo);
-        
+        UsernameLabel.Content = _userData.Username;
     }
 
     private void NewsButton_OnClick(object? sender, RoutedEventArgs e)
@@ -101,6 +99,7 @@ public partial class MenuWindow : Window
         ProfilePanel.IsVisible = false;
         SettingsPanel.IsVisible = false;
         WaitingСhoice.IsVisible = false;
+        PlayServer.IsVisible = false;
     }
 
     private void ServerSelectionButton_OnClick(object? sender, RoutedEventArgs e)
@@ -110,6 +109,7 @@ public partial class MenuWindow : Window
         ProfilePanel.IsVisible = false;
         SettingsPanel.IsVisible = false;
         NewsPanel.IsVisible = false;
+        PlayServer.IsVisible = false;
     }
 
     private void ProfileButton_OnClick(object? sender, RoutedEventArgs e)
@@ -119,6 +119,7 @@ public partial class MenuWindow : Window
         NewsPanel.IsVisible = false;
         SelectServer.IsVisible = false;
         WaitingСhoice.IsVisible = false;
+        PlayServer.IsVisible = false;
     }
 
     private void SettingsButton_OnClick(object? sender, RoutedEventArgs e)
@@ -128,6 +129,7 @@ public partial class MenuWindow : Window
         NewsPanel.IsVisible = false;
         SelectServer.IsVisible = false;
         WaitingСhoice.IsVisible = false;
+        PlayServer.IsVisible = false;
     }
 
     private void ExitButton_OnClick(object? sender, RoutedEventArgs e)
@@ -142,6 +144,7 @@ public partial class MenuWindow : Window
         ProfilePanel.IsVisible = false;
         SettingsPanel.IsVisible = false;
         WaitingСhoice.IsVisible = false;
+        PlayServer.IsVisible = false;
     }
 
     private async void StartingTheGame(int serverId)

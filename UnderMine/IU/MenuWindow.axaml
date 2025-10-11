@@ -82,23 +82,42 @@
                     Background="#222222" CornerRadius="15">
             </Border>
         </Panel>
+        
         <Panel>
             <Border VerticalAlignment="Top" HorizontalAlignment="Right" Width="182" Height="65" Margin="0,20,30,0" Background="#222222" CornerRadius="15">
             </Border>
             <Panel>
-                <Border Width="45" Height="45" Margin="0,32,159,0" VerticalAlignment="Top" HorizontalAlignment="Right">
+                <Border Width="40" Height="40" Margin="0,34,159,0" VerticalAlignment="Top" HorizontalAlignment="Right">
                     <Border.Background>
                         <ImageBrush Source="avares://UnderMine/Assets/profile.jpg"></ImageBrush>
                     </Border.Background>
                 </Border>
+                <Label x:Name="UsernameLabel"  Margin="0,32,110,0" HorizontalContentAlignment="Left"  FontSize="16" Classes="LiteLabel" VerticalContentAlignment="Top" HorizontalAlignment="Right"></Label>
             </Panel>
         </Panel>
 
         <!-- Новости проекта -->
         <Panel x:Name="NewsPanel" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
-               IsVisible="False">
+               IsVisible="True">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
                     Background="#222222" CornerRadius="15">
+                <Panel HorizontalAlignment="Center" VerticalAlignment="Top">
+                    <Label Content="Новости" Classes="BigTitle" Margin="0,10,0,0" FontSize="24"
+                           VerticalAlignment="Top" HorizontalAlignment="Left" />
+                    <TextBlock Classes="LiteTitle" Width="830" Margin="0,65,0,0">
+                        <Run Text="Technomantica 4.2.0 | " FontWeight="Bold" />
+                        <Run Text="Магия встречает технологии" />
+                        <LineBreak />
+                        <LineBreak />
+                        Сервер с глубокой техномагией. Создавай механизмы на магии, исследуй изменённый катаклизмом
+                        мир и находи новые рецепты, где паяльник соседствует с магическим кристаллом. Полная
+                        перезагрузка баланса и крафтов. Присоединяйся к выживанию с лором!
+                        <LineBreak />
+                        <LineBreak />
+                        <Run Text="" />
+                        <Run Text="Запуск: 24.10.2023" FontStyle="Italic" />
+                    </TextBlock>
+                </Panel>
 
             </Border>
         </Panel>
@@ -168,7 +187,6 @@
                IsVisible="False">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
                     Background="#222222" CornerRadius="15">
-
             </Border>
         </Panel>
 
