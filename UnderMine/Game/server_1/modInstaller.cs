@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
-using CmlLib.Core.Installers; // для SyncProgress
+using CmlLib.Core.Installers; 
 
 namespace UnderMine.Game.server_1
 {

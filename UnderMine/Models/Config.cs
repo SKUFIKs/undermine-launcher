@@ -35,6 +35,12 @@ public class ServerInfo
     [JsonPropertyName("manifestLink2")]
     public string ManifestLink2 { get; init;} = null!;
     
+    [JsonPropertyName("GuiLink1")]
+    public string GuiLink1 { get; init;} = null!;
+    
+    [JsonPropertyName("GuiHach1")]
+    public string GuiHach1  {get; init;} = null!;
+    
     public bool Success { get; set; }
     
     public string ErrorMessage { get; set; } = string.Empty;
