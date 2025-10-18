@@ -35,48 +35,46 @@ public class GuiLoader
         await stream.CopyToAsync(fileStream);
     }
 
-    private async Task InstallGuiAsync(string temp,string fancyDirectory)
+    private Task InstallGuiAsync(string temp,string configDir)
     {
         string arhive = temp;
-        string path = fancyDirectory;
+        string path = configDir;
         bool overwriteFiles = true;
         ZipFile.ExtractToDirectory(arhive, path, overwriteFiles);
+
+        return Task.CompletedTask;
     }
 
-    public async Task VerifyingInstallationAsync(string finalHach, string fancyDirectory, string temp)
+    public async Task VerifyingInstallationAsync(string currentHash, string configDir, string temp)
     {
-        CalculateFoldrerHash(fancyDirectory);
-        Console.WriteLine(finalHach);
-        string GuiHach = _serverInfo.GuiHach1;
-        if (finalHach != null || GuiHach != null)
+        string guiHash = _serverInfo.GuiHach1;
+        if (!string.IsNullOrEmpty(currentHash) && !string.IsNullOrEmpty(guiHash))
         {
-            if (finalHach != GuiHach)
+            if (currentHash != guiHash)
             {
                 await GuiLoaderAsync(temp);
-                
+
                 if (!File.Exists(temp))
                 {
-                    Console.WriteLine($"Файл не загружен.");
-                    return;
+                    Console.WriteLine($"Файл GUI не загружен.");
                 }
                 else
                 {
-                    await InstallGuiAsync(temp, fancyDirectory);
-                    await AdditionalСheckAsync(finalHach,fancyDirectory);
+                    await InstallGuiAsync(temp, configDir);
+                    await AdditionalСheckAsync(GuiLoader.CalculateFoldrerHash(configDir), configDir);
                 }
             }
         }
     }
-
-    public async Task AdditionalСheckAsync(string finalHach, string fancyDirectory)
+    public Task AdditionalСheckAsync(string finalHach, string configDir)
     {
-        CalculateFoldrerHash(fancyDirectory);
+        CalculateFoldrerHash(configDir);
         Console.WriteLine(finalHach); 
-        string GuiHach = _serverInfo.GuiHach1;
-        Console.WriteLine(GuiHach);
-        if (finalHach != null || GuiHach != null)
+        string guiHach = _serverInfo.GuiHach1;
+        Console.WriteLine(guiHach);
+        if (!string.IsNullOrEmpty(finalHach) && !string.IsNullOrEmpty(guiHach))
         {
-            if (finalHach == GuiHach)
+            if (string.IsNullOrEmpty(finalHach) == string.IsNullOrEmpty(guiHach))
             {
                 Console.WriteLine("ГОЙДАGOOOL");
             }
@@ -85,22 +83,24 @@ public class GuiLoader
                 Console.WriteLine("HUITA PEREDELUVAJ");
             }
         }
+
+        return Task.CompletedTask;
     }
 
-    public static string CalculateFoldrerHash(string fancyDirectory)
+    public static string CalculateFoldrerHash(string configDir)
     {
         using (var sha256 = SHA256.Create())
         {
-            return CalculateFolderHashRecursive(fancyDirectory, sha256);
+            return CalculateFolderHashRecursive(configDir, sha256);
         }
     }
-    private static string CalculateFolderHashRecursive(string fancyDirectory, HashAlgorithm hashAlgorithm)
+    private static string CalculateFolderHashRecursive(string configDir, HashAlgorithm hashAlgorithm)
     {
         var sb = new StringBuilder();
         
-        sb.Append(Path.GetFullPath(fancyDirectory));
+        sb.Append(Path.GetFullPath(configDir));
 
-        var files = Directory.GetFiles(fancyDirectory, "*", SearchOption.AllDirectories);
+        var files = Directory.GetFiles(configDir, "*", SearchOption.AllDirectories);
         foreach (var file in files)
         {
             using (var fileStream = new FileStream(file, FileMode.Open))

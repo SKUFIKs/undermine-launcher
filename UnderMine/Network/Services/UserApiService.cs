@@ -18,15 +18,19 @@ namespace UnderMine.Network.Services
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _loginResult = loginResult ?? throw new ArgumentNullException(nameof(loginResult));
 
-            _httpClient = new HttpClient
+            var handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+            _httpClient = new HttpClient(handler)
             {
                 BaseAddress = new Uri(_config.BaseUrl),
                 Timeout = TimeSpan.FromSeconds(30)
             };
+
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
-            
+                new MediaTypeWithQualityHeaderValue("application/json")
+            );
         }
 
         public async Task<ServerInfo> GetServerInfo()

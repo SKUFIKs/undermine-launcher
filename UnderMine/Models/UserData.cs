@@ -70,7 +70,7 @@ namespace UnderMine.Models
                 var defaultSettings = new UserData
                 {
                     SaveUser = false,
-                    MemorySettings = 2048,
+                    MemorySettings = 4096,
                     GraphicSettings = "Average",
                     EULAAccepted = false, // По умолчанию не принято
                     EULAAcceptedDate = DateTime.MinValue
@@ -88,7 +88,6 @@ namespace UnderMine.Models
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading settings: {ex.Message}");
-                // Возвращаем настройки по умолчанию в случае ошибки
                 return new UserData
                 {
                     SaveUser = false,

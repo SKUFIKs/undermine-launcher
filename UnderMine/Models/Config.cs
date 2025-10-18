@@ -4,7 +4,7 @@ namespace UnderMine.Models;
 
 public class Config
 {
-    public string BaseUrl { get; set; } = "http://localhost:5051";
+    public string BaseUrl { get; set; } = "https://93.90.233.165:49152";
     public string LogApiKey { get; set; } = "/api/auth/login";
     public string RegApiKey { get; set; } = "/api/auth/register";
     public string EntranceApiKey { get; set; } = "/api/v0.1/server_info";
@@ -35,10 +35,10 @@ public class ServerInfo
     [JsonPropertyName("manifestLink2")]
     public string ManifestLink2 { get; init;} = null!;
     
-    [JsonPropertyName("GuiLink1")]
+    [JsonPropertyName("ConfLink1")]
     public string GuiLink1 { get; init;} = null!;
     
-    [JsonPropertyName("GuiHach1")]
+    [JsonPropertyName("ConfHach1")]
     public string GuiHach1  {get; init;} = null!;
     
     public bool Success { get; set; }

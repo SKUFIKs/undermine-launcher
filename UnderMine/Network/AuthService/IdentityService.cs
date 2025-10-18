@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -15,12 +16,20 @@ namespace UnderMine.Network.AuthService
         public IdentityService(Config config)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(_config.BaseUrl);
-            _httpClient.Timeout = new TimeSpan(0, 0, 30);
+
+            var handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+            _httpClient = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(_config.BaseUrl),
+                Timeout = TimeSpan.FromSeconds(30)
+            };
+
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(
-                new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                new MediaTypeWithQualityHeaderValue("application/json")
+            );
         }
         
         public async Task<LoginResult> Login(string username, string password)

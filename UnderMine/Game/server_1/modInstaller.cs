@@ -126,7 +126,10 @@ namespace UnderMine.Game.server_1
                     {
                         File.Delete(modPath);
                     }
-                    catch { }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
             }
 
