@@ -36,9 +36,9 @@ public class ServerInfo
     public string ManifestLink2 { get; init;} = null!;
     
     [JsonPropertyName("ConfLink1")]
-    public string GuiLink1 { get; init;} = null!;
+    public string ConfLink1 { get; init;} = null!;
     
-    [JsonPropertyName("ConfHach1")]
+    [JsonPropertyName("GuiHach1")]
     public string GuiHach1  {get; init;} = null!;
     
     public bool Success { get; set; }

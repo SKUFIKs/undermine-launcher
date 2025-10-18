@@ -18,7 +18,6 @@ namespace UnderMine.Game.server_1
 
             if (!Directory.Exists(modsDirectory))
                 Directory.CreateDirectory(modsDirectory);
-
             try
             {
                 if (string.IsNullOrEmpty(manifestUrl))
@@ -36,14 +35,12 @@ namespace UnderMine.Game.server_1
                 throw new Exception("Error installing mods: " + ex.Message);
             }
         }
-
         private static async Task<JObject> DownloadManifestAsync(string manifestUrl)
         {
             using var client = new HttpClient();
             var response = await client.GetStringAsync(manifestUrl);
             return JObject.Parse(response);
         }
-
         private static async Task UpdateModsAsync(JObject manifest, string modsPath)
         {
             var mods = manifest["Mods"] as JArray;
@@ -88,7 +85,6 @@ namespace UnderMine.Game.server_1
                         string actualHash = ComputeSha256(modFilePath);
                         if (actualHash.Equals(expectedHash, StringComparison.OrdinalIgnoreCase))
                         {
-                            // Мод уже актуален
                             needDownload = false;
                         }
                     }
@@ -115,7 +111,6 @@ namespace UnderMine.Game.server_1
                 }
             }
 
-            // Удаление неразрешённых модов
             foreach (var modPath in Directory.GetFiles(modsPath, "*.jar"))
             {
                 string fileName = Path.GetFileName(modPath);
@@ -128,7 +123,7 @@ namespace UnderMine.Game.server_1
                     }
                     catch
                     {
-                        // ignored
+                        
                     }
                 }
             }
@@ -136,7 +131,6 @@ namespace UnderMine.Game.server_1
             if (!downloadedMods.Any())
                 Console.WriteLine("[MODS] All mods are up to date.");
         }
-
         private static async Task DownloadModAsync(string url, string destinationPath, Action<double>? progress = null, int maxRetries = 2)
         {
             using var client = new HttpClient();
@@ -182,7 +176,6 @@ namespace UnderMine.Game.server_1
                 }
             }
         }
-
         private static string ComputeSha256(string filePath)
         {
             using var sha256 = SHA256.Create();

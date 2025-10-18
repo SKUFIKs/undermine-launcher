@@ -88,7 +88,7 @@ namespace UnderMine.Network.Services
                     };
                 }
 
-                serverInfo.Success = true;
+                serverInfo.Success = true; 
                 return serverInfo;
             }
             catch (Exception ex)
