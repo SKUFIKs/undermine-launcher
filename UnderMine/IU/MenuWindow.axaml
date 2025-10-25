@@ -187,6 +187,15 @@
                IsVisible="False">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
                     Background="#222222" CornerRadius="15">
+                <Panel>
+                    <Panel>
+                        <Label Content="Игровой профиль" Classes="BigTitle" Margin="26,20,0,0" FontSize="24"
+                               VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Panel>
+                            <Label Classes="LiteTitle" Margin="22,65,0,0" Content="Игровой профиль еще не готов. Мы сообщим, когда он будет реализован." FontSize="15"></Label>
+                        </Panel>
+                    </Panel>
+                </Panel>
             </Border>
         </Panel>
 
@@ -199,8 +208,8 @@
                     <Label Content="TechnoMagic" Classes="BigTitle" Margin="0,10,0,0" FontSize="24"
                            VerticalAlignment="Top" HorizontalAlignment="Left" />
                     <TextBlock Classes="LiteTitle" Width="830" Margin="0,65,0,0">
-                        <Run Text="Technomantica 4.2.0 | " FontWeight="Bold" />
-                        <Run Text="Магия встречает технологии" />
+                        <Run Text="TechnoMagic " FontWeight="Bold" />
+                        <Run Text="" />
                         <LineBreak />
                         <LineBreak />
                         Сервер с глубокой техномагией. Создавай механизмы на магии, исследуй изменённый катаклизмом
@@ -239,8 +248,7 @@
                        HorizontalAlignment="Center" />
                 <Border Height="239" Width="382" Margin="0,15,0,0" Background="#3B3B3B" BorderBrush="#747474"
                         BorderThickness="2" CornerRadius="10" VerticalAlignment="Center" HorizontalAlignment="Center">
-
-                    <ListBox ItemsSource="{Binding Servers}"
+                    <ListBox CornerRadius="10" ItemsSource="{Binding Servers}"
                              SelectedItem="{Binding SelectedServer, Mode=TwoWay}">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="vm:Server">

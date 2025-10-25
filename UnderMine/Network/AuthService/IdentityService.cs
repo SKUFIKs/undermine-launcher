@@ -16,11 +16,8 @@ namespace UnderMine.Network.AuthService
         public IdentityService(Config config)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
-
-            var handler = new HttpClientHandler();
-            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-
-            _httpClient = new HttpClient(handler)
+            
+            _httpClient = new HttpClient()
             {
                 BaseAddress = new Uri(_config.BaseUrl),
                 Timeout = TimeSpan.FromSeconds(30)
@@ -71,19 +68,19 @@ namespace UnderMine.Network.AuthService
                         Success = false,
                         ErrorMessage = response.StatusCode switch
                         {
-                            System.Net.HttpStatusCode.BadRequest => "Bad request (400)",
-                            System.Net.HttpStatusCode.Unauthorized => "Authorization required (401)",
-                            System.Net.HttpStatusCode.Forbidden => "Access denied (403)",
-                            System.Net.HttpStatusCode.NotFound => "Resource not found (404)",
-                            System.Net.HttpStatusCode.InternalServerError => "Server error (500)",
-                            _ => $"Unknown error: {(int)response.StatusCode}"
+                            System.Net.HttpStatusCode.BadRequest => "Не верный запрос (400)",
+                            System.Net.HttpStatusCode.Unauthorized => "Неправильный логин или пароль (401)",
+                            System.Net.HttpStatusCode.Forbidden => "Доступ запрещён (403)",
+                            System.Net.HttpStatusCode.NotFound => "Ресурс не найден (404)",
+                            System.Net.HttpStatusCode.InternalServerError => "Ошибка сервера (500)",
+                            _ => $"Неизвестная ошибка: {(int)response.StatusCode}"
                         },
                     };
                 }
             }
             catch (Exception ex)
             {
-                return new LoginResult { Success = false, ErrorMessage = $"Login error: {ex.Message}" };
+                return new LoginResult { Success = false, ErrorMessage = $"Ошибка авторизации: {ex.Message}" };
             }
         }
 
@@ -110,24 +107,24 @@ namespace UnderMine.Network.AuthService
                     Success = false,
                     ErrorMessage = response.StatusCode switch
                     {
-                        System.Net.HttpStatusCode.BadRequest => $"Bad request (400)",
-                        System.Net.HttpStatusCode.Conflict => $"User already exists (409)",
-                        System.Net.HttpStatusCode.InternalServerError => $"Server error (500)",
-                        _ => $"Unknown error {(int)response.StatusCode}:"
+                        System.Net.HttpStatusCode.BadRequest => $"Неверный запрос (400)",
+                        System.Net.HttpStatusCode.Conflict => $"Пользователь уже существует (409)",
+                        System.Net.HttpStatusCode.InternalServerError => $"Ошибка сервера (500)",
+                        _ => $"Неизвестная ошибка {(int)response.StatusCode}:"
                     }
                 };
             }
             catch (HttpRequestException ex)
             {
-                return new LoginResult { Success = false, ErrorMessage = $"Network error: {ex.Message}" };
+                return new LoginResult { Success = false, ErrorMessage = $"Ошибка подключения. Проверьте подключение к сети. {ex.Message}" };
             }
             catch (TaskCanceledException)
             {
-                return new LoginResult { Success = false, ErrorMessage = "Request timeout exceeded" };
+                return new LoginResult { Success = false, ErrorMessage = "Превышено время ожидания." };
             }
             catch (Exception ex)
             {
-                return new LoginResult { Success = false, ErrorMessage = $"Unknown error: {ex.Message}" };
+                return new LoginResult { Success = false, ErrorMessage = $"Неизвестная ошибка: {ex.Message}" };
             }
         }
     }

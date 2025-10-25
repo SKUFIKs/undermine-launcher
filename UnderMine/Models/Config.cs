@@ -4,7 +4,8 @@ namespace UnderMine.Models;
 
 public class Config
 {
-    public string BaseUrl { get; set; } = "https://93.90.233.165:49152";
+    public string BaseUrl { get; set; } = "https://api-undermine.ru";
+    //public string BaseUrl { get; set; } = "http://localhost:8080";
     public string LogApiKey { get; set; } = "/api/auth/login";
     public string RegApiKey { get; set; } = "/api/auth/register";
     public string EntranceApiKey { get; set; } = "/api/v0.1/server_info";
@@ -41,6 +42,8 @@ public class ServerInfo
     [JsonPropertyName("GuiHach1")]
     public string GuiHach1  {get; init;} = null!;
     
+    [JsonPropertyName("InstallerLink")]
+    public string InstallerLink  {get; init;} = null!;
     public bool Success { get; set; }
     
     public string ErrorMessage { get; set; } = string.Empty;

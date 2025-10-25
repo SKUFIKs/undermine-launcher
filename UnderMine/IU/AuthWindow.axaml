@@ -139,16 +139,16 @@
                           Height="72">
                         <Label Content="Код ошибки:" Classes="LiteLabel" Margin="5,0,0,0" VerticalAlignment="Top"
                                HorizontalAlignment="Left" />
-                        <TextBox Classes="custom-textbox" Margin="0,175,0,0" VerticalContentAlignment="Top" TextWrapping="Wrap"  IsReadOnly="True"  AcceptsReturn="True" HorizontalContentAlignment="Left" Padding="5,5" x:Name="ErrorBox"
+                        <TextBox Classes="custom-paneltextbox" Margin="0,175,0,0" VerticalContentAlignment="Top" TextWrapping="Wrap"  IsReadOnly="True"  AcceptsReturn="True" HorizontalContentAlignment="Left" Padding="5,5" x:Name="ErrorBox" IsHitTestVisible="False"
                                  VerticalAlignment="Bottom"
                                  Width="386" Height="145" HorizontalAlignment="Center">
                         </TextBox>
                         <Button x:Name="CloseErrorButton"
                                 Content="Закрыть"
                                 Classes="custom-Auth"
-                                Margin="0,195,0,0"
+                                Margin="0,242,0,0"
                                 HorizontalAlignment="Center"
-                                VerticalAlignment="Top"
+                                VerticalAlignment="Bottom"
                                 Click="CloseErrorButton_OnClick" />
                     </Grid>
                 </Panel>
@@ -177,7 +177,7 @@
                           Height="72">
                         <Label Content="Код ошибки:" Classes="LiteLabel" Margin="5,0,0,0" VerticalAlignment="Top"
                                HorizontalAlignment="Left" />
-                        <TextBox Classes="custom-textbox" Margin="0,175,0,0" VerticalContentAlignment="Top" TextWrapping="Wrap"  IsReadOnly="True"  AcceptsReturn="True" HorizontalContentAlignment="Left" Padding="5,5" x:Name="InfoBox"
+                        <TextBox Classes="custom-paneltextbox" Margin="0,175,0,0" VerticalContentAlignment="Top" TextWrapping="Wrap"  IsReadOnly="True"  AcceptsReturn="True" HorizontalContentAlignment="Left" Padding="5,5" x:Name="InfoBox" IsHitTestVisible="False"
                                  VerticalAlignment="Bottom"
                                  Width="386" Height="145" HorizontalAlignment="Center">
                         </TextBox>
@@ -192,7 +192,7 @@
                             Click="CloseButton_OnClick" />
                 </Panel>
             </Grid>
-            <Panel x:Name="AgreementPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Width="1058" Height="605" IsVisible="True">
+            <Panel x:Name="AgreementPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Width="1058" Height="605" IsVisible="False">
                 <Border VerticalAlignment="Center" HorizontalAlignment="Center" Width="1058" Height="605" Margin="0,0,0,0"
                         Background="#222222" CornerRadius="15">
                     <Panel>

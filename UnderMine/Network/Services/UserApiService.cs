@@ -17,16 +17,11 @@ namespace UnderMine.Network.Services
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _loginResult = loginResult ?? throw new ArgumentNullException(nameof(loginResult));
-
-            var handler = new HttpClientHandler();
-            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-
-            _httpClient = new HttpClient(handler)
+            _httpClient = new HttpClient()
             {
                 BaseAddress = new Uri(_config.BaseUrl),
                 Timeout = TimeSpan.FromSeconds(30)
             };
-
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json")
@@ -40,7 +35,7 @@ namespace UnderMine.Network.Services
                 return new ServerInfo
                 {
                     Success = false,
-                    ErrorMessage = "Error: empty token."
+                    ErrorMessage = $"Неизвестная ошибка."
                 };
             }
 
@@ -58,11 +53,11 @@ namespace UnderMine.Network.Services
                 {
                     string errorMsg = response.StatusCode switch
                     {
-                        System.Net.HttpStatusCode.BadRequest => "Bad request (400)",
-                        System.Net.HttpStatusCode.Unauthorized => "Authorization required (401)",
-                        System.Net.HttpStatusCode.Forbidden => "Access denied (403)",
-                        System.Net.HttpStatusCode.NotFound => "Resource not found (404)",
-                        System.Net.HttpStatusCode.InternalServerError => "Server error (500)",
+                        System.Net.HttpStatusCode.BadRequest => "Не верный запрос (400)",
+                        System.Net.HttpStatusCode.Unauthorized => "Неправильный логин или пароль (401)",
+                        System.Net.HttpStatusCode.Forbidden => "Доступ запрещён (403)",
+                        System.Net.HttpStatusCode.NotFound => "Ресурс не найден (404)",
+                        System.Net.HttpStatusCode.InternalServerError => "Ошибка сервера (500)",
                         _ => $"Unknown error: {(int)response.StatusCode}"
                     };
                     return new ServerInfo
@@ -84,7 +79,7 @@ namespace UnderMine.Network.Services
                     return new ServerInfo
                     {
                         Success = false,
-                        ErrorMessage = "Server returned empty response"
+                        ErrorMessage = "Сервер вернул пустой ответ"
                     };
                 }
 
@@ -96,7 +91,7 @@ namespace UnderMine.Network.Services
                 return new ServerInfo
                 {
                     Success = false,
-                    ErrorMessage = $"Unknown error: {ex.Message}"
+                    ErrorMessage = $"Неизвестная ошибка: {ex.Message}"
                 };
             }
         }

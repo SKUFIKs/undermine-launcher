@@ -154,7 +154,9 @@ public partial class MenuWindow : Window
         try
         {
             if (serverId == 1)
+            {
                 await _instalGame1Server.InstallAndRunAsync();
+            }
             else if (serverId == 2)
                 await _instalGame2Server.InstallAndRunAsync();
         }
