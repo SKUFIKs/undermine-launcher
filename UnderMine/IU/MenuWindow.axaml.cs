@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using UnderMine.Game.server_1;
 using UnderMine.Game.server_2;
 using UnderMine.Models;
@@ -16,22 +18,28 @@ public partial class MenuWindow : Window
     private int ServerId {get;set; }
     private InstalGame1Server _instalGame1Server = null!;
     private readonly InstalGame _instalGame2Server = null!;
-    private readonly Config _config;
+    private readonly ContextData _contextData;
     private readonly LoginResult _loginResult;
     private SliderValues _sliderValues = null!;
     private MemorySliderConfiguration _memoryConfig = null!;
     private UserData _userData = null!;
+    private ServerInfo _serverInfo = null!;
+    private InstalGame1Server _installer;
+    private string _logContent = "";
 
-    public MenuWindow(Config config, LoginResult loginResult)
+    
+    public MenuWindow(ContextData contextData, LoginResult loginResult)
     {
         InitializeComponent();
         DataContext = new Fonts.MenuWindowViewModel();
-        _config = config;
+        _contextData = contextData;
         _loginResult = loginResult;
         _ = InitializeMemorySliderAsync();
-        InitializeServersAsync();
+        InitializeServersAsync(); 
         Load_Settings();
         Installation();
+        Console.SetOut(new Logger(UpdateConsoleLabel));
+
         MemoryTextBox.Text = $"{MemorySlider.Value:F0} MB";
         MemorySlider.PropertyChanged += (_, e) =>
         {
@@ -40,6 +48,30 @@ public partial class MenuWindow : Window
                 MemoryTextBox.Text = $"{MemorySlider.Value:F0} MB";
             }
         };
+        
+    }
+    private void UpdateConsoleLabel(string text)
+    {
+        if (text.Length > 120)
+            text = text.Substring(0, 120) + "...";
+        LogLabel.Content = text;
+    }
+    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        {
+            BeginMoveDrag(e);
+        }
+    }
+
+    
+    private void AddLogMessage(string message)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            _logContent = message;     
+            LogBox.Content = _logContent;
+        });
     }
 
     private void Installation()
@@ -79,19 +111,42 @@ public partial class MenuWindow : Window
     }
     private async void InitializeServersAsync()
     {
-        var apiService = new UserApiService(_config, _loginResult);
-        var serverInfo = await apiService.GetServerInfo();
-
-        if (!serverInfo.Success)
+        try
         {
-            Console.WriteLine("[MENU] Не удалось получить данные сервера: " + serverInfo.ErrorMessage);
-            return;
-        }
+            var api = new UserApiService(_contextData, _loginResult);
+            _serverInfo = await api.GetServerInfo();
 
-        _instalGame1Server = new InstalGame1Server(serverInfo);
-        UsernameLabel.Content = _userData.Username;
+            if (!_serverInfo.Success)
+            {
+                Loader.SetStatus($"Ошибка: {_serverInfo.ErrorMessage}");
+                return;
+            }
+            
+            _instalGame1Server = new InstalGame1Server(_serverInfo);
+            
+            _instalGame1Server.OnProgress += (task, percent, state) =>
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    Loader.Progress = percent;
+                    Loader.SetStatus($"{task}: {state}");
+                });
+            };
+            
+            _instalGame1Server.OnMessage += AddLogMessage;
+
+            UsernameLabel.Content = _userData.Username;
+            
+            _installer = _instalGame1Server;
+        }
+        catch (Exception ex)
+        {
+            Loader.SetStatus("Ошибка загрузки данных сервера");
+            Console.WriteLine("[ERROR] Ошибка получения ServerInfo: " + ex);
+        }
     }
 
+    
     private void NewsButton_OnClick(object? sender, RoutedEventArgs e)
     {
         NewsPanel.IsVisible = true;
@@ -150,6 +205,12 @@ public partial class MenuWindow : Window
     private async void StartingTheGame(int serverId)
     {
         PlayButton.IsEnabled = false;
+        ProgressBar.IsVisible = true;
+        PlayButton.Content = "Запуск";
+        SettingsButton.IsEnabled = false;
+        ProfileButton.IsEnabled = false;
+        ServerSelectionButton.IsEnabled = false;
+        NewsButton.IsEnabled = false;
 
         try
         {
@@ -167,6 +228,12 @@ public partial class MenuWindow : Window
         finally
         {
             PlayButton.IsEnabled = true;
+            ProgressBar.IsVisible = false;
+            PlayButton.Content = "Играть";
+            SettingsButton.IsEnabled = true;
+            ProfileButton.IsEnabled = true;
+            ServerSelectionButton.IsEnabled = true;
+            NewsButton.IsEnabled = true;
         }
     }
 

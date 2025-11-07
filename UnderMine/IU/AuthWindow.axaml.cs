@@ -17,17 +17,17 @@ public partial class AuthWindow : Window
     private readonly IdentityService _identityService;
     private UserApiService _userApiService;
     private UserData _userData = null!;
-    private readonly Config _config;
+    private readonly ContextData _contextData;
     private LoginResult _loginResult = null!;
     private CheckEquipment _checkEquipment = null!;
 
     public AuthWindow()
     {
         InitializeComponent();
-        _config = new Config();
+        _contextData = new ContextData();
         var loginResult = new LoginResult();
-        _identityService = new IdentityService(_config);
-        _userApiService = new UserApiService(_config, loginResult);
+        _identityService = new IdentityService(_contextData);
+        _userApiService = new UserApiService(_contextData, loginResult);
         _ = LoadUserSettings();
         PassBox.PasswordChar = '•';
         SystemScan();
@@ -96,7 +96,7 @@ public partial class AuthWindow : Window
             return;
         }
 
-        var secondWindow = new MenuWindow(_config, _loginResult);
+        var secondWindow = new MenuWindow(_contextData, _loginResult);
         secondWindow.Show();
         this.Close();
     }
@@ -147,7 +147,7 @@ public partial class AuthWindow : Window
             return loginResult;
         }
 
-        _userApiService = new UserApiService(_config, loginResult);
+        _userApiService = new UserApiService(_contextData, loginResult);
         var serverInfo = await _userApiService.GetServerInfo();
 
         if (!serverInfo.Success)
@@ -350,6 +350,13 @@ public partial class AuthWindow : Window
         public static async Task<bool> ShouldShowEULADialog()
         {
             return !await UserData.CheckEULAAccepted();
+        }
+        private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e)
+        {
+            if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            {
+                BeginMoveDrag(e);
+            }
         }
 
         private void AgreementCheckBox_OnChecked(object? sender, RoutedEventArgs e)

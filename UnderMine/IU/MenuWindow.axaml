@@ -5,6 +5,7 @@
         mc:Ignorable="d"
         x:Class="UnderMine.IU.MenuWindow"
         xmlns:vm="clr-namespace:UnderMine.Fonts"
+        xmlns:services="clr-namespace:UnderMine.Services"
         Width="1177" Height="662"
         CanResize="False"
         WindowStartupLocation="CenterScreen"
@@ -13,7 +14,7 @@
         Title="UnderMine">
 
     <Panel>
-        <Border CornerRadius="30" BorderThickness="0" ClipToBounds="True">
+        <Border CornerRadius="30" BorderThickness="0" ClipToBounds="True" PointerPressed="TitleBar_PointerPressed">
             <Border.Background>
                 <ImageBrush Source="avares://UnderMine/Assets/backgroundMenu.jpg"
                             Stretch="Fill" />
@@ -76,23 +77,41 @@
             </Panel>
         </Border>
 
+
         <!-- Шаблон панели -->
         <Panel HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662" IsVisible="False">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
                     Background="#222222" CornerRadius="15">
             </Border>
         </Panel>
-        
+
         <Panel>
-            <Border VerticalAlignment="Top" HorizontalAlignment="Right" Width="182" Height="65" Margin="0,20,30,0" Background="#222222" CornerRadius="15">
+            <Border VerticalAlignment="Top" HorizontalAlignment="Right" Width="200" Height="65" Margin="0,20,30,0"
+                    Background="#222222" CornerRadius="15">
             </Border>
-            <Panel>
+            <Panel Margin="0,0,20,0">
                 <Border Width="40" Height="40" Margin="0,34,159,0" VerticalAlignment="Top" HorizontalAlignment="Right">
                     <Border.Background>
                         <ImageBrush Source="avares://UnderMine/Assets/profile.jpg"></ImageBrush>
                     </Border.Background>
                 </Border>
-                <Label x:Name="UsernameLabel"  Margin="0,32,110,0" HorizontalContentAlignment="Left"  FontSize="16" Classes="LiteLabel" VerticalContentAlignment="Top" HorizontalAlignment="Right"></Label>
+                <Label x:Name="UsernameLabel" Margin="998,32,0,0" HorizontalContentAlignment="Left" FontSize="16"
+                       Classes="LiteLabel" VerticalContentAlignment="Top" HorizontalAlignment="Left">
+                </Label>
+            </Panel>
+        </Panel>
+
+        <Panel x:Name="ProgressBar" IsVisible="False">
+            <Border VerticalAlignment="Top" HorizontalAlignment="Center" Width="275" Height="65" Background="#222222" Margin="0,20,0,0"
+                    CornerRadius="15">
+            </Border>
+            <Panel>
+                <Border Width="43" Height="43" Margin="0,31,210,0" VerticalAlignment="Top" HorizontalAlignment="Center">
+                    <services:ProgressView x:Name="Loader" />
+                </Border>
+                <Label x:Name="LogBox" Margin="510,32,0,0" HorizontalContentAlignment="Left" FontSize="14"
+                       Classes="LiteLabel" VerticalContentAlignment="Top" HorizontalAlignment="Left">
+                </Label>
             </Panel>
         </Panel>
 
@@ -137,15 +156,32 @@
                         <Panel VerticalAlignment="Top" HorizontalAlignment="Left" Width="442" Margin="42,85,0,0">
                             <Slider x:Name="MemorySlider" IsSnapToTickEnabled="True" TickPlacement="BottomRight"></Slider>
                         </Panel>
-                        <TextBox x:Name="MemoryTextBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="500,94,0,0" Width="90"
+                        <TextBox x:Name="MemoryTextBox" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                 Margin="500,94,0,0" Width="90"
                                  Height="22" IsReadOnly="True">
                         </TextBox>
-                        <Panel Height="20" Width="482" Margin="22,125,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
-                            <Label x:Name="FirstValue" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,425,0" Content=""></Label>
-                            <Label x:Name="SecondValue" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,212.5,0" Content=""></Label>
-                            <Label x:Name="ThirdValue" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0,0" Content="" ></Label>
-                            <Label x:Name="FourthValue" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="212.5,0,0,0" Content="" ></Label>
-                            <Label x:Name="FifthValue" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="425,0,0,0" Content="" ></Label>
+                        <Panel Height="20" Width="482" Margin="22,125,0,0" VerticalAlignment="Top"
+                               HorizontalAlignment="Left">
+                            <Label x:Name="FirstValue" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                   Margin="0,0,425,0" Content="">
+                            </Label>
+                            <Label x:Name="SecondValue" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                   Margin="0,0,212.5,0" Content="">
+                            </Label>
+                            <Label x:Name="ThirdValue" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                   Margin="0,0,0,0" Content="">
+                            </Label>
+                            <Label x:Name="FourthValue" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                   Margin="212.5,0,0,0" Content="">
+                            </Label>
+                            <Label x:Name="FifthValue" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                   Margin="425,0,0,0" Content="">
+                            </Label>
                         </Panel>
                     </Panel>
                     <Panel>
@@ -153,8 +189,11 @@
                         <Panel VerticalAlignment="Top" HorizontalAlignment="Left" Width="442" Margin="42,195,0,0">
                             <TextBox x:Name="InstallationPath"></TextBox>
                         </Panel>
-                        <Button HorizontalAlignment="Left"  x:Name="OverviewSettings" Click="OverviewSettings_OnClick" VerticalAlignment="Top" Content="Обзор" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="500,195,0,0" Width="90" Background="SlateGray"
-                                 Height="32">
+                        <Button HorizontalAlignment="Left" x:Name="OverviewSettings" Click="OverviewSettings_OnClick"
+                                VerticalAlignment="Top" Content="Обзор" VerticalContentAlignment="Center"
+                                HorizontalContentAlignment="Center" Margin="500,195,0,0" Width="90"
+                                Background="SlateGray"
+                                Height="32">
                         </Button>
                     </Panel>
                     <Panel>
@@ -162,12 +201,15 @@
                         <Panel VerticalAlignment="Top" HorizontalAlignment="Left" Width="442" Margin="42,263,0,0">
                             <TextBox></TextBox>
                         </Panel>
-                        <Button HorizontalAlignment="Left" Content="Обзор" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="500,263,0,0" Width="90" Background="SlateGray"
+                        <Button HorizontalAlignment="Left" Content="Обзор" HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="500,263,0,0"
+                                Width="90" Background="SlateGray"
                                 Height="32">
                         </Button>
                     </Panel>
-                    <Panel Height="45" Width="338" Margin="35,0,0,30" VerticalAlignment="Bottom" HorizontalAlignment="Left">
-                        <RadioButton HorizontalAlignment="Left" x:Name="SaveButton"  Click="SaveButton_OnClick"
+                    <Panel Height="45" Width="338" Margin="35,0,0,30" VerticalAlignment="Bottom"
+                           HorizontalAlignment="Left">
+                        <RadioButton HorizontalAlignment="Left" x:Name="SaveButton" Click="SaveButton_OnClick"
                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
                                      Width="158" GroupName="SettingsGroup" Classes="menu-btn" IsChecked="True">
                             <TextBlock Text="Сохранить" />
@@ -192,7 +234,10 @@
                         <Label Content="Игровой профиль" Classes="BigTitle" Margin="26,20,0,0" FontSize="24"
                                VerticalAlignment="Top" HorizontalAlignment="Left" />
                         <Panel>
-                            <Label Classes="LiteTitle" Margin="22,65,0,0" Content="Игровой профиль еще не готов. Мы сообщим, когда он будет реализован." FontSize="15"></Label>
+                            <Label Classes="LiteTitle" Margin="22,65,0,0"
+                                   Content="Игровой профиль еще не готов. Мы сообщим, когда он будет реализован."
+                                   FontSize="15">
+                            </Label>
                         </Panel>
                     </Panel>
                 </Panel>
@@ -228,6 +273,8 @@
                             Classes="custom-Auth" />
                 </Panel>
             </Border>
+            <Label x:Name="LogLabel" Classes="LiteLabel" Margin="8,0,0,50"
+                   VerticalAlignment="Bottom" FontStyle="Normal" HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="11" Foreground="#4B4B4B"/>
         </Panel>
 
         <!-- Выбор сервера. Ожидание выбора -->
@@ -237,6 +284,7 @@
                     Background="#222222" CornerRadius="15">
             </Border>
         </Panel>
+        
 
         <!-- Выбор сервера -->
         <Border x:Name="SelectServer" Height="415" Width="442" Margin="0,0,0,0" Background="#171717" CornerRadius="22"

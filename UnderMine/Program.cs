@@ -8,7 +8,7 @@ namespace UnderMine;
 
 class Program
 {
-    public static Config GlobalConfig { get; private set; }
+    public static ContextData GlobalContextData { get; private set; }
     public static ServerInfo ServerInfo { get; private set; }
     public static IdentityService AuthService { get; private set; }
     public static LoginResult LoginResult { get; private set; }

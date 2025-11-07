@@ -5,21 +5,22 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using UnderMine.Models;
+using UnderMine.Services;
 
 namespace UnderMine.Network.AuthService
 {
     public class IdentityService
     {
-        private readonly Config _config;
+        private readonly ContextData _contextData;
         private readonly HttpClient _httpClient;
-        
-        public IdentityService(Config config)
+
+        public IdentityService(ContextData contextData)
         {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
-            
+            _contextData = contextData ?? throw new ArgumentNullException(nameof(contextData));
+
             _httpClient = new HttpClient()
             {
-                BaseAddress = new Uri(_config.BaseUrl),
+                BaseAddress = new Uri(_contextData.BaseUrl),
                 Timeout = TimeSpan.FromSeconds(30)
             };
 
@@ -28,10 +29,10 @@ namespace UnderMine.Network.AuthService
                 new MediaTypeWithQualityHeaderValue("application/json")
             );
         }
-        
+
         public async Task<LoginResult> Login(string username, string password)
         {
-            string logUrl = _config.BaseUrl + _config.LogApiKey;
+            string logUrl = _contextData.BaseUrl + _contextData.LogApiKey;
 
             try
             {
@@ -84,47 +85,81 @@ namespace UnderMine.Network.AuthService
             }
         }
 
+
         public async Task<LoginResult> Register(string username, string password)
         {
-            string regUrl =  _config.BaseUrl + _config.RegApiKey;
+            string regUrl = _contextData.BaseUrl + _contextData.RegApiKey;
+            string deviceId = SystemInformation.GetStableDeviceId();
 
             try
             {
-                var registerData = new { Login = username, Password = password };
+                var registerData = new { Login = username, Password = password, deviceID = deviceId };
                 var json = JsonSerializer.Serialize(registerData);
 
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _httpClient.PostAsync(regUrl, content);
-                await response.Content.ReadAsStringAsync();
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                string? apiMessage = null;
+                try
+                {
+                    using var doc = JsonDocument.Parse(responseBody);
+                    if (doc.RootElement.TryGetProperty("message", out var msgProp))
+                        apiMessage = msgProp.GetString();
+                }
+                catch
+                {
+                    /* тело не JSON — игнорируем */
+                }
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return new LoginResult { Success = true, ErrorMessage = string.Empty };
+                    return new LoginResult
+                    {
+                        Success = true,
+                        ErrorMessage = string.Empty
+                    };
                 }
-                
+
+                string fallbackError = response.StatusCode switch
+                {
+                    System.Net.HttpStatusCode.BadRequest => "Неверный запрос",
+                    System.Net.HttpStatusCode.Conflict => "Пользователь уже существует",
+                    System.Net.HttpStatusCode.TooManyRequests => "Превышен лимит аккаунтов на устройстве",
+                    System.Net.HttpStatusCode.InternalServerError => "Ошибка сервера",
+                    _ => "Неизвестная ошибка"
+                };
+
                 return new LoginResult
                 {
                     Success = false,
-                    ErrorMessage = response.StatusCode switch
-                    {
-                        System.Net.HttpStatusCode.BadRequest => $"Неверный запрос (400)",
-                        System.Net.HttpStatusCode.Conflict => $"Пользователь уже существует (409)",
-                        System.Net.HttpStatusCode.InternalServerError => $"Ошибка сервера (500)",
-                        _ => $"Неизвестная ошибка {(int)response.StatusCode}:"
-                    }
+                    ErrorMessage = $"{fallbackError} ({(int)response.StatusCode})"
+                                   + (apiMessage != null ? $": {apiMessage}" : "")
                 };
             }
             catch (HttpRequestException ex)
             {
-                return new LoginResult { Success = false, ErrorMessage = $"Ошибка подключения. Проверьте подключение к сети. {ex.Message}" };
+                return new LoginResult
+                {
+                    Success = false,
+                    ErrorMessage = $"Ошибка сети: {ex.Message}"
+                };
             }
             catch (TaskCanceledException)
             {
-                return new LoginResult { Success = false, ErrorMessage = "Превышено время ожидания." };
+                return new LoginResult
+                {
+                    Success = false,
+                    ErrorMessage = "Превышено время ожидания"
+                };
             }
             catch (Exception ex)
             {
-                return new LoginResult { Success = false, ErrorMessage = $"Неизвестная ошибка: {ex.Message}" };
+                return new LoginResult
+                {
+                    Success = false,
+                    ErrorMessage = $"Неизвестная ошибка: {ex.Message}"
+                };
             }
         }
     }

@@ -35,3 +35,6 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [C:/Users/Дмитрий/RiderProjects/UnderMine/UnderMine/Resources.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/Дмитрий/RiderProjects/UnderMine/UnderMine/Services/ProgressView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

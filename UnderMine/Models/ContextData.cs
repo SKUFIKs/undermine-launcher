@@ -2,7 +2,7 @@
 
 namespace UnderMine.Models;
 
-public class Config
+public class ContextData
 {
     public string BaseUrl { get; set; } = "https://api-undermine.ru";
     //public string BaseUrl { get; set; } = "http://localhost:8080";
@@ -36,11 +36,15 @@ public class ServerInfo
     [JsonPropertyName("manifestLink2")]
     public string ManifestLink2 { get; init;} = null!;
     
-    [JsonPropertyName("ConfLink1")]
-    public string ConfLink1 { get; init;} = null!;
+    [JsonPropertyName("ShadersLink")]
+    public string ShadersLink { get; init;} = null!;
     
-    [JsonPropertyName("GuiHach1")]
-    public string GuiHach1  {get; init;} = null!;
+    [JsonPropertyName("GuiLink")]
+    public string GuiLink { get; init;} = null!;
+    
+    [JsonPropertyName("QuestLink")]
+    public string QuestLink { get; init;} = null!;
+    
     
     [JsonPropertyName("InstallerLink")]
     public string InstallerLink  {get; init;} = null!;

@@ -9,17 +9,17 @@ namespace UnderMine.Network.Services
 {
     public class UserApiService
     {
-        private readonly Config _config;
+        private readonly ContextData _contextData;
         private readonly LoginResult _loginResult;
         private readonly HttpClient _httpClient;
 
-        public UserApiService(Config config, LoginResult loginResult)
+        public UserApiService(ContextData contextData, LoginResult loginResult)
         {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _contextData = contextData ?? throw new ArgumentNullException(nameof(contextData));
             _loginResult = loginResult ?? throw new ArgumentNullException(nameof(loginResult));
             _httpClient = new HttpClient()
             {
-                BaseAddress = new Uri(_config.BaseUrl),
+                BaseAddress = new Uri(_contextData.BaseUrl),
                 Timeout = TimeSpan.FromSeconds(30)
             };
             _httpClient.DefaultRequestHeaders.Accept.Clear();
@@ -41,7 +41,7 @@ namespace UnderMine.Network.Services
 
             try
             {
-                var requestUrl = _config.BaseUrl + _config.EntranceApiKey;
+                var requestUrl = _contextData.BaseUrl + _contextData.EntranceApiKey;
                 
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", _loginResult.Token);

@@ -9,7 +9,7 @@
         SystemDecorations="None"
         Background="Transparent"
         Title="UnderMine">
-    <Border CornerRadius="30" BorderThickness="0">
+    <Border CornerRadius="30" BorderThickness="0" PointerPressed="TitleBar_PointerPressed">
         <Border.Background>
             <ImageBrush Source="avares://UnderMine/Assets/background.jpg"
                         Stretch="UniformToFill" />

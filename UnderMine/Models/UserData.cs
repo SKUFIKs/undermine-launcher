@@ -28,8 +28,7 @@ namespace UnderMine.Models
             string json = JsonSerializer.Serialize(this, options);
             await File.WriteAllTextAsync(SettingsPath, json);
         }
-
-        // Метод для сохранения состояния EULA
+        
         public async Task SaveEULAAcceptance(bool accepted)
         {
             this.EULAAccepted = accepted;
@@ -38,15 +37,14 @@ namespace UnderMine.Models
             
             Console.WriteLine($"EULA acceptance saved: {accepted} at {EULAAcceptedDate}");
         }
-
-        // Метод для проверки принятия EULA при загрузке
+        
         public static async Task<bool> CheckEULAAccepted()
         {
             var userData = await Load();
             return userData?.EULAAccepted ?? false;
         }
 
-        // Метод для принудительного сброса EULA (для тестирования)
+        
         public static async Task ResetEULAAcceptance()
         {
             var userData = await Load();
@@ -60,7 +58,7 @@ namespace UnderMine.Models
         
         private void MemorySlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
-            // Логика изменения настроек памяти
+            
         }
         
         public static async Task<UserData?> Load()
@@ -72,7 +70,7 @@ namespace UnderMine.Models
                     SaveUser = false,
                     MemorySettings = 4096,
                     GraphicSettings = "Average",
-                    EULAAccepted = false, // По умолчанию не принято
+                    EULAAccepted = false,
                     EULAAcceptedDate = DateTime.MinValue
                 };
 
@@ -91,7 +89,7 @@ namespace UnderMine.Models
                 return new UserData
                 {
                     SaveUser = false,
-                    MemorySettings = 2048,
+                    MemorySettings = 4096,
                     GraphicSettings = "Average",
                     EULAAccepted = false,
                     EULAAcceptedDate = DateTime.MinValue
