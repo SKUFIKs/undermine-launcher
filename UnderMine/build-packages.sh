@@ -44,14 +44,19 @@ exec "\$HERE/usr/bin/${EXEC_BASENAME}" "\$@"
 EOF
 chmod +x "${APPDIR}/AppRun"
 
+# === .desktop файл ===
 cat > "${APPDIR}/${APP_NAME}.desktop" <<EOF
 [Desktop Entry]
 Name=UnderMine Launcher
 Exec=${APP_NAME}
+Icon=${APP_NAME}
 Type=Application
 Categories=Game;
 StartupNotify=true
 EOF
+
+# Создаём пустую иконку, чтобы appimagetool не ругался
+convert -size 1x1 xc:none "${APPDIR}/${APP_NAME}.png" || touch "${APPDIR}/${APP_NAME}.png"
 
 # === Сборка AppImage ===
 echo "📦 Сборка AppImage..."
@@ -79,6 +84,7 @@ cat > "${DEB_APP_DIR}/${APP_NAME}.desktop" <<EOF
 [Desktop Entry]
 Name=UnderMine Launcher
 Exec=${APP_NAME}
+Icon=${APP_NAME}
 Type=Application
 Categories=Game;
 StartupNotify=true
@@ -88,5 +94,5 @@ dpkg-deb --build "${DEB_ROOT}" "${OUTPUT_DEB}"
 
 echo "✅ Сборка завершена!"
 echo "  - ${OUTPUT_APPIMAGE}"
-echo "  - ${
+echo "  - ${OUTPUT_DEB}"
 
