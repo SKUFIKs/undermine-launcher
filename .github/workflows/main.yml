@@ -1,13 +1,17 @@
-name: Build Linux Packages
+name: Build & Sign Linux Packages
 
 on:
   push:
     branches: [ master ]
   workflow_dispatch:
 
+permissions:
+  id-token: write   # нужно для keyless-подписи через GitHub OIDC
+  contents: read
+
 jobs:
   build-linux:
-    name: Build AppImage & DEB
+    name: Build, Package & Sign (AppImage + DEB)
     runs-on: ubuntu-latest
 
     steps:
@@ -36,28 +40,31 @@ jobs:
           chmod +x UnderMine/build-packages.sh
           ./UnderMine/build-packages.sh
 
-      # ───────────── Подпись Cosign ─────────────
-      - name: 🔐 Install Cosign
+      - name: 🔏 Download and Setup Cosign
         run: |
           curl -Lo cosign https://github.com/sigstore/cosign/releases/latest/download/cosign-linux-amd64
           chmod +x cosign
-          sudo mv cosign /usr/local/bin/
+          sudo mv cosign /usr/local/bin/cosign
 
-      - name: ✍️ Sign AppImage & DEB
+      - name: 🔐 Sign artifacts with GitHub OIDC (Cosign keyless)
         env:
-          COSIGN_EXPERIMENTAL: "1"
+          COSIGN_EXPERIMENTAL: "true"
         run: |
-         for file in ./*.AppImage ./*.deb; do
-         echo "Signing $file ..."
-         cosign sign ./UnderMineLauncher-1.0.0.0-amd64.AppImage
-         done
+          for file in ./*.AppImage ./*.deb; do
+            if [ -f "$file" ]; then
+              echo "🔏 Signing $file ..."
+              cosign sign-blob "$file" \
+                --output-signature "$file.sig" \
+                --yes
+            fi
+          done
 
-      # ───────────── Загрузка артефактов и подписей ─────────────
-      - name: Sign artifacts with Cosign
-        env:
-           COSIGN_EXPERIMENTAL: "true"
-        run: |
-           for file in ./*.AppImage ./*.deb; do
-           echo "Signing $file ..."
-           cosign sign-blob "$file" --output-signature "$file.sig"
-           done
+      - name: 📤 Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: UnderMineLauncher-Linux
+          path: |
+            ./*.AppImage
+            ./*.AppImage.sig
+            ./*.deb
+            ./*.deb.sig
