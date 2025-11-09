@@ -53,12 +53,11 @@ jobs:
          done
 
       # ───────────── Загрузка артефактов и подписей ─────────────
-      - name: 📤 Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: UnderMineLauncher-Linux
-          path: |
-            ./*.AppImage
-            ./*.AppImage.sig
-            ./*.deb
-            ./*.deb.sig
+      - name: Sign artifacts with Cosign
+        env:
+           COSIGN_EXPERIMENTAL: "true"
+        run: |
+           for file in ./*.AppImage ./*.deb; do
+           echo "Signing $file ..."
+           cosign sign-blob "$file" --output-signature "$file.sig"
+           done
