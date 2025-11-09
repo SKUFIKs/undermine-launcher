@@ -1,8 +1,8 @@
-name: Build Linux Packages
+﻿name: Build Linux Packages
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:

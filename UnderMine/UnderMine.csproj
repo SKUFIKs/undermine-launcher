@@ -51,6 +51,9 @@
     <ItemGroup>
       <Content Include="8c610cb1-f3ab-44a0-9e6c-a79457efd8e4.ico" />
     </ItemGroup>
+    <ItemGroup>
+      <None Include=".github\workflows\build.yml" />
+    </ItemGroup>
 
     <ItemGroup>
         <Compile Update="IU\AuthWindow.axaml.cs">
