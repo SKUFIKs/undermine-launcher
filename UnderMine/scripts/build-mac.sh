@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 set -e
 
 APP_NAME="UnderMineLauncher"
@@ -11,6 +11,9 @@ mkdir -p "$PUBLISH_DIR"
 
 # Сборка приложения под macOS
 dotnet publish -c Release -r osx-x64 --self-contained true -o "$APP_DIR"
+
+# Создаем директорию Contents, если её нет
+mkdir -p "$APP_DIR/Contents"
 
 # Создаем Info.plist для macOS
 cat > "$APP_DIR/Contents/Info.plist" <<EOL
