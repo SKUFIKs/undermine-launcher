@@ -34,9 +34,12 @@ cat > "$APP_DIR/Contents/Info.plist" <<EOL
 EOL
 
 # Создание DMG
-DMG_PATH="$PUBLISH_DIR/$APP_NAME.dmg"
+DMG_DIR="$PUBLISH_DIR/dmg"
+mkdir -p "$DMG_DIR"
+DMG_PATH="$DMG_DIR/$APP_NAME.dmg"
+
 brew list create-dmg >/dev/null 2>&1 || brew install create-dmg
-create-dmg "$APP_DIR" "$DMG_PATH" \
+create-dmg "$APP_DIR" "$DMG_DIR" \
   --volname "$APP_NAME" \
   --window-pos 200 120 \
   --window-size 500 300 \
@@ -44,3 +47,4 @@ create-dmg "$APP_DIR" "$DMG_PATH" \
   --app-drop-link 250 150
 
 echo "✅ Сборка завершена: $DMG_PATH"
+
