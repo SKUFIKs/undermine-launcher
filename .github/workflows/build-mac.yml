@@ -14,17 +14,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: List repo files for debugging
+      - name: Print working directory
+        run: pwd
+
+      - name: List repo files
         run: ls -R
 
       - name: Make build script executable
-        run: chmod +x scripts/build-mac.sh
+        run: chmod +x ./UnderMine/scripts/build-mac.sh
 
       - name: Run build script
-        run: ./scripts/build-mac.sh
+        run: ./UnderMine/scripts/build-mac.sh
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: mac-build
-          path: ./publish/
+          path: ./UnderMine/publish/
