@@ -36,10 +36,29 @@ jobs:
           chmod +x UnderMine/build-packages.sh
           ./UnderMine/build-packages.sh
 
+      # ───────────── Подпись Cosign ─────────────
+      - name: 🔐 Install Cosign
+        run: |
+          curl -Lo cosign https://github.com/sigstore/cosign/releases/latest/download/cosign-linux-amd64
+          chmod +x cosign
+          sudo mv cosign /usr/local/bin/
+
+      - name: ✍️ Sign AppImage & DEB (keyless)
+        env:
+          COSIGN_EXPERIMENTAL: "1"   # включаем keyless signing
+        run: |
+          for file in ./*.AppImage ./*.deb; do
+            echo "Signing $file ..."
+            cosign sign-blob --keyless "$file"
+          done
+
+      # ───────────── Загрузка артефактов и подписей ─────────────
       - name: 📤 Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: UnderMineLauncher-Linux
           path: |
             ./*.AppImage
+            ./*.AppImage.sig
             ./*.deb
+            ./*.deb.sig
