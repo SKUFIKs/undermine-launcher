@@ -1,0 +1,38 @@
+﻿#!/bin/bash
+set -e
+
+APP_NAME="UnderMineLauncher"
+PUBLISH_DIR="publish"
+APP_DIR="$PUBLISH_DIR/$APP_NAME.app"
+
+# Очистка предыдущих сборок
+rm -rf "$PUBLISH_DIR"
+mkdir -p "$PUBLISH_DIR"
+
+# Сборка приложения под macOS
+dotnet publish -c Release -r osx-x64 --self-contained true -o "$APP_DIR"
+
+# Создаем Info.plist для macOS
+cat > "$APP_DIR/Contents/Info.plist" <<EOL
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>$APP_NAME</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.yourname.$APP_NAME</string>
+    <key>CFBundleVersion</key>
+    <string>1.0</string>
+    <key>CFBundleExecutable</key>
+    <string>$APP_NAME</string>
+</dict>
+</plist>
+EOL
+
+# Создание DMG
+DMG_PATH="$PUBLISH_DIR/$APP_NAME.dmg"
+brew list create-dmg >/dev/null 2>&1 || brew install create-dmg
+create-dmg "$APP_DIR" "$PUBLISH_DIR" --volname "$APP_NAME" --window-pos 200 120 --window-size 500 300 --icon-size 100 --app-drop-link 250 150
+
+echo "✅ Сборка завершена: $DMG_PATH"

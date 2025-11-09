@@ -72,7 +72,7 @@ Version: ${VERSION}
 Section: games
 Priority: optional
 Architecture: ${ARCH}
-Maintainer: Skuf <you@example.com>
+Maintainer: Skuf 
 Description: UnderMine Launcher for Linux
  A custom Minecraft launcher built with .NET.
 EOF
