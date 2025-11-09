@@ -23,6 +23,12 @@ public class MemorySliderConfiguration
     {
         var min = 4096;
         var max = totalMemory;
+        
+        if (max >= 16384)
+        {
+            max = 16384;
+        }
+        
         var steps = 5;
         var step = Math.Round((max - min) / (steps - 1), 0);
 

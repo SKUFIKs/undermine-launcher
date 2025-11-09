@@ -1,0 +1,4 @@
+C:\Users\Дмитрий\RiderProjects\UnderMine\publish-linux\UnderMine.pdb
+C:\Users\Дмитрий\RiderProjects\UnderMine\publish-linux\libHarfBuzzSharp.so
+C:\Users\Дмитрий\RiderProjects\UnderMine\publish-linux\libSkiaSharp.so
+C:\Users\Дмитрий\RiderProjects\UnderMine\publish-linux\UnderMine

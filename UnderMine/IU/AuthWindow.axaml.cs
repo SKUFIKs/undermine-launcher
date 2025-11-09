@@ -1,10 +1,13 @@
 ﻿using System;
+using System.IO;
+using System.Text.Json;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using UnderMine.Models;
 using System.Threading.Tasks;
 using UnderMine.Network.AuthService;
 using System.Text.RegularExpressions;
+using Avalonia;
 using Avalonia.Input;
 using UnderMine.Network.Services;
 using UnderMine.Services;
@@ -30,8 +33,39 @@ public partial class AuthWindow : Window
         _userApiService = new UserApiService(_contextData, loginResult);
         _ = LoadUserSettings();
         PassBox.PasswordChar = '•';
+        this.Opened += OnOpened;
+        this.PositionChanged += (s, e) => SaveWindowPosition();
         SystemScan();
         ShouldShowEULADialog();
+    }
+    private void SaveWindowPosition()
+    {
+        var settings = new WindowSettings()
+        {
+            X = this.Position.X,
+            Y = this.Position.Y,
+            Width = this.Width,
+            Height = this.Height
+        };
+        File.WriteAllText("windowSettings.json", JsonSerializer.Serialize(settings));
+    }
+    
+
+    private WindowSettings? LoadWindowSettings()
+    {
+        if (!File.Exists("windowSettings.json")) return null;
+        var json = File.ReadAllText("windowSettings.json");
+        return JsonSerializer.Deserialize<WindowSettings>(json);
+    }
+    private void OnOpened(object? sender, EventArgs e)
+    {
+        var settings = LoadWindowSettings();
+        if (settings != null)
+        {
+            this.Position = new PixelPoint(settings.X, settings.Y);
+            this.Width = settings.Width;
+            this.Height = settings.Height;
+        }
     }
 
     private async void SystemScan()
@@ -311,7 +345,8 @@ public partial class AuthWindow : Window
             await _userData.Save();
         }
     }
-
+    
+    
     private void CloseButton_OnClick(object? sender, RoutedEventArgs e)
     {
         InfoPanel.IsVisible = false;
@@ -351,13 +386,14 @@ public partial class AuthWindow : Window
         {
             return !await UserData.CheckEULAAccepted();
         }
-        private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e)
+        private void TitleBar_PointerPressed(object sender, Avalonia.Input.PointerPressedEventArgs e)
         {
             if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
             {
-                BeginMoveDrag(e);
+                this.BeginMoveDrag(e); 
             }
         }
+
 
         private void AgreementCheckBox_OnChecked(object? sender, RoutedEventArgs e)
         {
@@ -402,5 +438,12 @@ public partial class AuthWindow : Window
         private void CloseApplication()
         {
             Environment.Exit(0);
+        }
+        public class WindowSettings
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+            public double Width { get; set; }
+            public double Height { get; set; }
         }
 }

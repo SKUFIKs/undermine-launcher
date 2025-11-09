@@ -18,7 +18,6 @@ public class Logger : TextWriter
     {
         if (value != null)
         {
-            // Обновляем Label на UI-потоке
             Dispatcher.UIThread.Post(() => _writeAction(value));
         }
     }

@@ -6,6 +6,9 @@
         x:Class="UnderMine.IU.MenuWindow"
         xmlns:vm="clr-namespace:UnderMine.Fonts"
         xmlns:services="clr-namespace:UnderMine.Services"
+        RenderOptions.EdgeMode="Unspecified"
+        RenderOptions.BitmapInterpolationMode="MediumQuality"
+        UseLayoutRounding="True"
         Width="1177" Height="662"
         CanResize="False"
         WindowStartupLocation="CenterScreen"
@@ -102,7 +105,8 @@
         </Panel>
 
         <Panel x:Name="ProgressBar" IsVisible="False">
-            <Border VerticalAlignment="Top" HorizontalAlignment="Center" Width="275" Height="65" Background="#222222" Margin="0,20,0,0"
+            <Border VerticalAlignment="Top" HorizontalAlignment="Center" Width="275" Height="65" Background="#222222"
+                    Margin="0,20,0,0"
                     CornerRadius="15">
             </Border>
             <Panel>
@@ -120,26 +124,35 @@
                IsVisible="True">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
                     Background="#222222" CornerRadius="15">
-                <Panel HorizontalAlignment="Center" VerticalAlignment="Top">
-                    <Label Content="Новости" Classes="BigTitle" Margin="0,10,0,0" FontSize="24"
-                           VerticalAlignment="Top" HorizontalAlignment="Left" />
-                    <TextBlock Classes="LiteTitle" Width="830" Margin="0,65,0,0">
-                        <Run Text="Technomantica 4.2.0 | " FontWeight="Bold" />
-                        <Run Text="Магия встречает технологии" />
+                <ScrollViewer>
+                    <TextBlock Classes="LiteTitle" Width="830" Margin="20" TextWrapping="Wrap" TextAlignment="Left"
+                               Foreground="White">
+                        <Run Text="Новости" Classes="BigTitle" FontWeight="Bold" FontSize="26" />
                         <LineBreak />
                         <LineBreak />
-                        Сервер с глубокой техномагией. Создавай механизмы на магии, исследуй изменённый катаклизмом
-                        мир и находи новые рецепты, где паяльник соседствует с магическим кристаллом. Полная
-                        перезагрузка баланса и крафтов. Присоединяйся к выживанию с лором!
+                        <Run Text="TechnoMagic 1.0.0 | " FontWeight="Bold" />
+                        <Run Text="Открытый бета-тест" FontWeight="Bold" />
                         <LineBreak />
                         <LineBreak />
-                        <Run Text="" />
-                        <Run Text="Запуск: 24.10.2023" FontStyle="Italic" />
+                        <Run
+                            Text="Добро пожаловать на открытый бета-тест нашего сервера! Если вы обнаружите баги, проблемы, зависания или нарушения, пожалуйста, сообщите нам через Telegram-бота: "
+                            FontWeight="Bold" />
+                        <InlineUIContainer>
+                            <TextBlock Text="@minecraft_urfu_underground_bot" FontWeight="Bold"
+                                       TextDecorations="Underline" PointerPressed="TelegramLink_PointerPressed"
+                                       Cursor="Hand" />
+                        </InlineUIContainer>
+                        <LineBreak />
+                        <LineBreak />
+                        <Run Text="Хорошей игры! " FontWeight="Bold" />
+                        <LineBreak />
+                        <LineBreak />
+                        <Run Text="Запуск: 10.11.2025" FontWeight="Bold" />
                     </TextBlock>
-                </Panel>
-
+                </ScrollViewer>
             </Border>
         </Panel>
+
 
         <!-- Панель настроек -->
         <Panel x:Name="SettingsPanel" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
@@ -249,33 +262,38 @@
                IsVisible="False">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
                     Background="#222222" CornerRadius="15">
-                <Panel HorizontalAlignment="Center" VerticalAlignment="Top">
-                    <Label Content="TechnoMagic" Classes="BigTitle" Margin="0,10,0,0" FontSize="24"
-                           VerticalAlignment="Top" HorizontalAlignment="Left" />
-                    <TextBlock Classes="LiteTitle" Width="830" Margin="0,65,0,0">
-                        <Run Text="TechnoMagic " FontWeight="Bold" />
-                        <Run Text="" />
-                        <LineBreak />
-                        <LineBreak />
-                        Сервер с глубокой техномагией. Создавай механизмы на магии, исследуй изменённый катаклизмом
-                        мир и находи новые рецепты, где паяльник соседствует с магическим кристаллом. Полная
-                        перезагрузка баланса и крафтов. Присоединяйся к выживанию с лором!
-                        <LineBreak />
-                        <LineBreak />
-                        <Run Text="" />
-                        <Run Text="Запуск: 24.10.2023" FontStyle="Italic" />
-                    </TextBlock>
-                    <Button x:Name="PlayButton" Click="PlayButton_OnClick"
-                            Content="Играть"
-                            Margin="10,425,0,0"
-                            VerticalAlignment="Bottom"
-                            HorizontalAlignment="Left"
-                            Classes="custom-Auth" />
-                </Panel>
+                <Grid>
+                    <ScrollViewer Margin="20,20,20,80">
+                        <TextBlock Width="830" TextWrapping="Wrap" TextAlignment="Left" Foreground="White">
+                            <Run Text="Новости" FontWeight="Bold" FontSize="26" />
+                            <LineBreak />
+                            <LineBreak />
+                            <Run Text="TechnoMagic 1.0.0 | " FontWeight="Bold" />
+                            <Run Text="Открытый бета-тест" FontWeight="Bold" />
+                            <LineBreak />
+                            <LineBreak />
+                            <Run
+                                Text="Добро пожаловать на открытый бета-тест нашего сервера! Если вы обнаружите баги, проблемы, зависания или нарушения, пожалуйста, сообщите нам через Telegram-бота: "
+                                FontWeight="Bold" />
+                            <InlineUIContainer>
+                                <TextBlock Text="@minecraft_urfu_underground_bot" FontWeight="Bold" TextDecorations="Underline" PointerPressed="TelegramLink_PointerPressed" />
+                            </InlineUIContainer>
+                            <LineBreak />
+                            <LineBreak />
+                            <Run Text="Хорошей игры!" FontWeight="Bold" />
+                            <LineBreak />
+                            <LineBreak />
+                            <Run Text="Запуск: 10.11.2025" FontWeight="Bold" />
+                        </TextBlock>
+                    </ScrollViewer>
+
+                    <Button x:Name="PlayButton" Click="PlayButton_OnClick" Content="Играть" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,20" Classes="custom-Auth" />
+                </Grid>
             </Border>
-            <Label x:Name="LogLabel" Classes="LiteLabel" Margin="8,0,0,50"
-                   VerticalAlignment="Bottom" FontStyle="Normal" HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="11" Foreground="#4B4B4B"/>
+
+            <Label x:Name="LogLabel" Classes="LiteLabel" Margin="8,0,0,50" VerticalAlignment="Bottom" HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="11" Foreground="#4B4B4B" />
         </Panel>
+
 
         <!-- Выбор сервера. Ожидание выбора -->
         <Panel x:Name="WaitingСhoice" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
@@ -284,7 +302,7 @@
                     Background="#222222" CornerRadius="15">
             </Border>
         </Panel>
-        
+
 
         <!-- Выбор сервера -->
         <Border x:Name="SelectServer" Height="415" Width="442" Margin="0,0,0,0" Background="#171717" CornerRadius="22"

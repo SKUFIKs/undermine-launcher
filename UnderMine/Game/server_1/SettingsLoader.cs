@@ -63,7 +63,8 @@ public class SettingsLoader
             ["hideBundleTutorial"] = "true",
             ["onboardAccessibility"] = "false",
             ["skipMultiplayerWarning"] = "true",
-            ["modelPart_hat"] = "true"
+            ["modelPart_hat"] = "true",
+            ["key_supplementaries.keybind.quiver"] = "key.keyboard.0"
         };
         using (var writer = new StreamWriter(path)) 
         { foreach (var kv in options) 

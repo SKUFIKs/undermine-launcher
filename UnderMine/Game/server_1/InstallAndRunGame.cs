@@ -68,7 +68,7 @@ namespace UnderMine.Game.server_1
             await LoadAndInstallForge(mcVersion, forgeVersion, installerLink);
 
             ReportStage("Установка модов...", 50);
-            //var warmupTask = LaunchGame(mcVersion, forgeVersion, settings.MemorySettings, headless: true);
+            
             var modsTask = InstallMods(manifestUrl);
 
             await Task.WhenAll(modsTask);
@@ -215,10 +215,9 @@ namespace UnderMine.Game.server_1
         private async Task LoadConfigsAndSettings()
         {
             var configLoader = new ConfigLoader(_serverInfo);
-            await configLoader.GuiLoader();
-            await configLoader.QuestLoader();
+            await configLoader.ConfLoader();
             await configLoader.ShaderpacksLoader();
-
+            await configLoader.ScriptsLoader();
             var settingsLoader = new SettingsLoader();
             await settingsLoader.LoadSettings();
         }

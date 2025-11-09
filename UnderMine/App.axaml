@@ -4,5 +4,6 @@
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://UnderMine/Fonts/Styles.axaml"/>
+        
     </Application.Styles>
 </Application>

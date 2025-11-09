@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -10,6 +13,7 @@ using UnderMine.Game.server_2;
 using UnderMine.Models;
 using UnderMine.Network.Services;
 using UnderMine.Services;
+
 
 namespace UnderMine.IU;
 
@@ -38,7 +42,9 @@ public partial class MenuWindow : Window
         InitializeServersAsync(); 
         Load_Settings();
         Installation();
+        this.Opened += OnOpened;
         Console.SetOut(new Logger(UpdateConsoleLabel));
+        this.PositionChanged += (s, e) => SaveWindowPosition();
 
         MemoryTextBox.Text = $"{MemorySlider.Value:F0} MB";
         MemorySlider.PropertyChanged += (_, e) =>
@@ -56,12 +62,49 @@ public partial class MenuWindow : Window
             text = text.Substring(0, 120) + "...";
         LogLabel.Content = text;
     }
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e)
+    private void TitleBar_PointerPressed(object sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
-            BeginMoveDrag(e);
+            this.BeginMoveDrag(e); 
         }
+    }
+    private void TelegramLink_PointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = "https://t.me/minecraft_urfu_underground_bot",
+            UseShellExecute = true
+        });
+    }
+    private void OnOpened(object? sender, EventArgs e)
+    {
+        var settings = LoadWindowSettings();
+        if (settings != null)
+        {
+            this.Position = new PixelPoint(settings.X, settings.Y);
+            this.Width = settings.Width;
+            this.Height = settings.Height;
+        }
+    }
+
+    private void SaveWindowPosition()
+    {
+        var settings = new WindowSettings()
+        {
+            X = this.Position.X,
+            Y = this.Position.Y,
+            Width = this.Width,
+            Height = this.Height
+        };
+        File.WriteAllText("windowSettings.json", JsonSerializer.Serialize(settings));
+    }
+
+    private AuthWindow.WindowSettings? LoadWindowSettings()
+    {
+        if (!File.Exists("windowSettings.json")) return null;
+        var json = File.ReadAllText("windowSettings.json");
+        return JsonSerializer.Deserialize<AuthWindow.WindowSettings>(json);
     }
 
     
@@ -89,6 +132,8 @@ public partial class MenuWindow : Window
             _userData.MemorySettings = (int)e.NewValue;
         };
     }
+    
+
 
     private async Task InitializeMemorySliderAsync()
     {
@@ -298,5 +343,12 @@ public partial class MenuWindow : Window
             FileName = directoryPath,
             UseShellExecute = true
         });
+    }
+    public class WindowSettings
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
     }
 }

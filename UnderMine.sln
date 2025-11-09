@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36401.2 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnderMine", "UnderMine\UnderMine.csproj", "{64B5A250-31BC-4B01-976F-F2F6B3E15469}"
 EndProject
 Global
@@ -12,5 +15,11 @@ Global
 		{64B5A250-31BC-4B01-976F-F2F6B3E15469}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64B5A250-31BC-4B01-976F-F2F6B3E15469}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64B5A250-31BC-4B01-976F-F2F6B3E15469}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A026961E-7364-4D3D-A933-2E5BCF81E870}
 	EndGlobalSection
 EndGlobal

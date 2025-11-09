@@ -39,15 +39,13 @@ public class ServerInfo
     [JsonPropertyName("ShadersLink")]
     public string ShadersLink { get; init;} = null!;
     
-    [JsonPropertyName("GuiLink")]
-    public string GuiLink { get; init;} = null!;
-    
-    [JsonPropertyName("QuestLink")]
-    public string QuestLink { get; init;} = null!;
-    
-    
     [JsonPropertyName("InstallerLink")]
     public string InstallerLink  {get; init;} = null!;
+    [JsonPropertyName("KubejsLink")]
+    public string KubejsLink  {get; init;} = null!;
+    
+    [JsonPropertyName("ConfLink")]
+    public string ConfLink  {get; init;} = null!;
     public bool Success { get; set; }
     
     public string ErrorMessage { get; set; } = string.Empty;
