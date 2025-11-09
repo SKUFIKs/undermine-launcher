@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\RiderProjects\\UnderMine\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\riderprojects\\undermine\\undermine\\build-packages.sh||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\build-packages.sh||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\riderprojects\\undermine\\undermine\\.github\\workflows\\build.yml||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\.github\\workflows\\build.yml||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
@@ -39,6 +43,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "build-packages.sh",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\RiderProjects\\UnderMine\\UnderMine\\build-packages.sh",
+              "RelativeDocumentMoniker": "UnderMine\\build-packages.sh",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\RiderProjects\\UnderMine\\UnderMine\\build-packages.sh",
+              "RelativeToolTip": "UnderMine\\build-packages.sh",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFUAAAAAAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|",
+              "WhenOpened": "2025-11-09T16:14:50.9Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "build.yml",
               "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\RiderProjects\\UnderMine\\UnderMine\\.github\\workflows\\build.yml",
               "RelativeDocumentMoniker": "UnderMine\\.github\\workflows\\build.yml",
@@ -51,7 +68,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "UnderMine.csproj",
               "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\RiderProjects\\UnderMine\\UnderMine\\UnderMine.csproj",
               "RelativeDocumentMoniker": "UnderMine\\UnderMine.csproj",
@@ -59,8 +76,7 @@
               "RelativeToolTip": "UnderMine\\UnderMine.csproj",
               "ViewState": "AgIAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-11-09T14:26:42.09Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-09T14:26:42.09Z"
             }
           ]
         }
