@@ -43,14 +43,14 @@ jobs:
           chmod +x cosign
           sudo mv cosign /usr/local/bin/
 
-      - name: ✍️ Sign AppImage & DEB (keyless)
+      - name: ✍️ Sign AppImage & DEB
         env:
-          COSIGN_EXPERIMENTAL: "1"   # включаем keyless signing
+           COSIGN_EXPERIMENTAL: "1"
         run: |
-          for file in ./*.AppImage ./*.deb; do
-            echo "Signing $file ..."
-            cosign sign-blob --keyless "$file"
-          done
+           for file in ./*.AppImage ./*.deb; do
+           echo "Signing $file ..."
+           cosign sign-blob "$file"
+           done
 
       # ───────────── Загрузка артефактов и подписей ─────────────
       - name: 📤 Upload Artifacts
