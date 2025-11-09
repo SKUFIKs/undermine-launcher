@@ -50,6 +50,13 @@ create-dmg "$DMG_PATH" "$APP_DIR" \
   --window-size 500 300 \
   --icon-size 100 \
   --app-drop-link 250 150
+  
+echo "📦 Проверяем содержимое директории публикации:"
+ls -R "$PUBLISH_DIR" || echo "❌ Папка $PUBLISH_DIR не найдена"
+
+echo "📦 Проверяем, где может лежать DMG:"
+find . -type f -name "*.dmg" || echo "❌ DMG-файл не найден"
+
 
 echo "✅ Сборка завершена: $DMG_PATH"
 
