@@ -30,4 +30,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mac-build
-          path: ./UnderMine/publish/dmg/*.dmg
+          path: ./publish/dmg/*.dmg
