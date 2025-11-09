@@ -91,9 +91,11 @@ Categories=Game;Utility;
 StartupNotify=true
 EOF
 
-if [ -f "${PUBLISH_DIR}/icon.png" ]; then
-    cp "${PUBLISH_DIR}/icon.png" "${DEB_ICON_DIR}/${APP_NAME}.png"
+# Копируем иконку в AppDir с правильным именем для AppImage
+if [ -f "UnderMine/icon.png" ]; then
+    cp "UnderMine/icon.png" "${APPDIR}/${APP_NAME}.png"
 fi
+
 
 dpkg-deb --build "${DEB_ROOT}" "${OUTPUT_DEB}"
 
