@@ -45,12 +45,12 @@ jobs:
 
       - name: ✍️ Sign AppImage & DEB
         env:
-           COSIGN_EXPERIMENTAL: "1"
+          COSIGN_EXPERIMENTAL: "1"
         run: |
-           for file in ./*.AppImage ./*.deb; do
-           echo "Signing $file ..."
-           cosign sign-blob "$file"
-           done
+         for file in ./*.AppImage ./*.deb; do
+         echo "Signing $file ..."
+         cosign sign --keyless "$file"
+         done
 
       # ───────────── Загрузка артефактов и подписей ─────────────
       - name: 📤 Upload Artifacts
