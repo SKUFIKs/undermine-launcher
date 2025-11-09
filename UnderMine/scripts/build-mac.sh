@@ -36,6 +36,11 @@ EOL
 # Создание DMG
 DMG_PATH="$PUBLISH_DIR/$APP_NAME.dmg"
 brew list create-dmg >/dev/null 2>&1 || brew install create-dmg
-create-dmg "$APP_DIR" "$PUBLISH_DIR" --volname "$APP_NAME" --window-pos 200 120 --window-size 500 300 --icon-size 100 --app-drop-link 250 150
+create-dmg "$APP_DIR" "$DMG_PATH" \
+  --volname "$APP_NAME" \
+  --window-pos 200 120 \
+  --window-size 500 300 \
+  --icon-size 100 \
+  --app-drop-link 250 150
 
 echo "✅ Сборка завершена: $DMG_PATH"
