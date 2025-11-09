@@ -40,9 +40,11 @@ mkdir -p "$DMG_DIR"
 # Путь к DMG
 DMG_PATH="$DMG_DIR/$APP_NAME.dmg"
 
-# Запуск create-dmg
+# Убедимся, что create-dmg установлен
 brew list create-dmg >/dev/null 2>&1 || brew install create-dmg
-create-dmg "$APP_DIR" "$DMG_PATH" \
+
+# Создаем DMG
+create-dmg "$DMG_PATH" "$APP_DIR" \
   --volname "$APP_NAME" \
   --window-pos 200 120 \
   --window-size 500 300 \
@@ -50,5 +52,6 @@ create-dmg "$APP_DIR" "$DMG_PATH" \
   --app-drop-link 250 150
 
 echo "✅ Сборка завершена: $DMG_PATH"
+
 
 
