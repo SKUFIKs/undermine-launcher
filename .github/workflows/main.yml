@@ -49,7 +49,7 @@ jobs:
         run: |
          for file in ./*.AppImage ./*.deb; do
          echo "Signing $file ..."
-         cosign sign --keyless "$file"
+         cosign sign ./UnderMineLauncher-1.0.0.0-amd64.AppImage
          done
 
       # ───────────── Загрузка артефактов и подписей ─────────────
