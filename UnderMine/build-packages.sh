@@ -61,7 +61,7 @@ fi
 
 # === Сборка AppImage ===
 echo "📦 Сборка AppImage..."
-appimagetool "${APPDIR}" "${OUTPUT_APPIMAGE}"
+ARCH=x86_64 appimagetool "${APPDIR}" "${OUTPUT_APPIMAGE}"
 
 # === Сборка DEB ===
 echo "📦 Сборка DEB..."
