@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 set -e
 
 # === Настройки ===
@@ -13,7 +13,6 @@ DEB_DIR="${DEB_ROOT}/DEBIAN"
 DEB_BIN_DIR="${DEB_ROOT}/usr/bin"
 DEB_SHARE_DIR="${DEB_ROOT}/usr/share/${APP_NAME}"
 DEB_APP_DIR="${DEB_ROOT}/usr/share/applications"
-DEB_ICON_DIR="${DEB_ROOT}/usr/share/icons/hicolor/256x256/apps"
 OUTPUT_APPIMAGE="${APP_NAME}-${VERSION}-${ARCH}.AppImage"
 OUTPUT_DEB="${APP_NAME}_${VERSION}_${ARCH}.deb"
 
@@ -49,15 +48,10 @@ cat > "${APPDIR}/${APP_NAME}.desktop" <<EOF
 [Desktop Entry]
 Name=UnderMine Launcher
 Exec=${APP_NAME}
-Icon=${APP_NAME}
 Type=Application
-Categories=Game;Utility;
+Categories=Game;
 StartupNotify=true
 EOF
-
-if [ -f "${PUBLISH_DIR}/icon.png" ]; then
-    cp "${PUBLISH_DIR}/icon.png" "${APPDIR}/${APP_NAME}.png"
-fi
 
 # === Сборка AppImage ===
 echo "📦 Сборка AppImage..."
@@ -65,7 +59,7 @@ ARCH=x86_64 appimagetool "${APPDIR}" "${OUTPUT_APPIMAGE}"
 
 # === Сборка DEB ===
 echo "📦 Сборка DEB..."
-mkdir -p "${DEB_DIR}" "${DEB_BIN_DIR}" "${DEB_SHARE_DIR}" "${DEB_APP_DIR}" "${DEB_ICON_DIR}"
+mkdir -p "${DEB_DIR}" "${DEB_BIN_DIR}" "${DEB_SHARE_DIR}" "${DEB_APP_DIR}"
 
 cat > "${DEB_DIR}/control" <<EOF
 Package: undermine-launcher
@@ -85,21 +79,14 @@ cat > "${DEB_APP_DIR}/${APP_NAME}.desktop" <<EOF
 [Desktop Entry]
 Name=UnderMine Launcher
 Exec=${APP_NAME}
-Icon=${APP_NAME}
 Type=Application
-Categories=Game;Utility;
+Categories=Game;
 StartupNotify=true
 EOF
-
-# Копируем иконку в AppDir с правильным именем для AppImage
-if [ -f "UnderMine/icon.png" ]; then
-    cp "UnderMine/icon.png" "${APPDIR}/${APP_NAME}.png"
-fi
-
 
 dpkg-deb --build "${DEB_ROOT}" "${OUTPUT_DEB}"
 
 echo "✅ Сборка завершена!"
 echo "  - ${OUTPUT_APPIMAGE}"
-echo "  - ${OUTPUT_DEB}"
+echo "  - ${
 
