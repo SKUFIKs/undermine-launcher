@@ -5,7 +5,9 @@ set -e
 APP_NAME="UnderMineLauncher"
 VERSION="1.0.0.0"
 ARCH="amd64"
-PUBLISH_DIR="publish"
+
+# Путь до результата dotnet publish
+PUBLISH_DIR="./UnderMine/bin/Release/net9.0/linux-x64/publish"
 
 APPDIR="./AppDir"
 DEB_ROOT="./${APP_NAME}_${VERSION}"
@@ -19,11 +21,16 @@ OUTPUT_DEB="${APP_NAME}_${VERSION}_${ARCH}.deb"
 # === Очистка предыдущих сборок ===
 rm -rf "${APPDIR}" "${DEB_ROOT}" "${OUTPUT_APPIMAGE}" "${OUTPUT_DEB}"
 
-echo "🔍 Содержимое папки publish:"
-ls -l "${PUBLISH_DIR}"
+if [ ! -d "${PUBLISH_DIR}" ]; then
+    echo "❌ Ошибка: папка ${PUBLISH_DIR} не найдена. Сначала запусти dotnet publish."
+    exit 1
+fi
 
-# Найдём реальный исполняемый файл
-EXEC_FILE=$(find "${PUBLISH_DIR}" -maxdepth 1 -type f -executable | head -n 1)
+echo "🔍 Содержимое папки publish:"
+ls -la "${PUBLISH_DIR}"
+
+# === Проверим исполняемый файл ===
+EXEC_FILE=$(find "${PUBLISH_DIR}" -maxdepth 1 -type f -perm /u+x,g+x,o+x | head -n 1)
 if [ -z "$EXEC_FILE" ]; then
     echo "❌ Ошибка: исполняемый файл не найден в ${PUBLISH_DIR}"
     exit 1
@@ -34,7 +41,7 @@ echo "✅ Используем исполняемый файл: $EXEC_BASENAME"
 # === Подготовка AppDir ===
 echo "🔧 Подготовка AppDir..."
 mkdir -p "${APPDIR}/usr/bin"
-cp -r "${PUBLISH_DIR}/"* "${APPDIR}/usr/bin/"
+rsync -a --exclude '*.pdb' "${PUBLISH_DIR}/" "${APPDIR}/usr/bin/"
 chmod +x "${APPDIR}/usr/bin/${EXEC_BASENAME}"
 
 cat > "${APPDIR}/AppRun" <<EOF
@@ -55,8 +62,8 @@ Categories=Game;
 StartupNotify=true
 EOF
 
-# Создаём пустую иконку, чтобы appimagetool не ругался
-convert -size 1x1 xc:none "${APPDIR}/${APP_NAME}.png" || touch "${APPDIR}/${APP_NAME}.png"
+# Создаём пустую иконку, если нет настоящей
+convert -size 1x1 xc:none "${APPDIR}/${APP_NAME}.png" 2>/dev/null || touch "${APPDIR}/${APP_NAME}.png"
 
 # === Сборка AppImage ===
 echo "📦 Сборка AppImage..."
@@ -72,12 +79,12 @@ Version: ${VERSION}
 Section: games
 Priority: optional
 Architecture: ${ARCH}
-Maintainer: Skuf 
+Maintainer: Skuf
 Description: UnderMine Launcher for Linux
  A custom Minecraft launcher built with .NET.
 EOF
 
-cp -r "${PUBLISH_DIR}/"* "${DEB_SHARE_DIR}/"
+rsync -a --exclude '*.pdb' "${PUBLISH_DIR}/" "${DEB_SHARE_DIR}/"
 ln -sf "/usr/share/${APP_NAME}/${EXEC_BASENAME}" "${DEB_BIN_DIR}/${APP_NAME}"
 
 cat > "${DEB_APP_DIR}/${APP_NAME}.desktop" <<EOF
@@ -95,4 +102,3 @@ dpkg-deb --build "${DEB_ROOT}" "${OUTPUT_DEB}"
 echo "✅ Сборка завершена!"
 echo "  - ${OUTPUT_APPIMAGE}"
 echo "  - ${OUTPUT_DEB}"
-
