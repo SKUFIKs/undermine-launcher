@@ -11,10 +11,10 @@ jobs:
     env:
       Solution_Name: UnderMine.sln
       App_Project_Path: UnderMine/UnderMine.csproj
-      App_Name: UnderMineLaunche
+      App_Name: UnderMineLauncher
 
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
@@ -75,4 +75,5 @@ jobs:
         tag_name: ${{ github.ref_name }}
         name: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sha256
         asset_path: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sha256
+
 
