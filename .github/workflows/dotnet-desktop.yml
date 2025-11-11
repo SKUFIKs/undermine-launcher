@@ -1,4 +1,4 @@
-name: Build UnderMine AppImage
+name: Build UnderMine Launchers
 
 on:
   push:
@@ -9,7 +9,8 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  build-linux-appimage:
+    name: Linux AppImage
     runs-on: ubuntu-latest
 
     steps:
@@ -37,28 +38,103 @@ jobs:
           cp UnderMine/icon.png UnderMine.AppDir/
           echo -e "[Desktop Entry]\nName=UnderMine Launcher\nExec=UnderMine\nIcon=icon\nType=Application\nCategories=Utility;" > UnderMine.AppDir/UnderMine.desktop
 
-      - name: Install AppImageTool (no fuse)
+      - name: Install AppImageTool
         run: |
           wget -O appimagetool-x86_64.AppImage https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
-
 
       - name: Build AppImage
         run: |
           ./appimagetool-x86_64.AppImage --appimage-extract
           ./squashfs-root/AppRun UnderMine.AppDir UnderMine-${GITHUB_REF_NAME}-x86_64.AppImage
 
-      - name: Verify file exists
-        run: ls -lh UnderMine-*-x86_64.AppImage
-
       - name: Create SHA256 checksum
         run: sha256sum UnderMine-*-x86_64.AppImage > UnderMine-${GITHUB_REF_NAME}-x86_64.AppImage.sha256
 
-      - name: Upload AppImage and checksum to Release
+      - name: Upload AppImage
         uses: softprops/action-gh-release@v1
         with:
           files: |
             UnderMine-${{ github.ref_name }}-x86_64.AppImage
             UnderMine-${{ github.ref_name }}-x86_64.AppImage.sha256
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-linux-tar:
+    name: Linux AMD64 tar.gz
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Publish Linux AMD64 binary
+        run: dotnet publish UnderMine/UnderMine.csproj -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true -o publish
+
+      - name: Package tar.gz
+        run: |
+          mkdir -p UnderMine-linux
+          cp publish/UnderMine UnderMine-linux/
+          cp UnderMine/icon.png UnderMine-linux/
+          tar -czvf UnderMine-${GITHUB_REF_NAME}-linux-x64.tar.gz UnderMine-linux
+
+      - name: Upload tar.gz
+        uses: softprops/action-gh-release@v1
+        with:
+          files: UnderMine-${{ github.ref_name }}-linux-x64.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build-macos:
+    name: macOS DMG
+    runs-on: macos-latest
+
+    steps:
+     - name: Checkout code
+       uses: actions/checkout@v4
+
+     - name: Setup .NET 9
+       uses: actions/setup-dotnet@v4
+       with:
+          dotnet-version: 9.0.x
+
+     - name: Restore dependencies
+       run: dotnet restore UnderMine.sln
+
+     - name: Publish macOS binary
+       run: dotnet publish UnderMine/UnderMine.csproj -c Release -r osx-x64 --self-contained true /p:PublishSingleFile=true -o publish
+
+     - name: Prepare DMG contents
+       run: |
+          mkdir -p dmg/UnderMine.app/Contents/MacOS
+          cp publish/UnderMine dmg/UnderMine.app/Contents/MacOS/
+          cp UnderMine/icon.png dmg/UnderMine.app/Contents/MacOS/
+          cat <<EOF > dmg/UnderMine.app/Contents/Info.plist
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleName</key><string>UnderMine</string>
+            <key>CFBundleDisplayName</key><string>UnderMine Launcher</string>
+            <key>CFBundleIdentifier</key><string>com.skuf.undermine</string>
+            <key>CFBundleVersion</key><string>${GITHUB_REF_NAME}</string>
+            <key>CFBundleExecutable</key><string>UnderMine</string>
+            <key>CFBundlePackageType</key><string>APPL</string>
+          </dict>
+          </plist>
+          EOF
+
+     - name: Build DMG
+       run: |
+          hdiutil create -volname "UnderMine Launcher" -srcfolder dmg -ov -format UDZO UnderMine-${GITHUB_REF_NAME}-macos-x64.dmg
+
+     - name: Upload DMG
+       uses: softprops/action-gh-release@v1
+       with:
+          files: UnderMine-${{ github.ref_name }}-macos-x64.dmg
+       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
