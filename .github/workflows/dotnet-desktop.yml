@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       Solution_Name: UnderMine.sln
-      App_Project_Path: src/UnderMineLauncher/UnderMine.csproj
-      App_Name: UnderMineLauncher
+      App_Project_Path: UnderMine/UnderMine.csproj
+      App_Name: UnderMineLaunche
 
     steps:
     - name: Checkout
