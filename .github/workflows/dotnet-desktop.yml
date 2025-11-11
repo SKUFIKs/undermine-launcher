@@ -52,7 +52,8 @@ jobs:
     - name: Build AppImage
       run: |
         ARCH=x86_64
-        ./appimagetool.AppImage ${{ env.App_Name }}.AppDir ${{ env.App_Name }}-${{ env.VERSION }}-$ARCH.AppImage
+        ./appimagetool.AppImage --appimage-extract-and-run ${{ env.App_Name }}.AppDir ${{ env.App_Name }}-${{ env.VERSION }}-$ARCH.AppImage
+
 
     - name: Generate SHA256 checksum
       run: sha256sum ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage > ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sha256
