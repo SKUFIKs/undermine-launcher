@@ -86,11 +86,14 @@ jobs:
         wget -O appimagetool.AppImage https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
         chmod +x appimagetool.AppImage
 
+    - name: Get version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
     - name: Build AppImage
       run: |
-        VERSION=${GITHUB_REF#refs/tags/}
         ARCH=x86_64
-        ./appimagetool.AppImage ${{ env.App_Name }}.AppDir ${{ env.App_Name }}-$VERSION-$ARCH.AppImage
+        ./appimagetool.AppImage ${{ env.App_Name }}.AppDir ${{ env.App_Name }}-${{ env.VERSION }}-$ARCH.AppImage
 
     - name: Import GPG key (optional)
       if: secrets.GPG_PRIVATE_KEY != ''
@@ -101,9 +104,8 @@ jobs:
     - name: Sign AppImage (optional)
       if: secrets.GPG_PRIVATE_KEY != ''
       run: |
-        VERSION=${GITHUB_REF#refs/tags/}
         ARCH=x86_64
-        gpg --batch --yes --passphrase-file passphrase.txt --output ${{ env.App_Name }}-$VERSION-$ARCH.AppImage.sig --detach-sign ${{ env.App_Name }}-$VERSION-$ARCH.AppImage
+        gpg --batch --yes --passphrase-file passphrase.txt --output ${{ env.App_Name }}-${{ env.VERSION }}-$ARCH.AppImage.sig --detach-sign ${{ env.App_Name }}-${{ env.VERSION }}-$ARCH.AppImage
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
@@ -116,13 +118,13 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ github.ref_name }}
-        name: ${{ env.App_Name }}-${{ github.ref_name#refs/tags/ }}-x86_64.AppImage
-        asset_path: ${{ env.App_Name }}-${{ github.ref_name#refs/tags/ }}-x86_64.AppImage
+        name: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage
+        asset_path: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage
 
     - name: Upload signature to Release (optional)
       if: secrets.GPG_PRIVATE_KEY != ''
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ github.ref_name }}
-        name: ${{ env.App_Name }}-${{ github.ref_name#refs/tags/ }}-x86_64.AppImage.sig
-        asset_path: ${{ env.App_Name }}-${{ github.ref_name#refs/tags/ }}-x86_64.AppImage.sig
+        name: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sig
+        asset_path: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sig
