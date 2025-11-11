@@ -34,11 +34,9 @@ jobs:
            mkdir -p ${{ env.App_Name }}.AppDir/usr/lib
            cp publish/${{ env.App_Name }} ${{ env.App_Name }}.AppDir/usr/bin/
            cp publish/libSkiaSharp.so* ${{ env.App_Name }}.AppDir/usr/lib/ || echo "No SkiaSharp libs found"
-          
            echo -e '#!/bin/bash\nHERE="$(dirname "$(readlink -f "${0}")")"\nexport LD_LIBRARY_PATH="$HERE/usr/lib:$LD_LIBRARY_PATH"\nexec "$HERE/usr/bin/${{ env.App_Name }}" "$@"' > ${{ env.App_Name }}.AppDir/AppRun
            chmod +x ${{ env.App_Name }}.AppDir/AppRun
            echo -e "[Desktop Entry]\nName=${{ env.App_Name }}\nExec=${{ env.App_Name }}\nType=Application\nCategories=Utility;" > ${{ env.App_Name }}.AppDir/${{ env.App_Name }}.desktop
-
       - name: Install AppImageTool
         run: |
           wget -O appimagetool-x86_64.AppImage https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
