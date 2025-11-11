@@ -38,6 +38,7 @@ jobs:
         cp publish/${{ env.App_Name }} ${{ env.App_Name }}.AppDir/usr/bin/
         echo -e '#!/bin/bash\nHERE="$(dirname "$(readlink -f "${0}")")"\nexec "$HERE/usr/bin/${{ env.App_Name }}" "$@"' > ${{ env.App_Name }}.AppDir/AppRun
         chmod +x ${{ env.App_Name }}.AppDir/AppRun
+        # .desktop без иконки, предупреждение можно игнорировать
         echo -e "[Desktop Entry]\nName=${{ env.App_Name }}\nExec=${{ env.App_Name }}\nType=Application\nCategories=Utility;" > ${{ env.App_Name }}.AppDir/${{ env.App_Name }}.desktop
 
     - name: Install AppImageTool
@@ -52,8 +53,8 @@ jobs:
     - name: Build AppImage
       run: |
         ARCH=x86_64
+        # Запуск без FUSE
         ./appimagetool.AppImage --appimage-extract-and-run ${{ env.App_Name }}.AppDir ${{ env.App_Name }}-${{ env.VERSION }}-$ARCH.AppImage
-
 
     - name: Generate SHA256 checksum
       run: sha256sum ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage > ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sha256
