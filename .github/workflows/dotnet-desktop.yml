@@ -2,10 +2,8 @@ name: Build UnderMineLauncher AppImage
 
 on:
   push:
-    branches: [master]
-  pull_request:
-    branches: [master]
-  workflow_dispatch:
+    tags:
+      - 'v*.*.*'  # запускается только при пуше тега вида v1.0.0
 
 jobs:
   build:
