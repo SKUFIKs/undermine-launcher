@@ -3,8 +3,11 @@ name: Build UnderMineLauncher AppImage
 on:
   push:
     tags:
-      - 'v*.*.*'  # запускается только при пуше тега вида v1.0.0
+      - 'v*'  # запускается только при пуше тега вида v1.0.0
 
+permissions:
+  contents: write
+  
 jobs:
   build:
     runs-on: ubuntu-latest
