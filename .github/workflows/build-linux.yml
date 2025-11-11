@@ -11,8 +11,8 @@ permissions:
 
 jobs:
   build-linux:
-    name: Build, Package & Sign (AppImage + DEB)
     runs-on: ubuntu-latest
+    name: Build, Package & Sign
 
     steps:
       - name: 🧱 Checkout repository
@@ -23,28 +23,25 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: 🏗️ Publish .NET app
-        run: |
-          dotnet publish -c Release -r linux-x64 --self-contained true -o publish
-
       - name: 📦 Install dependencies
         run: |
           sudo apt update
           sudo apt install -y wget dpkg-dev libfuse2
+
+          # AppImage tool
           wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
           sudo mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
 
-      - name: 🧰 Build AppImage & DEB
-        run: |
-          chmod +x UnderMine/build-packages.sh
-          ./UnderMine/build-packages.sh
-
-      - name: 🔏 Download and Setup Cosign
-        run: |
+          # Cosign
           curl -Lo cosign https://github.com/sigstore/cosign/releases/latest/download/cosign-linux-amd64
           chmod +x cosign
           sudo mv cosign /usr/local/bin/cosign
+
+      - name: 🏗️ Build AppImage & DEB
+        run: |
+          chmod +x UnderMine/build-packages.sh
+          ./UnderMine/build-packages.sh
 
       - name: 🔐 Sign artifacts with GitHub OIDC (Cosign keyless)
         env:
