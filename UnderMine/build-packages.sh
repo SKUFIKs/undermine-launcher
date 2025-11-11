@@ -6,8 +6,16 @@ APP_NAME="UnderMineLauncher"
 VERSION="1.0.0.0"
 ARCH="amd64"
 
-# Путь до результата dotnet publish
-PUBLISH_DIR="./UnderMine/bin/Release/net9.0/linux-x64/publish"
+# Определяем каталог публикации
+if [ -d "./publish" ]; then
+    PUBLISH_DIR="./publish"
+elif [ -d "./UnderMine/bin/Release/net9.0/linux-x64/publish" ]; then
+    PUBLISH_DIR="./UnderMine/bin/Release/net9.0/linux-x64/publish"
+else
+    echo "❌ Ошибка: не найден каталог публикации (publish)."
+    echo "   Запусти: dotnet publish -c Release -r linux-x64 --self-contained true"
+    exit 1
+fi
 
 APPDIR="./AppDir"
 DEB_ROOT="./${APP_NAME}_${VERSION}"
@@ -21,22 +29,17 @@ OUTPUT_DEB="${APP_NAME}_${VERSION}_${ARCH}.deb"
 # === Очистка предыдущих сборок ===
 rm -rf "${APPDIR}" "${DEB_ROOT}" "${OUTPUT_APPIMAGE}" "${OUTPUT_DEB}"
 
-if [ ! -d "${PUBLISH_DIR}" ]; then
-    echo "❌ Ошибка: папка ${PUBLISH_DIR} не найдена. Сначала запусти dotnet publish."
-    exit 1
-fi
-
-echo "🔍 Содержимое папки publish:"
+echo "🔍 Используется папка публикации: ${PUBLISH_DIR}"
 ls -la "${PUBLISH_DIR}"
 
-# === Проверим исполняемый файл ===
+# === Поиск исполняемого файла ===
 EXEC_FILE=$(find "${PUBLISH_DIR}" -maxdepth 1 -type f -perm /u+x,g+x,o+x | head -n 1)
 if [ -z "$EXEC_FILE" ]; then
     echo "❌ Ошибка: исполняемый файл не найден в ${PUBLISH_DIR}"
     exit 1
 fi
 EXEC_BASENAME=$(basename "$EXEC_FILE")
-echo "✅ Используем исполняемый файл: $EXEC_BASENAME"
+echo "✅ Исполняемый файл: $EXEC_BASENAME"
 
 # === Подготовка AppDir ===
 echo "🔧 Подготовка AppDir..."
@@ -62,7 +65,6 @@ Categories=Game;
 StartupNotify=true
 EOF
 
-# Создаём пустую иконку, если нет настоящей
 convert -size 1x1 xc:none "${APPDIR}/${APP_NAME}.png" 2>/dev/null || touch "${APPDIR}/${APP_NAME}.png"
 
 # === Сборка AppImage ===
@@ -102,3 +104,4 @@ dpkg-deb --build "${DEB_ROOT}" "${OUTPUT_DEB}"
 echo "✅ Сборка завершена!"
 echo "  - ${OUTPUT_APPIMAGE}"
 echo "  - ${OUTPUT_DEB}"
+
