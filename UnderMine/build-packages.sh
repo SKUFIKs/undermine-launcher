@@ -61,7 +61,7 @@ Version: ${VERSION}
 Section: games
 Priority: optional
 Architecture: ${ARCH}
-Maintainer: YourName <you@example.com>
+Maintainer: Skuf @minecraft_urfu_underground_bot
 Description: UnderMine Launcher for Linux
  A custom Minecraft launcher built with .NET.
 EOF
