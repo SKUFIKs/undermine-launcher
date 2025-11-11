@@ -8,11 +8,14 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using UnderMine.Game.server_1;
+using UnderMine.Core.server_1;
+using UnderMine.Fonts.Models;
 using UnderMine.Game.server_2;
 using UnderMine.Models;
 using UnderMine.Network.Services;
 using UnderMine.Services;
+using UnderMine.Services.Logger;
+using UnderMine.Services.SystemInfo.MemorySettings;
 
 
 namespace UnderMine.IU;
@@ -35,7 +38,7 @@ public partial class MenuWindow : Window
     public MenuWindow(ContextData contextData, LoginResult loginResult)
     {
         InitializeComponent();
-        DataContext = new Fonts.MenuWindowViewModel();
+        DataContext = new MenuWindowViewModel();
         _contextData = contextData;
         _loginResult = loginResult;
         _ = InitializeMemorySliderAsync();
@@ -284,11 +287,11 @@ public partial class MenuWindow : Window
 
     private void SelectButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (DataContext is Fonts.MenuWindowViewModel vm)
+        if (DataContext is MenuWindowViewModel vm)
         {
             if (vm.SelectedServer != null)
             {
-                var serverId = vm.SelectedServer.ID;
+                var serverId = vm.SelectedServer.Id;
                 if (serverId == 1)
                 {
                     SelectServer.IsVisible = false;
@@ -322,7 +325,7 @@ public partial class MenuWindow : Window
 
     private async void DefaultButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        _userData.MemorySettings = 4096;
+        _userData.MemorySettings = 6144;
         await _userData.Save();
         
         MemorySlider.Value=_userData.MemorySettings;

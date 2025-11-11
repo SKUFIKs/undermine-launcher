@@ -4,6 +4,7 @@
     <option name="projectPerEditor">
       <map>
         <entry key="UnderMine/App.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/Assets/Styles/Styles.axaml" value="UnderMine/UnderMine.csproj" />
         <entry key="UnderMine/Fonts/ProgressView.axaml" value="UnderMine/UnderMine.csproj" />
         <entry key="UnderMine/Fonts/Sidebar.axaml" value="UnderMine/UnderMine.csproj" />
         <entry key="UnderMine/Fonts/StyleAvalonia.axaml" value="UnderMine/UnderMine.csproj" />
@@ -15,6 +16,7 @@
         <entry key="UnderMine/IU/SettingsWindow.axaml" value="UnderMine/UnderMine.csproj" />
         <entry key="UnderMine/MainWindow.axaml" value="UnderMine/UnderMine.csproj" />
         <entry key="UnderMine/Resources.axaml" value="UnderMine/UnderMine.csproj" />
+        <entry key="UnderMine/Services/Logger/ProgressView.axaml" value="UnderMine/UnderMine.csproj" />
         <entry key="UnderMine/Services/ProgressView.axaml" value="UnderMine/UnderMine.csproj" />
         <entry key="UnderMine/Sidebar.axaml" value="UnderMine/UnderMine.csproj" />
       </map>

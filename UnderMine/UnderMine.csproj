@@ -35,10 +35,6 @@
     </ItemGroup>
 
     <!-- Подключаем папки (чтобы они отображались в Rider/VS) -->
-    <ItemGroup>
-        <Folder Include="Assets\" />
-        <Folder Include="Java\" />
-    </ItemGroup>
 
     <!-- Подключаем все ресурсы Avalonia -->
     <ItemGroup>
@@ -60,6 +56,10 @@
         <Compile Update="IU\AuthWindow.axaml.cs">
             <DependentUpon>AuthWindow.axaml</DependentUpon>
             <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Services\Logger\ProgressView.axaml.cs">
+          <DependentUpon>ProgressView.axaml</DependentUpon>
+          <SubType>Code</SubType>
         </Compile>
     </ItemGroup>
 </Project>

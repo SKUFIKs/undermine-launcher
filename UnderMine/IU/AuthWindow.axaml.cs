@@ -1,16 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Text.Json;
+﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using UnderMine.Models;
-using System.Threading.Tasks;
-using UnderMine.Network.AuthService;
-using System.Text.RegularExpressions;
-using Avalonia;
 using Avalonia.Input;
+using Avalonia.Interactivity;
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using UnderMine.Models;
+using UnderMine.Network.AuthService;
 using UnderMine.Network.Services;
-using UnderMine.Services;
+using UnderMine.Services.SystemInfo.MemorySettings;
 
 
 namespace UnderMine.IU;
@@ -19,25 +21,29 @@ public partial class AuthWindow : Window
 {
     private readonly IdentityService _identityService;
     private UserApiService _userApiService;
-    private UserData _userData = null!;
+    private UserData? _userData;
     private readonly ContextData _contextData;
     private LoginResult _loginResult = null!;
-    private CheckEquipment _checkEquipment = null!;
+
+
 
     public AuthWindow()
     {
         InitializeComponent();
+
         _contextData = new ContextData();
         var loginResult = new LoginResult();
         _identityService = new IdentityService(_contextData);
         _userApiService = new UserApiService(_contextData, loginResult);
+
         _ = LoadUserSettings();
         PassBox.PasswordChar = '•';
         this.Opened += OnOpened;
         this.PositionChanged += (s, e) => SaveWindowPosition();
         SystemScan();
-        ShouldShowEULADialog();
+        
     }
+
     private void SaveWindowPosition()
     {
         var settings = new WindowSettings()
@@ -49,7 +55,7 @@ public partial class AuthWindow : Window
         };
         File.WriteAllText("windowSettings.json", JsonSerializer.Serialize(settings));
     }
-    
+
 
     private WindowSettings? LoadWindowSettings()
     {
@@ -57,6 +63,7 @@ public partial class AuthWindow : Window
         var json = File.ReadAllText("windowSettings.json");
         return JsonSerializer.Deserialize<WindowSettings>(json);
     }
+
     private void OnOpened(object? sender, EventArgs e)
     {
         var settings = LoadWindowSettings();
@@ -76,31 +83,35 @@ public partial class AuthWindow : Window
         Console.WriteLine($"Объем памяти: {info.TotalMemory} МБ");
     }
 
-
     private async Task LoadUserSettings()
     {
         _userData = await UserData.Load();
-        var saveUser = _userData.SaveUser;
+        var saveUser = _userData != null && _userData.SaveUser;
         SaveUserBox.IsChecked = saveUser;
 
         if (saveUser)
         {
-            var username = _userData.Username;
-            var password = _userData.Password;
+            if (_userData != null)
+            {
+                var username = _userData.Username;
+                var password = _userData.Password;
 
-            if (password == null || username == null)
-            {
-            }
-            else
-            {
-                LogBox.Text = username;
-                PassBox.Text = password;
+                if (password == null || username == null)
+                {
+                }
+                else
+                {
+                    LogBox.Text = username;
+                    PassBox.Text = password;
+                }
             }
         }
     }
 
     private async void AuthButton_OnClick(object? sender, RoutedEventArgs e)
     {
+        AuthButton.IsEnabled = false;
+        
         var username = LogBox.Text;
         var password = PassBox.Text;
 
@@ -109,6 +120,7 @@ public partial class AuthWindow : Window
         {
             ErrorPanel.IsVisible = true;
             ErrorBox.Text = "Проверьте правильность введённых данных. Все поля должны быть заполнены.";
+            AuthButton.IsEnabled = true;
             return;
         }
 
@@ -118,6 +130,7 @@ public partial class AuthWindow : Window
         {
             ErrorPanel.IsVisible = true;
             ErrorBox.Text = result.ErrorMessage;
+            AuthButton.IsEnabled = true;
             return;
         }
 
@@ -127,9 +140,10 @@ public partial class AuthWindow : Window
         {
             ErrorPanel.IsVisible = true;
             ErrorBox.Text = _loginResult.ErrorMessage;
+            AuthButton.IsEnabled = true;
             return;
         }
-
+        AuthButton.IsEnabled = true;
         var secondWindow = new MenuWindow(_contextData, _loginResult);
         secondWindow.Show();
         this.Close();
@@ -168,10 +182,13 @@ public partial class AuthWindow : Window
 
         if (SaveUserBox.IsChecked == true)
         {
-            _userData.Username = username;
-            _userData.Password = password;
-            _userData.SaveUser = true;
-            await _userData.Save();
+            if (_userData != null)
+            {
+                _userData.Username = username;
+                _userData.Password = password;
+                _userData.SaveUser = true;
+                await _userData.Save();
+            }
         }
 
         var loginResult = await _identityService.Login(username, password);
@@ -206,6 +223,7 @@ public partial class AuthWindow : Window
 
     private async void RegButton_OnClick(object? sender, RoutedEventArgs e)
     {
+        AuthButton.IsEnabled = false;
         var username = RegLogBox.Text;
         var password = RegPassBox.Text;
         var confirmPassword = ConfPassBox.Text;
@@ -216,6 +234,7 @@ public partial class AuthWindow : Window
         {
             ErrorPanel.IsVisible = true;
             ErrorBox.Text = "Проверьте правильность введённых данных. Все поля должны быть заполнены.";
+            AuthButton.IsEnabled = true;
             return;
         }
 
@@ -225,6 +244,7 @@ public partial class AuthWindow : Window
         {
             ErrorPanel.IsVisible = true;
             ErrorBox.Text = result.ErrorMessage;
+            AuthButton.IsEnabled = true;
             return;
         }
 
@@ -232,7 +252,9 @@ public partial class AuthWindow : Window
         {
             InfoPanel.IsVisible = true;
             InfoBox.Text = result.ErrorMessage;
+            AuthButton.IsEnabled = true;
         }
+        AuthButton.IsEnabled = true;
     }
 
     public async Task<LoginResult> RegistrationMetod(string username, string password, string confirmPassword)
@@ -331,18 +353,35 @@ public partial class AuthWindow : Window
 
             if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
             {
-                _userData.Username = username;
-                _userData.Password = password;
-                _userData.SaveUser = true;
-                await _userData.Save();
+                if (_userData != null)
+                {
+                    _userData.Username = username;
+                    _userData.Password = HashPassword(password); 
+                    _userData.SaveUser = true;
+                    await _userData.Save();
+                }
             }
         }
         else
         {
-            _userData.SaveUser = false;
-            _userData.Password = String.Empty;
+            _userData!.SaveUser = false;
+            _userData.Password = string.Empty;
             _userData.Username = string.Empty;
             await _userData.Save();
+        }
+    }
+
+    private string HashPassword(string password)
+    {
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            StringBuilder builder = new StringBuilder();
+            foreach (var b in bytes)
+            {
+                builder.Append(b.ToString("x2")); 
+            }
+            return builder.ToString();
         }
     }
     
@@ -361,8 +400,6 @@ public partial class AuthWindow : Window
                 var userData = await UserData.Load();
                 if (userData != null)
                 {
-                    await userData.SaveEULAAcceptance(true);
-                    
                     NavigateToMainWindow();
                 }
             }
@@ -377,58 +414,18 @@ public partial class AuthWindow : Window
             var userData = await UserData.Load();
             if (userData != null)
             {
-                await userData.SaveEULAAcceptance(false);
             }
             CloseApplication();
         }
-
-        public static async Task<bool> ShouldShowEULADialog()
-        {
-            return !await UserData.CheckEULAAccepted();
-        }
-        private void TitleBar_PointerPressed(object sender, Avalonia.Input.PointerPressedEventArgs e)
+        
+        private void TitleBar_PointerPressed(object sender, PointerPressedEventArgs e)
         {
             if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
             {
                 this.BeginMoveDrag(e); 
             }
         }
-
-
-        private void AgreementCheckBox_OnChecked(object? sender, RoutedEventArgs e)
-        {
-            if (sender is CheckBox checkBox)
-            {
-                bool eulaAccepted = checkBox.IsChecked == true;
-                EluaChecker(eulaAccepted);
-                UpdateButtonsState(eulaAccepted);
-            }
-        }
-
-        private void AgreementCheckBox_OnUnchecked(object? sender, RoutedEventArgs e)
-        {
-            if (sender is CheckBox checkBox)
-            {
-                bool eulaAccepted = checkBox.IsChecked == true;
-                EluaChecker(eulaAccepted);
-                UpdateButtonsState(eulaAccepted);
-            }
-        }
-
-        private void UpdateButtonsState(bool eulaAccepted)
-        {
-            if (AcceptButton != null)
-                AcceptButton.IsEnabled = eulaAccepted;
-            
-            if (RefusalButton != null)
-                RefusalButton.IsEnabled = true;
-        }
-
-        private async void EluaChecker(bool eula)
-        {
-            Console.WriteLine($"EULA checkbox state: {eula}");
-            await Task.CompletedTask;
-        }
+        
 
         private void NavigateToMainWindow()
         {

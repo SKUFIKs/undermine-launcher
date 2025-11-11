@@ -13,9 +13,6 @@ namespace UnderMine.Models
         public string? Password { get; set; }
         public int MemorySettings { get; set; }
         public string GraphicSettings { get; set; } = null!;
-        public bool EULAAccepted { get; set; } // Добавлено поле для EULA
-        public DateTime EULAAcceptedDate { get; set; } // Дата принятия
-        public string EULAVersion { get; set; } = "1.0"; // Версия соглашения
 
         private static readonly string SettingsPath = Path.Combine(
             Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new InvalidOperationException(),
@@ -29,32 +26,6 @@ namespace UnderMine.Models
             await File.WriteAllTextAsync(SettingsPath, json);
         }
         
-        public async Task SaveEULAAcceptance(bool accepted)
-        {
-            this.EULAAccepted = accepted;
-            this.EULAAcceptedDate = DateTime.Now;
-            await this.Save();
-            
-            Console.WriteLine($"EULA acceptance saved: {accepted} at {EULAAcceptedDate}");
-        }
-        
-        public static async Task<bool> CheckEULAAccepted()
-        {
-            var userData = await Load();
-            return userData?.EULAAccepted ?? false;
-        }
-
-        
-        public static async Task ResetEULAAcceptance()
-        {
-            var userData = await Load();
-            if (userData != null)
-            {
-                userData.EULAAccepted = false;
-                userData.EULAAcceptedDate = DateTime.MinValue;
-                await userData.Save();
-            }
-        }
         
         private void MemorySlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
@@ -68,12 +39,10 @@ namespace UnderMine.Models
                 var defaultSettings = new UserData
                 {
                     SaveUser = false,
-                    MemorySettings = 4096,
+                    MemorySettings = 6144,
                     GraphicSettings = "Average",
-                    EULAAccepted = false,
-                    EULAAcceptedDate = DateTime.MinValue
                 };
-
+                  
                 await defaultSettings.Save();
                 return defaultSettings;
             }
@@ -89,10 +58,8 @@ namespace UnderMine.Models
                 return new UserData
                 {
                     SaveUser = false,
-                    MemorySettings = 4096,
+                    MemorySettings = 6144,
                     GraphicSettings = "Average",
-                    EULAAccepted = false,
-                    EULAAcceptedDate = DateTime.MinValue
                 };
             }
         }

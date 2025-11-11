@@ -24,7 +24,7 @@ build_property.EnableCodeStyleSeverity =
 [C:/Users/Дмитрий/RiderProjects/UnderMine/UnderMine/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/Дмитрий/RiderProjects/UnderMine/UnderMine/Fonts/Styles.axaml]
+[C:/Users/Дмитрий/RiderProjects/UnderMine/UnderMine/Assets/Styles/Styles.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [C:/Users/Дмитрий/RiderProjects/UnderMine/UnderMine/IU/AuthWindow.axaml]
@@ -36,5 +36,5 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 [C:/Users/Дмитрий/RiderProjects/UnderMine/UnderMine/Resources.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/Дмитрий/RiderProjects/UnderMine/UnderMine/Services/ProgressView.axaml]
+[C:/Users/Дмитрий/RiderProjects/UnderMine/UnderMine/Services/Logger/ProgressView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

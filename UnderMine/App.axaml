@@ -3,7 +3,7 @@
              x:Class="UnderMine.App">
     <Application.Styles>
         <FluentTheme />
-        <StyleInclude Source="avares://UnderMine/Fonts/Styles.axaml"/>
+        <StyleInclude Source="avares://UnderMine/Assets/Styles/Styles.axaml"/>
         
     </Application.Styles>
 </Application>

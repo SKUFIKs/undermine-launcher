@@ -3,17 +3,18 @@ using System;
 using UnderMine.Models;
 using UnderMine.Network.AuthService;
 using UnderMine.Services;
+using UnderMine.Services.SystemInfo.MemorySettings;
 
 namespace UnderMine;
 
 class Program
 {
-    public static ContextData GlobalContextData { get; private set; }
-    public static ServerInfo ServerInfo { get; private set; }
-    public static IdentityService AuthService { get; private set; }
-    public static LoginResult LoginResult { get; private set; }
-    public static LoginResult SystemInfo { get; private set; }
-    public static MemorySliderConfiguration SliderValues { get; private set; } 
+    public static ContextData? GlobalContextData { get; private set; }
+    public static ServerInfo? ServerInfo { get; private set; }
+    public static IdentityService? AuthService { get; private set; }
+    public static LoginResult? LoginResult { get; private set; }
+    public static LoginResult? SystemInfo { get; private set; }
+    public static MemorySliderConfiguration? SliderValues { get; private set; } 
 
     [STAThread]
     public static void Main(string[] args)
