@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:  # Добавьте это для ручного запуска
+  workflow_dispatch:  # Для ручного запуска
 
 env:
   APP_NAME: UnderMine
@@ -34,7 +34,7 @@ jobs:
           dotnet publish UnderMine/UnderMine.csproj \
             -c Release -r linux-x64 --self-contained true \
             -p:PublishSingleFile=false -o publish \
-            --verbosity detailed  # Добавьте для отладки
+            --verbosity detailed
 
       - name: Debug publish contents
         run: ls -la publish/ && find publish -name "*UnderMine*" -type f
@@ -43,8 +43,7 @@ jobs:
         run: |
           mkdir -p ${{ env.APP_NAME }}.AppDir/usr/bin
           mkdir -p ${{ env.APP_NAME }}.AppDir/usr/lib
-          
-          # Ищем основной бинарник
+
           if [ -f "publish/UnderMine" ]; then
             cp publish/UnderMine ${{ env.APP_NAME }}.AppDir/usr/bin/
           elif [ -f "publish/UnderMine.dll" ]; then
@@ -54,28 +53,34 @@ jobs:
             ls -la publish/
             exit 1
           fi
-          
-          # Копируем все необходимые файлы
-          cp -r publish/* ${{ env.APP_NAME }}.AppDir/usr/bin/ 2>/dev/null || true
-          
-          # Создаем AppRun
-          cat > ${{ env.APP_NAME }}.AppDir/AppRun << 'EOF'
 
+          cp -r publish/* ${{ env.APP_NAME }}.AppDir/usr/bin/ 2>/dev/null || true  
+
+          if [ -f "UnderMine/icon.png" ]; then
+            cp UnderMine/icon.png ${{ env.APP_NAME }}.AppDir/UnderMine.png
+          else
+            echo "Creating placeholder icon..."
+            convert -size 256x256 xc:blue -pointsize 20 -fill white -gravity center -annotate +0+0 "UnderMine" ${{ env.APP_NAME }}.AppDir/UnderMine.png 2>/dev/null || \
+            echo "Note: Install ImageMagick for better icons or add icon.png to your project"
+          fi
+
+          cat > ${{ env.APP_NAME }}.AppDir/AppRun << 'EOF'
+          #!/bin/bash
           HERE="$(dirname "$(readlink -f "${0}")")"
           cd "$HERE/usr/bin"
           exec ./UnderMine "$@"
           EOF
           chmod +x ${{ env.APP_NAME }}.AppDir/AppRun
-          
+
           # Создаем desktop файл
           cat > ${{ env.APP_NAME }}.AppDir/${{ env.APP_NAME }}.desktop << EOF
           [Desktop Entry]
-          Name=${{ env.APP_NAME }}
+           Name=${{ env.APP_NAME }}
           Exec=UnderMine
-          Icon=UnderMine
-          Type=Application
-          Categories=Utility;
-          EOF
+           Icon=UnderMine
+           Type=Application
+           Categories=Utility;
+           EOF
 
       - name: Install AppImageTool
         run: |
@@ -96,6 +101,7 @@ jobs:
             *.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   build-linux-tar:
     name: Linux AMD64 tar.gz
     runs-on: ubuntu-latest
@@ -167,3 +173,4 @@ jobs:
           files: UnderMine-${{ github.ref_name }}-macos-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
