@@ -90,8 +90,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build-macos:
-    name: macOS DMG
+  build-macos-zip:
+    name: macOS ZIP
     runs-on: macos-latest
 
     steps:
@@ -109,35 +109,16 @@ jobs:
       - name: Publish macOS binary
         run: dotnet publish UnderMine/UnderMine.csproj -c Release -r osx-x64 --self-contained true /p:PublishSingleFile=true -o publish
 
-      - name: Prepare DMG contents
+      - name: Package ZIP
         run: |
-          rm -rf dmg
-          mkdir -p dmg/UnderMine.app/Contents/MacOS
-          mkdir -p dmg/UnderMine.app/Contents/Resources
-          cp publish/UnderMine dmg/UnderMine.app/Contents/MacOS/
-          cp UnderMine/icon.png dmg/UnderMine.app/Contents/Resources/
-          cat <<EOF > dmg/UnderMine.app/Contents/Info.plist
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-          <key>CFBundleName</key><string>UnderMine</string>
-          <key>CFBundleDisplayName</key><string>UnderMine Launcher</string>
-          <key>CFBundleIdentifier</key><string>com.skuf.undermine</string>
-          <key>CFBundleVersion</key><string>${GITHUB_REF_NAME}</string>
-          <key>CFBundleExecutable</key><string>UnderMine</string>
-          <key>CFBundlePackageType</key><string>APPL</string>
-          </dict>
-          </plist>
-          EOF
+          mkdir -p UnderMine-macos
+          cp publish/UnderMine UnderMine-macos/
+          cp UnderMine/icon.png UnderMine-macos/
+          zip -r UnderMine-${GITHUB_REF_NAME}-macos-x64.zip UnderMine-macos
 
-      - name: Build DMG
-        run: |
-          hdiutil create -volname "UnderMine Launcher" -srcfolder dmg -ov -format UDZO UnderMine-${GITHUB_REF_NAME}-macos-x64.dmg
-
-      - name: Upload DMG
+      - name: Upload ZIP
         uses: softprops/action-gh-release@v1
         with:
-          files: UnderMine-${{ github.ref_name }}-macos-x64.dmg
+          files: UnderMine-${{ github.ref_name }}-macos-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
