@@ -28,21 +28,17 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore UnderMine.sln
 
-      - name: Publish Linux binary
-        run: dotnet publish UnderMine/UnderMine.csproj -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true -o publish
+      - name: Publish Linux binary (multi-file)
+        run: dotnet publish UnderMine/UnderMine.csproj -c Release -r linux-x64 --self-contained true -o publish
 
       - name: Prepare AppDir
         run: |
           mkdir -p ${{ env.App_Name }}.AppDir/usr/bin
           mkdir -p ${{ env.App_Name }}.AppDir/usr/lib
-          # Копируем бинарь
           cp publish/${{ env.App_Name }} ${{ env.App_Name }}.AppDir/usr/bin/
-          # Копируем нативные библиотеки SkiaSharp
-          cp publish/runtimes/linux-x64/native/libSkiaSharp.so* ${{ env.App_Name }}.AppDir/usr/lib/ || echo "No SkiaSharp libs found"
-          # Создаём AppRun скрипт
+          cp publish/runtimes/linux-x64/native/libSkiaSharp.so* ${{ env.App_Name }}.AppDir/usr/lib/
           echo -e '#!/bin/bash\nHERE="$(dirname "$(readlink -f "${0}")")"\nexport LD_LIBRARY_PATH="$HERE/usr/lib:$LD_LIBRARY_PATH"\nexec "$HERE/usr/bin/${{ env.App_Name }}" "$@"' > ${{ env.App_Name }}.AppDir/AppRun
           chmod +x ${{ env.App_Name }}.AppDir/AppRun
-          # Создаём .desktop файл
           echo -e "[Desktop Entry]\nName=${{ env.App_Name }}\nExec=${{ env.App_Name }}\nType=Application\nCategories=Utility;" > ${{ env.App_Name }}.AppDir/${{ env.App_Name }}.desktop
 
       - name: Install AppImageTool
@@ -78,13 +74,13 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
-      - name: Publish Linux AMD64 binary
-        run: dotnet publish UnderMine/UnderMine.csproj -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true -o publish
+      - name: Publish Linux binary (multi-file)
+        run: dotnet publish UnderMine/UnderMine.csproj -c Release -r linux-x64 --self-contained true -o publish
 
       - name: Package tar.gz
         run: |
           mkdir -p UnderMine-linux
-          cp publish/${{ env.App_Name }} UnderMine-linux/
+          cp -r publish/* UnderMine-linux/
           cp UnderMine/icon.png UnderMine-linux/
           tar -czvf UnderMine-${GITHUB_REF_NAME}-linux-x64.tar.gz UnderMine-linux
 
@@ -111,13 +107,13 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore UnderMine.sln
 
-      - name: Publish macOS binary
-        run: dotnet publish UnderMine/UnderMine.csproj -c Release -r osx-x64 --self-contained true /p:PublishSingleFile=true -o publish
+      - name: Publish macOS binary (multi-file)
+        run: dotnet publish UnderMine/UnderMine.csproj -c Release -r osx-x64 --self-contained true -o publish
 
       - name: Package ZIP
         run: |
           mkdir -p UnderMine-macos
-          cp publish/${{ env.App_Name }} UnderMine-macos/
+          cp -r publish/* UnderMine-macos/
           cp UnderMine/icon.png UnderMine-macos/
           zip -r UnderMine-${GITHUB_REF_NAME}-macos-x64.zip UnderMine-macos
 
@@ -127,4 +123,3 @@ jobs:
           files: UnderMine-${{ github.ref_name }}-macos-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
