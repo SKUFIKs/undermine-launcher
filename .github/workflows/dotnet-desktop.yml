@@ -1,87 +1,63 @@
-name: Build UnderMineLauncher AppImage
+name: Build UnderMine AppImage
 
 on:
   push:
     tags:
-      - 'v*'  # запускается только при пуше тега вида v1.0.0
+      - 'v*'
 
 permissions:
   contents: write
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      Solution_Name: UnderMine.sln
-      App_Project_Path: UnderMine/UnderMine.csproj
-      App_Name: UnderMine
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup .NET 9
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
 
-    - name: Restore dependencies
-      run: dotnet restore ${{ env.Solution_Name }}
+      - name: Restore dependencies
+        run: dotnet restore UnderMine.sln
 
-    - name: Publish Linux binary
-      run: dotnet publish ${{ env.App_Project_Path }} -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true -o publish
+      - name: Publish Linux binary
+        run: dotnet publish UnderMine/UnderMine.csproj -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true -o publish
 
-    - name: Prepare AppDir
-      run: |
-        mkdir -p ${{ env.App_Name }}.AppDir/usr/bin
-        cp publish/${{ env.App_Name }} ${{ env.App_Name }}.AppDir/usr/bin/
+      - name: Prepare AppDir
+        run: |
+          mkdir -p UnderMine.AppDir/usr/bin
+          cp publish/UnderMine UnderMine.AppDir/usr/bin/
+          chmod +x UnderMine.AppDir/usr/bin/UnderMine
+          echo -e '#!/bin/bash\nHERE="$(dirname "$(readlink -f "${0}")")"\nexec "$HERE/usr/bin/UnderMine" "$@"' > UnderMine.AppDir/AppRun
+          chmod +x UnderMine.AppDir/AppRun
+          cp UnderMine/icon.png UnderMine.AppDir/
+          echo -e "[Desktop Entry]\nName=UnderMine Launcher\nExec=UnderMine\nIcon=icon\nType=Application\nCategories=Utility;" > UnderMine.AppDir/UnderMine.desktop
 
-        # Копируем иконку
-        cp UnderMine/icon.png ${{ env.App_Name }}.AppDir/${{ env.App_Name }}.png
+      - name: Install AppImageTool (no fuse)
+        run: |
+          wget -O appimagetool-x86_64.AppImage https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
 
-        # Создаём AppRun
-        echo -e '#!/bin/bash\nHERE="$(dirname "$(readlink -f "${0}")")"\nexec "$HERE/usr/bin/${{ env.App_Name }}" "$@"' > ${{ env.App_Name }}.AppDir/AppRun
-        chmod +x ${{ env.App_Name }}.AppDir/AppRun
+      - name: Build AppImage
+        run: |
+          ./appimagetool-x86_64.AppImage --appimage-extract
+          ./squashfs-root/AppRun UnderMine.AppDir UnderMine-${GITHUB_REF_NAME}-x86_64.AppImage
 
-        # Создаём .desktop с иконкой
-        echo -e "[Desktop Entry]\nName=${{ env.App_Name }}\nExec=${{ env.App_Name }}\nIcon=${{ env.App_Name }}\nType=Application\nCategories=Utility;" > ${{ env.App_Name }}.AppDir/${{ env.App_Name }}.desktop
+      - name: Verify file exists
+        run: ls -lh UnderMine-*-x86_64.AppImage
 
-    - name: Install AppImageTool
-      run: |
-        wget -O appimagetool.AppImage https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-        chmod +x appimagetool.AppImage
+      - name: Create SHA256 checksum
+        run: sha256sum UnderMine-*-x86_64.AppImage > UnderMine-${GITHUB_REF_NAME}-x86_64.AppImage.sha256
 
-    - name: Get version from tag
-      id: get_version
-      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
-    - name: Build AppImage
-      run: |
-        ARCH=x86_64
-        ./appimagetool.AppImage --appimage-extract-and-run ${{ env.App_Name }}.AppDir ${{ env.App_Name }}-${{ env.VERSION }}-$ARCH.AppImage
-
-    - name: Generate SHA256 checksum
-      run: sha256sum ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage > ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sha256
-
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ github.ref_name }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload AppImage to Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ github.ref_name }}
-        name: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage
-        asset_path: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage
-
-    - name: Upload SHA256 checksum to Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ github.ref_name }}
-        name: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sha256
-        asset_path: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sha256
+      - name: Upload AppImage and checksum to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            UnderMine-${{ github.ref_name }}-x86_64.AppImage
+            UnderMine-${{ github.ref_name }}-x86_64.AppImage.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
