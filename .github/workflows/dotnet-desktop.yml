@@ -96,17 +96,17 @@ jobs:
         ./appimagetool.AppImage ${{ env.App_Name }}.AppDir ${{ env.App_Name }}-${{ env.VERSION }}-$ARCH.AppImage
 
     - name: Import GPG key (optional)
-      if: secrets.GPG_PRIVATE_KEY != ''
+      if: env.SIGN_APPIMAGE == 'true'
       run: |
         echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
         echo "${{ secrets.GPG_PASSPHRASE }}" > passphrase.txt
 
+
     - name: Sign AppImage (optional)
-      if: secrets.GPG_PRIVATE_KEY != ''
+      if: env.SIGN_APPIMAGE == 'true'
       run: |
         ARCH=x86_64
         gpg --batch --yes --passphrase-file passphrase.txt --output ${{ env.App_Name }}-${{ env.VERSION }}-$ARCH.AppImage.sig --detach-sign ${{ env.App_Name }}-${{ env.VERSION }}-$ARCH.AppImage
-
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
@@ -122,9 +122,9 @@ jobs:
         asset_path: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage
 
     - name: Upload signature to Release (optional)
-      if: secrets.GPG_PRIVATE_KEY != ''
+      if: env.SIGN_APPIMAGE == 'true'
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ github.ref_name }}
-        name: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sig
-        asset_path: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sig
+              tag_name: ${{ github.ref_name }}
+              name: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sig
+              asset_path: ${{ env.App_Name }}-${{ env.VERSION }}-x86_64.AppImage.sig
