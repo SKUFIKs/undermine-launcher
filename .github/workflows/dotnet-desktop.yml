@@ -130,6 +130,8 @@ jobs:
 
      - name: Build DMG
        run: |
+          rm -rf ~/Library/Caches/*
+          rm -rf dmg/*
           hdiutil create -volname "UnderMine Launcher" -srcfolder dmg -ov -format UDZO UnderMine-${GITHUB_REF_NAME}-macos-x64.dmg
 
      - name: Upload DMG
