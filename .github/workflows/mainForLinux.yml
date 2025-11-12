@@ -29,63 +29,53 @@ jobs:
         
     - name: Create staging directory structure
       run: |
-        # Cleanup
         rm -rf ./staging_folder
         rm -rf ./deb-package
-        
-        # Create directory structure
         mkdir -p ./staging_folder/DEBIAN
         mkdir -p ./staging_folder/usr/bin
-        mkdir -p ./staging_folder/usr/lib/${{ env.APP_NAME }}
+        mkdir -p ./staging_folder/usr/lib/undermine
         mkdir -p ./staging_folder/usr/share/applications
         mkdir -p ./staging_folder/usr/share/pixmaps
         
     - name: Create control file
       run: |
         cat > ./staging_folder/DEBIAN/control << EOF
-        Package: undermine
-        Version: ${{ env.VERSION }}
-        Section: devel
-        Priority: optional
-        Architecture: amd64
-        Depends: libx11-6, libice6, libsm6, libfontconfig1, ca-certificates, tzdata, libc6, libgcc1, libgssapi-krb5-2, libstdc++6, zlib1g, libssl3, libicu-dev | libicu70 | libicu71 | libicu72
-        Maintainer: SKUF @minecraft_urfu_underground_bot
-        Description: UnderMine Application
-        UnderMine is a Minecraft underground bot application.
-        EOF
+           Package: undermine
+           Version: ${{ env.VERSION }}
+           Section: devel
+           Priority: optional
+           Architecture: amd64
+           Depends: libc6, libstdc++6, zlib1g
+           Maintainer: SKUF <undermine@example.com>
+           Description: UnderMine Minecraft Bot
+           A Minecraft underground bot application for automation.
+           EOF
         
     - name: Create starter script
       run: |
         cat > ./staging_folder/usr/bin/undermine << 'EOF'
-        #!/bin/bash
-        exec /usr/lib/UnderMine/UnderMine "$@"
-        EOF
+          #!/bin/bash
+          exec /usr/lib/undermine/UnderMine "$@"
+          EOF
         chmod +x ./staging_folder/usr/bin/undermine
         
     - name: Copy application files
       run: |
-        # Copy all published files
-        cp -r ./publish-linux/* ./staging_folder/usr/lib/${{ env.APP_NAME }}/
-        
-        # Set proper permissions
-        chmod -R a+rX ./staging_folder/usr/lib/${{ env.APP_NAME }}/
-        chmod +x ./staging_folder/usr/lib/${{ env.APP_NAME }}/UnderMine
+        cp -r ./publish-linux/* ./staging_folder/usr/lib/undermine/
+        chmod -R a+rX ./staging_folder/usr/lib/undermine/
+        chmod +x ./staging_folder/usr/lib/undermine/UnderMine
         
     - name: Create desktop file
       run: |
         cat > ./staging_folder/usr/share/applications/undermine.desktop << EOF
-        [Desktop Entry]
-        Name=${{ env.APP_NAME }}
-        Comment=Minecraft underground bot application
-        Icon=undermine
-        Exec=undermine
-        StartupWMClass=undermine
-        Terminal=false
-        Type=Application
-        Categories=Game;Development;
-        GenericName=${{ env.APP_NAME }}
-        Keywords=minecraft;bot;game;
-        EOF
+          [Desktop Entry]
+          Name=UnderMine
+          Comment=Minecraft underground bot application
+          Icon=undermine
+          Exec=undermine
+          Type=Application
+          Categories=Game;
+          EOF
         
     - name: Copy icon (if exists)
       run: |
@@ -93,28 +83,23 @@ jobs:
           cp ./icon.png ./staging_folder/usr/share/pixmaps/undermine.png
           echo "Icon copied successfully"
         else
-          echo "Warning: icon.png not found, creating placeholder"
-          # Create a small placeholder icon (if ImageMagick is available)
-          which convert && convert -size 64x64 xc:white ./staging_folder/usr/share/pixmaps/undermine.png || \
-          echo "No icon available" > ./staging_folder/usr/share/pixmaps/icon-missing.txt
+          echo "No icon found, skipping"
         fi
         
     - name: Build .deb package
       run: |
         mkdir -p ./deb-package
-        dpkg-deb --root-owner-group --build ./staging_folder/ "./deb-package/undermine_${{ env.VERSION }}_amd64.deb"
+        dpkg-deb --build ./staging_folder/ "./deb-package/undermine_${{ env.VERSION }}_amd64.deb"
         
     - name: Verify .deb package
       run: |
         cd ./deb-package
-        echo "Package contents:"
         dpkg -c *.deb
-        echo "Package info:"
         dpkg -I *.deb
         
     - name: Upload Debian Package
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.APP_NAME }}-Debian
+        name: UnderMine-Debian
         path: deb-package/
         retention-days: 7
