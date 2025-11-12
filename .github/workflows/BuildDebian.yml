@@ -27,12 +27,10 @@ jobs:
         run: |
           echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
           echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
-
       - name: Install dpkg
         run: |
           sudo apt update
           sudo apt install -y dpkg
-
       - name: Clean-up
         run: rm -rf ./out/ ./staging_folder/ ./deb-package/
 
@@ -43,11 +41,9 @@ jobs:
             --self-contained true \
             --runtime linux-x64 \
             -o ./out/linux-x64
-
       - name: Create Debian staging
         run: |
           mkdir -p ./staging_folder/DEBIAN ./staging_folder/usr/bin ./staging_folder/usr/lib/undermine ./staging_folder/usr/share/applications ./staging_folder/usr/share/pixmaps
-
       - name: Create Debian control file
         run: |
           cat > ./staging_folder/DEBIAN/control << EOF
@@ -61,23 +57,20 @@ jobs:
           Description: UnderMine Minecraft 
             A Minecraft underground bot application for automation.
           EOF
-
       - name: Copy application files
         run: |
           cp -a ./out/linux-x64/. ./staging_folder/usr/lib/undermine/
           chmod -R a+rX ./staging_folder/usr/lib/undermine/
           chmod +x ./staging_folder/usr/lib/undermine/UnderMine
-
       - name: Build .deb package
         run: |
           mkdir -p ./deb-package
-          dpkg-deb --root-owner-group --build ./staging_folder/ "./deb-package/UnderMine-${{ env.version }}-linux.deb"
-
+          dpkg-deb --root-owner-group --build ./staging_folder/ "./deb-package/undermine_${{ env.version }}_amd64.deb"
       - name: Upload Debian artifact
         uses: actions/upload-artifact@v4
         with:
           name: deb-package
-          path: ./deb-package/UnderMine-${{ env.version }}-linux.deb
+          path: ./deb-package/undermine_${{ env.version }}_amd64.deb
 
   build-macos:
     runs-on: macos-latest
@@ -104,7 +97,6 @@ jobs:
           mkdir -p UnderMine.app/Contents/MacOS UnderMine.app/Contents/Resources
           cp -R ./publish/osx-x64/* UnderMine.app/Contents/MacOS/
           if [ -f "./icon.icns" ]; then cp ./icon.icns UnderMine.app/Contents/Resources/; else touch UnderMine.app/Contents/Resources/icon.icns; fi
-
       - name: Create Info.plist
         run: |
           cat > UnderMine.app/Contents/Info.plist << EOF
@@ -127,12 +119,11 @@ jobs:
           </dict>
           </plist>
           EOF
-
       - name: Set Executable Permissions
         run: chmod +x UnderMine.app/Contents/MacOS/UnderMine
 
       - name: Zip .app for Release
-        run: zip -r ./deb-package/UnderMine-${{ env.VERSION }}-macos.zip UnderMine.app
+        run: zip -r UnderMine-macOS-${{ env.VERSION }}.zip UnderMine.app
 
       - name: Download Debian package
         uses: actions/download-artifact@v4
@@ -148,17 +139,18 @@ jobs:
           if gh release view ${{ github.ref_name }} 2>/dev/null; then
             echo "Release exists, uploading assets..."
             gh release upload ${{ github.ref_name }} \
-              ./deb-package/UnderMine-${{ env.VERSION }}-linux.deb \
-              ./deb-package/UnderMine-${{ env.VERSION }}-macos.zip \
+              ./deb-package/undermine_${{ env.VERSION }}_amd64.deb \
+              ./UnderMine-macOS-${{ env.VERSION }}.zip \
               --clobber
           else
             echo "Release does not exist, creating..."
             gh release create ${{ github.ref_name }} \
-              ./deb-package/UnderMine-${{ env.VERSION }}-linux.deb \
-              ./deb-package/UnderMine-${{ env.VERSION }}-macos.zip \
+              ./deb-package/undermine_${{ env.VERSION }}_amd64.deb \
+              ./UnderMine-macOS-${{ env.VERSION }}.zip \
               --title "Release ${{ github.ref_name }}" \
               --notes "Automated release for version ${{ env.VERSION }}" \
               --repo ${{ github.repository }} \
               --target ${{ github.sha }}
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
