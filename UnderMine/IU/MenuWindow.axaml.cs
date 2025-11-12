@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia;
@@ -340,13 +341,45 @@ public partial class MenuWindow : Window
 
     private void OverviewSettings_OnClick(object? sender, RoutedEventArgs e)
     {
-        string directoryPath = AppDomain.CurrentDomain.BaseDirectory;
-        Process.Start(new ProcessStartInfo
+        string directoryPath = GetBaseDirectory();
+
+        try
         {
-            FileName = directoryPath,
-            UseShellExecute = true
-        });
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = directoryPath,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Не удалось открыть директорию настроек: {ex.Message}");
+        }
     }
+
+    private static string GetBaseDirectory()
+    {
+        const string AppName = "UnderMine";
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return AppContext.BaseDirectory;
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            string home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            string dir = Path.Combine(home, "Library", "Application Support", AppName);
+            Directory.CreateDirectory(dir);
+            return dir;
+        }
+        else
+        {
+            // Linux
+            string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string dir = Path.Combine(home, ".config", AppName);
+            Directory.CreateDirectory(dir);
+            return dir;
+        }
+    }
+
     public class WindowSettings
     {
         public int X { get; set; }
