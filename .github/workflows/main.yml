@@ -5,85 +5,76 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: macos-latest
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '9.0.x'
-        
+
     - name: Publish Application
       run: |
         dotnet publish -c Release -r osx-x64 -p:UseAppHost=true -o ./publish
-        
-    - name: Copy icon file
-      run: |
-        # Проверяем существует ли файл иконки
-        if [ -f "./icon.icns" ]; then
-          echo "Copying icon.icns to publish directory"
-          cp ./icon.icns ./publish/icon.icns
-        else
-          echo "Warning: icon.icns not found in repository root"
-          # Создаем пустой файл чтобы не было ошибок
-          touch ./publish/icon.icns
-        fi
-        
+
     - name: Create .app Bundle
       run: |
         mkdir -p UnderMine.app/Contents/MacOS
         mkdir -p UnderMine.app/Contents/Resources
         cp -R ./publish/* UnderMine.app/Contents/MacOS/
-        cp ./publish/icon.icns UnderMine.app/Contents/Resources/
-        
+        if [ -f "./icon.icns" ]; then
+          cp ./icon.icns UnderMine.app/Contents/Resources/
+        else
+          echo "Warning: icon.icns not found, creating empty placeholder"
+          touch UnderMine.app/Contents/Resources/icon.icns
+        fi
+
     - name: Create Info.plist
       run: |
         cat > UnderMine.app/Contents/Info.plist << 'EOF'
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-            <key>CFBundleName</key>
-            <string>UnderMine</string>
-            <key>CFBundleDisplayName</key>
-            <string>UnderMine</string>
-            <key>CFBundleIdentifier</key>
-            <string>@minecraft_urfu_underground_bot</string>
-            <key>CFBundleVersion</key>
-            <string>1.0.0</string>
-            <key>CFBundlePackageType</key>
-            <string>APPL</string>
-            <key>CFBundleSignature</key>
-            <string>????</string>
-            <key>CFBundleExecutable</key>
-            <string>UnderMine</string>
-            <key>CFBundleIconFile</key>
-            <string>icon.icns</string>
-            <key>NSPrincipalClass</key>
-            <string>NSApplication</string>
-            <key>NSHighResolutionCapable</key>
-            <true/>
-            <key>CFBundleShortVersionString</key>
-            <string>1.0.0</string>
-            <key>LSMinimumSystemVersion</key>
-            <string>10.15</string>
-        </dict>
-        </plist>
-        EOF
-        
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+                <key>CFBundleName</key>
+                <string>UnderMine</string>
+                <key>CFBundleDisplayName</key>
+                <string>UnderMine</string>
+                <key>CFBundleIdentifier</key>
+                <string>com.underground.undermine</string>
+                <key>CFBundleVersion</key>
+                <string>1.0.0</string>
+                <key>CFBundlePackageType</key>
+                <string>APPL</string>
+                <key>CFBundleSignature</key>
+                <string>????</string>
+                <key>CFBundleExecutable</key>
+                <string>UnderMine</string>
+                <key>CFBundleIconFile</key>
+                <string>icon.icns</string>
+                <key>NSPrincipalClass</key>
+                <string>NSApplication</string>
+                <key>NSHighResolutionCapable</key>
+                <true/>
+                <key>CFBundleShortVersionString</key>
+                <string>1.0.0</string>
+                <key>LSMinimumSystemVersion</key>
+                <string>10.15</string>
+              </dict>
+              </plist>
+            EOF
+
     - name: Set Executable Permissions
-      run: |
-        chmod +x UnderMine.app/Contents/MacOS/UnderMine
-        
+      run: chmod +x UnderMine.app/Contents/MacOS/UnderMine
+
     - name: Verify final bundle
-      run: |
-        echo "=== Final .app structure ==="
-        find UnderMine.app -type f | sort
-        
+      run: find UnderMine.app -type f | sort
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: UnderMine-macOS
         path: UnderMine.app
         retention-days: 7
+
