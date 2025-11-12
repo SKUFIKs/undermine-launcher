@@ -1,4 +1,4 @@
-name: Build Debian Package
+name: Build and Release UnderMine
 
 on:
   push:
@@ -11,7 +11,8 @@ env:
 jobs:
   build-debian:
     runs-on: ubuntu-latest
-
+    outputs:
+      version: ${{ steps.extract-version.outputs.version }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -22,7 +23,10 @@ jobs:
         dotnet-version: '9.0.x'
 
     - name: Extract version from tag
-      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+      id: extract-version
+      run: |
+        echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+        echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
 
     - name: Install dpkg and GitHub CLI
       run: |
@@ -30,8 +34,7 @@ jobs:
         sudo apt install -y dpkg gh
 
     - name: Clean-up
-      run: |
-        rm -rf ./out/ ./staging_folder/ ./deb-package/
+      run: rm -rf ./out/ ./staging_folder/ ./deb-package/
 
     - name: Publish .NET Application
       run: |
@@ -41,19 +44,15 @@ jobs:
           --runtime linux-x64 \
           -o ./out/linux-x64
 
-    - name: Create staging directory structure
+    - name: Create Debian staging
       run: |
-        mkdir -p ./staging_folder/DEBIAN
-        mkdir -p ./staging_folder/usr/bin
-        mkdir -p ./staging_folder/usr/lib/undermine
-        mkdir -p ./staging_folder/usr/share/applications
-        mkdir -p ./staging_folder/usr/share/pixmaps
+        mkdir -p ./staging_folder/DEBIAN ./staging_folder/usr/bin ./staging_folder/usr/lib/undermine ./staging_folder/usr/share/applications ./staging_folder/usr/share/pixmaps
 
     - name: Create Debian control file
       run: |
         cat > ./staging_folder/DEBIAN/control << EOF
         Package: undermine
-        Version: ${{ env.VERSION }}
+        Version: ${{ env.version }}
         Section: games
         Priority: optional
         Architecture: amd64
@@ -72,15 +71,82 @@ jobs:
     - name: Build .deb package
       run: |
         mkdir -p ./deb-package
-        dpkg-deb --root-owner-group --build ./staging_folder/ "./deb-package/undermine_${{ env.VERSION }}_amd64.deb"
+        dpkg-deb --root-owner-group --build ./staging_folder/ "./deb-package/undermine_${{ env.version }}_amd64.deb"
+
+    - name: Upload Debian artifact for next job
+      uses: actions/upload-artifact@v4
+      with:
+        name: deb-package
+        path: ./deb-package/undermine_${{ env.version }}_amd64.deb
+
+  build-macos:
+    runs-on: macos-latest
+    needs: build-debian
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Get version from previous job
+      run: echo "VERSION=${{ needs.build-debian.outputs.version }}" >> $GITHUB_ENV
+
+    - name: Publish Application
+      run: dotnet publish -c Release -r osx-x64 -p:UseAppHost=true -o ./publish
+
+    - name: Create .app Bundle
+      run: |
+        mkdir -p UnderMine.app/Contents/MacOS UnderMine.app/Contents/Resources
+        cp -R ./publish/osx-x64/* UnderMine.app/Contents/MacOS/
+        if [ -f "./icon.icns" ]; then cp ./icon.icns UnderMine.app/Contents/Resources/; else touch UnderMine.app/Contents/Resources/icon.icns; fi
+
+    - name: Create Info.plist
+      run: |
+        cat > UnderMine.app/Contents/Info.plist << EOF
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+          <key>CFBundleName</key><string>UnderMine</string>
+          <key>CFBundleDisplayName</key><string>UnderMine</string>
+          <key>CFBundleIdentifier</key><string>com.underground.undermine</string>
+          <key>CFBundleVersion</key><string>${{ env.VERSION }}</string>
+          <key>CFBundlePackageType</key><string>APPL</string>
+          <key>CFBundleSignature</key><string>????</string>
+          <key>CFBundleExecutable</key><string>UnderMine</string>
+          <key>CFBundleIconFile</key><string>icon.icns</string>
+          <key>NSPrincipalClass</key><string>NSApplication</string>
+          <key>NSHighResolutionCapable</key><true/>
+          <key>CFBundleShortVersionString</key><string>${{ env.VERSION }}</string>
+          <key>LSMinimumSystemVersion</key><string>10.15</string>
+        </dict>
+        </plist>
+        EOF
+
+    - name: Set Executable Permissions
+      run: chmod +x UnderMine.app/Contents/MacOS/UnderMine
+
+    - name: Zip .app for Release
+      run: zip -r UnderMine-macOS-${{ env.VERSION }}.zip UnderMine.app
+
+    - name: Download Debian package from previous job
+      uses: actions/download-artifact@v4
+      with:
+        name: deb-package
+        path: ./deb-package
+
+    - name: Install GitHub CLI
+      run: brew install gh
 
     - name: Create or Update GitHub Release
       run: |
-        gh release create ${{ github.ref_name }} ./deb-package/undermine_${{ env.VERSION }}_amd64.deb \
+        gh release create ${{ github.ref_name }} ./deb-package/undermine_${{ env.VERSION }}_amd64.deb ./UnderMine-macOS-${{ env.VERSION }}.zip \
           --title "Release ${{ github.ref_name }}" \
           --notes "Automated release for version ${{ env.VERSION }}" \
           --repo ${{ github.repository }} \
-          --target ${{ github.sha }} \
-          --draft
+          --target ${{ github.sha }}
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
