@@ -58,7 +58,7 @@ jobs:
         Depends: libc6, libstdc++6, zlib1g
         Maintainer: SKUF @minecraft_urfu_underground_bot
         Description: UnderMine Minecraft 
-        A Minecraft underground bot application for automation.
+          A Minecraft underground bot application for automation.
         EOF
         
     - name: Create starter script
