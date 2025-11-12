@@ -48,10 +48,10 @@ jobs:
         Section: devel
         Priority: optional
         Architecture: amd64
-        Depends: libx11-6, libice6, libsm6, libfontconfig1, ca-certificates, tzdata, libc6, libgcc1, libgssapi-krb5-2, libstdc++6, zlib1g, libssl3, libicu70
+        Depends: libx11-6, libice6, libsm6, libfontconfig1, ca-certificates, tzdata, libc6, libgcc1, libgssapi-krb5-2, libstdc++6, zlib1g, libssl3, libicu-dev | libicu70 | libicu71 | libicu72
         Maintainer: SKUF @minecraft_urfu_underground_bot
         Description: UnderMine Application
-         UnderMine is a Minecraft underground bot application.
+        UnderMine is a Minecraft underground bot application.
         EOF
         
     - name: Create starter script
