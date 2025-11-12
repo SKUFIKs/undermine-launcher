@@ -71,13 +71,13 @@ jobs:
       - name: Build .deb package
         run: |
           mkdir -p ./deb-package
-          dpkg-deb --root-owner-group --build ./staging_folder/ "./deb-package/undermine_${{ env.version }}_amd64.deb"
+          dpkg-deb --root-owner-group --build ./staging_folder/ "./deb-package/UnderMine-${{ env.version }}-linux.deb"
 
       - name: Upload Debian artifact
         uses: actions/upload-artifact@v4
         with:
           name: deb-package
-          path: ./deb-package/undermine_${{ env.version }}_amd64.deb
+          path: ./deb-package/UnderMine-${{ env.version }}-linux.deb
 
   build-macos:
     runs-on: macos-latest
@@ -132,7 +132,7 @@ jobs:
         run: chmod +x UnderMine.app/Contents/MacOS/UnderMine
 
       - name: Zip .app for Release
-        run: zip -r UnderMine-macOS-${{ env.VERSION }}.zip UnderMine.app
+        run: zip -r ./deb-package/UnderMine-${{ env.VERSION }}-macos.zip UnderMine.app
 
       - name: Download Debian package
         uses: actions/download-artifact@v4
@@ -148,18 +148,17 @@ jobs:
           if gh release view ${{ github.ref_name }} 2>/dev/null; then
             echo "Release exists, uploading assets..."
             gh release upload ${{ github.ref_name }} \
-              ./deb-package/undermine_${{ env.VERSION }}_amd64.deb \
-              ./UnderMine-macOS-${{ env.VERSION }}.zip \
+              ./deb-package/UnderMine-${{ env.VERSION }}-linux.deb \
+              ./deb-package/UnderMine-${{ env.VERSION }}-macos.zip \
               --clobber
           else
             echo "Release does not exist, creating..."
             gh release create ${{ github.ref_name }} \
-              ./deb-package/undermine_${{ env.VERSION }}_amd64.deb \
-              ./UnderMine-macOS-${{ env.VERSION }}.zip \
+              ./deb-package/UnderMine-${{ env.VERSION }}-linux.deb \
+              ./deb-package/UnderMine-${{ env.VERSION }}-macos.zip \
               --title "Release ${{ github.ref_name }}" \
               --notes "Automated release for version ${{ env.VERSION }}" \
               --repo ${{ github.repository }} \
               --target ${{ github.sha }}
-          fi
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
