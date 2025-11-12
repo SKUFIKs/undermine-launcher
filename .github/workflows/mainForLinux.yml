@@ -43,25 +43,24 @@ jobs:
     - name: Create control file
       run: |
         cat > ./staging_folder/DEBIAN/control << EOF
-        Package: ${{ env.APP_NAME | lower }}
+        Package: ${{ lower(env.APP_NAME) }}
         Version: ${{ env.VERSION }}
         Section: devel
         Priority: optional
         Architecture: amd64
         Depends: libx11-6, libice6, libsm6, libfontconfig1, ca-certificates, tzdata, libc6, libgcc1, libgssapi-krb5-2, libstdc++6, zlib1g, libssl3, libicu70
-        Maintainer: Your Name <your.email@example.com>
-        Homepage: https://github.com/yourusername/yourrepo
+        Maintainer: SKUF @minecraft_urfu_underground_bot
         Description: UnderMine Application
          UnderMine is a Minecraft underground bot application.
         EOF
         
     - name: Create starter script
       run: |
-        cat > ./staging_folder/usr/bin/${{ env.APP_NAME | lower }} << 'EOF'
+        cat > ./staging_folder/usr/bin/${{ lower(env.APP_NAME) }} << 'EOF'
         #!/bin/bash
         exec /usr/lib/UnderMine/UnderMine "$@"
         EOF
-        chmod +x ./staging_folder/usr/bin/${{ env.APP_NAME | lower }}
+        chmod +x ./staging_folder/usr/bin/${{ lower(env.APP_NAME) }}
         
     - name: Copy application files
       run: |
@@ -74,13 +73,13 @@ jobs:
         
     - name: Create desktop file
       run: |
-        cat > ./staging_folder/usr/share/applications/${{ env.APP_NAME | lower }}.desktop << EOF
+        cat > ./staging_folder/usr/share/applications/${{ lower(env.APP_NAME) }}.desktop << EOF
         [Desktop Entry]
         Name=${{ env.APP_NAME }}
         Comment=Minecraft underground bot application
-        Icon=${{ env.APP_NAME | lower }}
-        Exec=${{ env.APP_NAME | lower }}
-        StartupWMClass=${{ env.APP_NAME | lower }}
+        Icon=${{ lower(env.APP_NAME) }}
+        Exec=${{ lower(env.APP_NAME) }}
+        StartupWMClass=${{ lower(env.APP_NAME) }}
         Terminal=false
         Type=Application
         Categories=Game;Development;
@@ -91,25 +90,26 @@ jobs:
     - name: Copy icon (if exists)
       run: |
         if [ -f "./icon.png" ]; then
-          cp ./icon.png ./staging_folder/usr/share/pixmaps/${{ env.APP_NAME | lower }}.png
+          cp ./icon.png ./staging_folder/usr/share/pixmaps/${{ lower(env.APP_NAME) }}.png
           echo "Icon copied successfully"
         else
           echo "Warning: icon.png not found, creating placeholder"
-          # Create a small placeholder icon
-          convert -size 64x64 xc:white ./staging_folder/usr/share/pixmaps/${{ env.APP_NAME | lower }}.png 2>/dev/null || \
+          # Create a small placeholder icon (if ImageMagick is available)
+          which convert && convert -size 64x64 xc:white ./staging_folder/usr/share/pixmaps/${{ lower(env.APP_NAME) }}.png || \
           echo "No icon available" > ./staging_folder/usr/share/pixmaps/icon-missing.txt
         fi
         
     - name: Build .deb package
       run: |
         mkdir -p ./deb-package
-        dpkg-deb --root-owner-group --build ./staging_folder/ "./deb-package/${{ env.APP_NAME | lower }}_${{ env.VERSION }}_amd64.deb"
+        dpkg-deb --root-owner-group --build ./staging_folder/ "./deb-package/${{ lower(env.APP_NAME) }}_${{ env.VERSION }}_amd64.deb"
         
     - name: Verify .deb package
       run: |
         cd ./deb-package
-        dpkg -c *.deb
         echo "Package contents:"
+        dpkg -c *.deb
+        echo "Package info:"
         dpkg -I *.deb
         
     - name: Upload Debian Package
@@ -118,9 +118,3 @@ jobs:
         name: ${{ env.APP_NAME }}-Debian
         path: deb-package/
         retention-days: 7
-        
-    - name: Test installation (optional)
-      run: |
-        cd ./deb-package
-        sudo dpkg -i *.deb || true
-        sudo apt-get install -f -y
