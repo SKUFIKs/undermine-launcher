@@ -43,7 +43,7 @@ jobs:
     - name: Create control file
       run: |
         cat > ./staging_folder/DEBIAN/control << EOF
-        Package: ${{ lower(env.APP_NAME) }}
+        Package: undermine
         Version: ${{ env.VERSION }}
         Section: devel
         Priority: optional
@@ -56,11 +56,11 @@ jobs:
         
     - name: Create starter script
       run: |
-        cat > ./staging_folder/usr/bin/${{ lower(env.APP_NAME) }} << 'EOF'
+        cat > ./staging_folder/usr/bin/undermine << 'EOF'
         #!/bin/bash
         exec /usr/lib/UnderMine/UnderMine "$@"
         EOF
-        chmod +x ./staging_folder/usr/bin/${{ lower(env.APP_NAME) }}
+        chmod +x ./staging_folder/usr/bin/undermine
         
     - name: Copy application files
       run: |
@@ -73,13 +73,13 @@ jobs:
         
     - name: Create desktop file
       run: |
-        cat > ./staging_folder/usr/share/applications/${{ lower(env.APP_NAME) }}.desktop << EOF
+        cat > ./staging_folder/usr/share/applications/undermine.desktop << EOF
         [Desktop Entry]
         Name=${{ env.APP_NAME }}
         Comment=Minecraft underground bot application
-        Icon=${{ lower(env.APP_NAME) }}
-        Exec=${{ lower(env.APP_NAME) }}
-        StartupWMClass=${{ lower(env.APP_NAME) }}
+        Icon=undermine
+        Exec=undermine
+        StartupWMClass=undermine
         Terminal=false
         Type=Application
         Categories=Game;Development;
@@ -90,19 +90,19 @@ jobs:
     - name: Copy icon (if exists)
       run: |
         if [ -f "./icon.png" ]; then
-          cp ./icon.png ./staging_folder/usr/share/pixmaps/${{ lower(env.APP_NAME) }}.png
+          cp ./icon.png ./staging_folder/usr/share/pixmaps/undermine.png
           echo "Icon copied successfully"
         else
           echo "Warning: icon.png not found, creating placeholder"
           # Create a small placeholder icon (if ImageMagick is available)
-          which convert && convert -size 64x64 xc:white ./staging_folder/usr/share/pixmaps/${{ lower(env.APP_NAME) }}.png || \
+          which convert && convert -size 64x64 xc:white ./staging_folder/usr/share/pixmaps/undermine.png || \
           echo "No icon available" > ./staging_folder/usr/share/pixmaps/icon-missing.txt
         fi
         
     - name: Build .deb package
       run: |
         mkdir -p ./deb-package
-        dpkg-deb --root-owner-group --build ./staging_folder/ "./deb-package/${{ lower(env.APP_NAME) }}_${{ env.VERSION }}_amd64.deb"
+        dpkg-deb --root-owner-group --build ./staging_folder/ "./deb-package/undermine_${{ env.VERSION }}_amd64.deb"
         
     - name: Verify .deb package
       run: |
