@@ -39,24 +39,24 @@ jobs:
         
     - name: Create control file
       run: |
-        cat > ./staging_folder/DEBIAN/control << EOF
-           Package: undermine
-           Version: ${{ env.VERSION }}
-           Section: devel
-           Priority: optional
-           Architecture: amd64
-           Depends: libc6, libstdc++6, zlib1g
-           Maintainer: SKUF <undermine@example.com>
-           Description: UnderMine Minecraft Bot
-           A Minecraft underground bot application for automation.
-           EOF
+        cat << EOF > ./staging_folder/DEBIAN/control
+         Package: undermine
+         Version: ${{ env.VERSION }}
+         Section: devel
+         Priority: optional
+         Architecture: amd64
+         Depends: libc6, libstdc++6, zlib1g
+         Maintainer: SKUF <undermine@example.com>
+         Description: UnderMine Minecraft Bot
+         A Minecraft underground bot application for automation.
+         EOF
         
     - name: Create starter script
       run: |
         cat > ./staging_folder/usr/bin/undermine << 'EOF'
-          #!/bin/bash
-          exec /usr/lib/undermine/UnderMine "$@"
-          EOF
+         #!/bin/bash
+        exec /usr/lib/undermine/UnderMine "$@"
+        EOF
         chmod +x ./staging_folder/usr/bin/undermine
         
     - name: Copy application files
@@ -68,14 +68,14 @@ jobs:
     - name: Create desktop file
       run: |
         cat > ./staging_folder/usr/share/applications/undermine.desktop << EOF
-          [Desktop Entry]
-          Name=UnderMine
-          Comment=Minecraft underground bot application
-          Icon=undermine
-          Exec=undermine
-          Type=Application
-          Categories=Game;
-          EOF
+         [Desktop Entry]
+        Name=UnderMine
+        Comment=Minecraft underground bot application
+        Icon=undermine
+        Exec=undermine
+        Type=Application
+        Categories=Game;
+        EOF
         
     - name: Copy icon (if exists)
       run: |
