@@ -22,13 +22,14 @@ jobs:
       run: |
         mkdir -p UnderMine.app/Contents/MacOS
         mkdir -p UnderMine.app/Contents/Resources
-        cp -R ./publish/* UnderMine.app/Contents/MacOS/
+        cp -R ./publish/osx-x64/* UnderMine.app/Contents/MacOS/
         if [ -f "./icon.icns" ]; then
           cp ./icon.icns UnderMine.app/Contents/Resources/
         else
           echo "Warning: icon.icns not found, creating empty placeholder"
           touch UnderMine.app/Contents/Resources/icon.icns
         fi
+
 
     - name: Create Info.plist
       run: |
