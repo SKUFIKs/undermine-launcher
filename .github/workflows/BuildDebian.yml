@@ -1,0 +1,77 @@
+name: Build Debian Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  APP_NAME: UnderMine
+
+jobs:
+  build-debian:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Extract version from tag
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+    - name: Install dpkg
+      run: |
+        sudo apt update
+        sudo apt install -y dpkg
+
+    - name: Clean-up
+      run: |
+        rm -rf ./out/ ./staging_folder/ ./deb-package/
+
+    - name: Publish .NET Application
+      run: |
+        dotnet publish -c Release --self-contained true --runtime linux-x64 --output ./out/linux-x64
+
+    - name: Create staging directory structure
+      run: |
+        mkdir -p ./staging_folder/DEBIAN
+        mkdir -p ./staging_folder/usr/bin
+        mkdir -p ./staging_folder/usr/lib/undermine
+        mkdir -p ./staging_folder/usr/share/applications
+        mkdir -p ./staging_folder/usr/share/pixmaps
+
+    - name: Create Debian control file
+      run: |
+        cat > ./staging_folder/DEBIAN/control << EOF
+        Package: undermine
+        Version: ${{ env.VERSION }}
+        Section: games
+        Priority: optional
+        Architecture: amd64
+        Depends: libc6, libstdc++6, zlib1g
+        Maintainer: SKUF @minecraft_urfu_underground_bot
+        Description: UnderMine Minecraft 
+          A Minecraft underground bot application for automation.
+        EOF
+
+    - name: Copy application files
+      run: |
+        cp -a ./out/linux-x64/. ./staging_folder/usr/lib/undermine/
+        chmod -R a+rX ./staging_folder/usr/lib/undermine/
+        chmod +x ./staging_folder/usr/lib/undermine/UnderMine
+
+    - name: Build .deb package
+      run: |
+        mkdir -p ./deb-package
+        dpkg-deb --root-owner-group --build ./staging_folder/ "./deb-package/undermine_${{ env.VERSION }}_amd64.deb"
+
+    - name: Upload Debian Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: undermine-debian-package-${{ env.VERSION }}
+        path: deb-package/
+        retention-days: 7
