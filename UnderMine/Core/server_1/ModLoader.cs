@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,6 +44,8 @@ namespace UnderMine.Core.server_1
             if (string.IsNullOrEmpty(manifestUrl))
                 throw new ArgumentException("Не удалось получить список модов");
 
+            // Создаём безопасную директорию для модов
+            modsDirectory = GetSafeDirectory(modsDirectory);
             Directory.CreateDirectory(modsDirectory);
 
             try
@@ -68,6 +71,29 @@ namespace UnderMine.Core.server_1
                 throw new Exception($"Ошибка установки модов: {ex.Message}", ex);
             }
         }
+
+        private string GetSafeDirectory(string path)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return path; 
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                string home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                string dir = Path.Combine(home, "Library", "Application Support", "UnderMine", Path.GetFileName(path));
+                Directory.CreateDirectory(dir);
+                return dir;
+            }
+            else
+            {
+                string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string dir = Path.Combine(home, ".config", "UnderMine", Path.GetFileName(path));
+                Directory.CreateDirectory(dir);
+                return dir;
+            }
+        }
+
 
         private async Task<JObject> DownloadManifestAsync(string manifestUrl)
         {
@@ -232,7 +258,7 @@ namespace UnderMine.Core.server_1
                                 ? (double)downloadedBytes / totalBytes * 100
                                 : 0;
 
-                            Console.Write($"\r   {modName}: {percent:F1}%   "); // Обновление в одной строке
+                            Console.Write($"\r   {modName}: {percent:F1}%   ");
                         }
                     }
 

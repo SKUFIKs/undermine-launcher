@@ -2,34 +2,60 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using Path = System.IO.Path;
 
-namespace UnderMine.Core.server_1;
-
-public class ProfileGeneration
+namespace UnderMine.Core.server_1
 {
-    public async Task ProfileGenerate()
+    public class ProfileGeneration
     {
-        string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "versions", "TechnoMagic");
-        Directory.CreateDirectory(folderPath);
-        
-        string filePath = Path.Combine(folderPath, "launcher_profiles.json");
-        
-        var profileJson = new
+        public async Task ProfileGenerate()
         {
-            clientToken = Guid.NewGuid().ToString(),
-            profiles = new
+            string folderPath = Path.Combine(GetBaseDirectory(), "versions", "TechnoMagic");
+            Directory.CreateDirectory(folderPath);
+
+            string filePath = Path.Combine(folderPath, "launcher_profiles.json");
+
+            var profileJson = new
             {
-                forge = new
+                clientToken = Guid.NewGuid().ToString(),
+                profiles = new
                 {
-                    name = "forge",
-                    type = "custom",
-                    lastVersionId = "1.20.1-forge-47.4.10"
+                    forge = new
+                    {
+                        name = "forge",
+                        type = "custom",
+                        lastVersionId = "1.20.1-forge-47.4.10"
+                    }
                 }
+            };
+
+            string jsonString = JsonSerializer.Serialize(profileJson, new JsonSerializerOptions { WriteIndented = true });
+            await File.WriteAllTextAsync(filePath, jsonString);
+        }
+
+        private static string GetBaseDirectory()
+        {
+            const string AppName = "UnderMine";
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return AppDomain.CurrentDomain.BaseDirectory;
             }
-        };
-        
-        string jsonString = JsonSerializer.Serialize(profileJson, new JsonSerializerOptions { WriteIndented = true });
-        await File.WriteAllTextAsync(filePath, jsonString);
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                string home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                string dir = Path.Combine(home, "Library", "Application Support", AppName);
+                Directory.CreateDirectory(dir);
+                return dir;
+            }
+            else
+            {
+                string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string dir = Path.Combine(home, ".config", AppName);
+                Directory.CreateDirectory(dir);
+                return dir;
+            }
+        }
     }
 }

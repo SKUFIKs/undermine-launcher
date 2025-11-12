@@ -9,6 +9,7 @@ using CmlLib.Core.ProcessBuilder;
 using Newtonsoft.Json.Linq;
 using UnderMine.Models;
 using UnderMine.Services;
+using System.Runtime.InteropServices;
 
 namespace UnderMine.Core.server_1
 {
@@ -19,20 +20,44 @@ namespace UnderMine.Core.server_1
         private readonly string _baseDirectory;
         private readonly string _modsDirectory;
 
-
         public event Action<string>? OnMessage;
         public event Action<string, double, string>? OnProgress;
 
         public InstalGame1Server(ServerInfo serverInfo)
         {
             _serverInfo = serverInfo ?? throw new ArgumentNullException(nameof(serverInfo));
-            _baseDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "versions", "TechnoMagic");
+            
+            _baseDirectory = Path.Combine(GetBaseDirectory(), "versions", "TechnoMagic");
             _modsDirectory = Path.Combine(_baseDirectory, "mods");
 
             Directory.CreateDirectory(_baseDirectory);
             Directory.CreateDirectory(_modsDirectory);
 
             _launcher = new MinecraftLauncher(new MinecraftPath(_baseDirectory));
+        }
+
+        private static string GetBaseDirectory()
+        {
+            const string AppName = "UnderMine";
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return AppDomain.CurrentDomain.BaseDirectory;
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                string home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                string dir = Path.Combine(home, "Library", "Application Support", AppName);
+                Directory.CreateDirectory(dir);
+                return dir;
+            }
+            else
+            {
+                string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string dir = Path.Combine(home, ".config", AppName);
+                Directory.CreateDirectory(dir);
+                return dir;
+            }
         }
 
         private void ReportStage(string message, double progress)
@@ -51,14 +76,10 @@ namespace UnderMine.Core.server_1
         public async Task InstallAndRunAsync()
         {
             var settings = await UserData.Load() ?? throw new InvalidOperationException("User settings not found");
-            string mcVersion = _serverInfo.VersionMc1 ??
-                               throw new InvalidOperationException("Minecraft version not specified");
-            string forgeVersion = _serverInfo.ForgeV1 ??
-                                  throw new InvalidOperationException("Forge version not specified");
-            string manifestUrl = _serverInfo.ManifestLink1 ??
-                                 throw new InvalidOperationException("Manifest URL not specified");
-            string installerLink = _serverInfo.InstallerLink ??
-                                   throw new InvalidOperationException("Installer link not specified");
+            string mcVersion = _serverInfo.VersionMc1 ?? throw new InvalidOperationException("Minecraft version not specified");
+            string forgeVersion = _serverInfo.ForgeV1 ?? throw new InvalidOperationException("Forge version not specified");
+            string manifestUrl = _serverInfo.ManifestLink1 ?? throw new InvalidOperationException("Manifest URL not specified");
+            string installerLink = _serverInfo.InstallerLink ?? throw new InvalidOperationException("Installer link not specified");
 
             ReportStage("Подготовка установки...", 0);
             await InstallVanillaMinecraft(mcVersion);
@@ -67,10 +88,7 @@ namespace UnderMine.Core.server_1
             await LoadAndInstallForge(mcVersion, forgeVersion, installerLink);
 
             ReportStage("Установка модов...", 50);
-            
-            var modsTask = InstallMods(manifestUrl);
-
-            await Task.WhenAll(modsTask);
+            await InstallMods(manifestUrl);
 
             ReportStage("Загрузка конфигов...", 90);
             await LoadConfigsAndSettings();
@@ -79,7 +97,6 @@ namespace UnderMine.Core.server_1
             await LaunchGame(mcVersion, forgeVersion, settings.MemorySettings);
 
             ReportStage("Установка завершена", 100);
-            Console.WriteLine($"");
         }
 
         private async Task InstallVanillaMinecraft(string mcVersion)
@@ -91,8 +108,7 @@ namespace UnderMine.Core.server_1
             string clientJson = Path.Combine(versionDir, mcVersion + ".json");
 
             using var httpClient = new HttpClient();
-            string manifestJson =
-                await httpClient.GetStringAsync("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json");
+            string manifestJson = await httpClient.GetStringAsync("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json");
             var manifest = JObject.Parse(manifestJson);
             var versionObj = manifest["versions"].First(v => v["id"]!.ToString() == mcVersion);
             string versionUrl = versionObj["url"]!.ToString();
@@ -119,7 +135,7 @@ namespace UnderMine.Core.server_1
 
             string installerName = $"forge-{mcVersion}-{forgeVersion}-installer.jar";
             string installerPath = Path.Combine(tempDir, installerName);
-            
+
             if (!File.Exists(installerPath))
             {
                 using var client = new HttpClient();
@@ -144,62 +160,36 @@ namespace UnderMine.Core.server_1
                     CreateNoWindow = true
                 };
 
-                var process = new System.Diagnostics.Process
-                {
-                    StartInfo = psi,
-                    EnableRaisingEvents = true
-                };
+                var process = new System.Diagnostics.Process { StartInfo = psi, EnableRaisingEvents = true };
 
-                process.OutputDataReceived += (s, e) =>
-                {
-                    if (!string.IsNullOrWhiteSpace(e.Data))
-                    {
-                        Console.WriteLine($"[Forge] {e.Data}");
-                    }
-                };
-
-                process.ErrorDataReceived += (s, e) =>
-                {
-                    if (!string.IsNullOrWhiteSpace(e.Data))
-                    {
-                        Console.WriteLine($"[Forge:Error] {e.Data}");
-                    }
-                };
+                process.OutputDataReceived += (s, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) Console.WriteLine($"[Forge] {e.Data}"); };
+                process.ErrorDataReceived += (s, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) Console.WriteLine($"[Forge:Error] {e.Data}"); };
 
                 process.Start();
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
-                
+
                 var timeoutTask = Task.Delay(TimeSpan.FromMinutes(5));
                 var waitTask = process.WaitForExitAsync();
 
                 var completedTask = await Task.WhenAny(waitTask, timeoutTask);
                 if (completedTask == timeoutTask)
                 {
-                    try
-                    {
-                        process.Kill(true);
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
+                    try { process.Kill(true); } catch { }
                     throw new TimeoutException("Установка Forge заняла слишком много времени и была прервана.");
                 }
-                
+
                 if (process.ExitCode != 0)
                     throw new Exception($"Forge installer завершился с ошибкой (код {process.ExitCode})");
             }
 
             Log("Игра установлена");
         }
-        
+
         private async Task InstallMods(string manifestUrl)
         {
             var modInstaller = new ModLoader();
             modInstaller.OnMessage += msg => OnMessage?.Invoke(msg);
-            
             modInstaller.OnProgress += (_, percent, _) =>
             {
                 double globalProgress = 50 + (percent * 0.25);
@@ -207,10 +197,8 @@ namespace UnderMine.Core.server_1
             };
 
             await modInstaller.InstallOrUpdateMods(_modsDirectory, manifestUrl);
-
             OnProgress?.Invoke("Установка модов завершена", 75, "");
         }
-
 
         private async Task LoadConfigsAndSettings()
         {
@@ -218,6 +206,7 @@ namespace UnderMine.Core.server_1
             await configLoader.ConfLoader();
             await configLoader.ShaderpacksLoader();
             await configLoader.ScriptsLoader();
+
             var settingsLoader = new SettingsLoader();
             await settingsLoader.LoadSettings();
         }
@@ -243,10 +232,8 @@ namespace UnderMine.Core.server_1
 
             var processWrapper = new ProcessWrapper(forgeProcess);
             processWrapper.StartWithEvents();
-
             await processWrapper.WaitForExitTaskAsync();
         }
-
 
         private async Task DownloadFileAsync(HttpClient client, string url, string path)
         {
