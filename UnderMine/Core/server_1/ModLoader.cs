@@ -82,14 +82,14 @@ namespace UnderMine.Core.server_1
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 string home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                string dir = Path.Combine(home, "Library", "Application Support", "UnderMine", Path.GetFileName(path));
+                string dir = Path.Combine(home, "Library", "Application Support", "UnderMine", "versions", "TechnoMagic", Path.GetFileName(path));
                 Directory.CreateDirectory(dir);
                 return dir;
             }
             else
             {
                 string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string dir = Path.Combine(home, ".config", "UnderMine", Path.GetFileName(path));
+                string dir = Path.Combine(home, ".config", "UnderMine", "versions", "TechnoMagic", Path.GetFileName(path));
                 Directory.CreateDirectory(dir);
                 return dir;
             }
