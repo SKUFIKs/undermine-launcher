@@ -356,6 +356,10 @@ public partial class MenuWindow : Window
             Console.WriteLine($"Не удалось открыть директорию настроек: {ex.Message}");
         }
     }
+    private void LogsSettings_OnClick (object? sender, RoutedEventArgs e)
+    {
+
+    }
 
     private static string GetBaseDirectory()
     {
@@ -372,7 +376,6 @@ public partial class MenuWindow : Window
         }
         else
         {
-            // Linux
             string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string dir = Path.Combine(home, ".config", AppName);
             Directory.CreateDirectory(dir);

@@ -14,7 +14,6 @@ namespace UnderMine.Network.AuthService
         private readonly ContextData _contextData;
         private readonly HttpClient _httpClient;
 
-        // Backwards-compatible constructor: create HttpClient if caller doesn't provide one
         public IdentityService(ContextData contextData) : this(contextData, new HttpClient { BaseAddress = new Uri(contextData.BaseUrl), Timeout = TimeSpan.FromSeconds(30) })
         {
         }
@@ -39,7 +38,9 @@ namespace UnderMine.Network.AuthService
         {
             try
             {
-                var payload = new { login = username, password = password };
+                string deviceId = SystemInformation.GetStableDeviceId();
+
+                var payload = new { Login = username, Password = password, DeviceId = deviceId };  
 
                 using var response = await _httpClient.PostAsJsonAsync(_contextData.LogApiKey, payload, cancellationToken).ConfigureAwait(false);
 
@@ -75,7 +76,7 @@ namespace UnderMine.Network.AuthService
             try
             {
                 string deviceId = SystemInformation.GetStableDeviceId();
-                var payload = new { login = username, password = password, deviceID = deviceId };
+                var payload = new { Login = username, Password = password, DeviceId = deviceId };
 
                 using var response = await _httpClient.PostAsJsonAsync(_contextData.RegApiKey, payload, cancellationToken).ConfigureAwait(false);
 

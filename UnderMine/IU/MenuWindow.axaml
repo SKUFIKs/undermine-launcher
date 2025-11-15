@@ -219,9 +219,9 @@
                     <Panel>
                         <Label Classes="LiteTitle" Margin="22,235,0,0" Content="Логи игры:" FontSize="15"></Label>
                         <Panel VerticalAlignment="Top" HorizontalAlignment="Left" Width="442" Margin="42,263,0,0">
-                            <TextBox></TextBox>
+                            <TextBox x:Name="LogsPath" ></TextBox>
                         </Panel>
-                        <Button HorizontalAlignment="Left" Content="Обзор" HorizontalContentAlignment="Center"
+                        <Button HorizontalAlignment="Left" x:Name ="LogsSettings" Click="LogsSettings_OnClick" Content="Обзор" HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="500,263,0,0"
                                 Width="90" Background="SlateGray"
                                 Height="32">
