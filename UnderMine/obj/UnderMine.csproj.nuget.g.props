@@ -7,18 +7,31 @@
     <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
     <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\Дмитрий\.nuget\packages\;C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages</NuGetPackageFolders>
     <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
-    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.14.0</NuGetToolVersion>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">7.0.0</NuGetToolVersion>
   </PropertyGroup>
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <SourceRoot Include="C:\Users\Дмитрий\.nuget\packages\" />
     <SourceRoot Include="C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(Language)' == 'C#' AND '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Compile Include="$(NuGetPackageRoot)microsoft.visualstudio.diagnosticshub.benchmarkdotnetdiagnosers\18.3.36714.1\contentFiles\cs\any\BenchmarkProfilerAgentConfig.g.cs" Condition="Exists('$(NuGetPackageRoot)microsoft.visualstudio.diagnosticshub.benchmarkdotnetdiagnosers\18.3.36714.1\contentFiles\cs\any\BenchmarkProfilerAgentConfig.g.cs')">
+      <NuGetPackageId>Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers</NuGetPackageId>
+      <NuGetPackageVersion>18.3.36714.1</NuGetPackageVersion>
+      <NuGetItemType>Compile</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>BenchmarkProfilerAgentConfig.g.cs</Link>
+    </Compile>
+  </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)skiasharp.nativeassets.webassembly\2.88.9\buildTransitive\netstandard1.0\SkiaSharp.NativeAssets.WebAssembly.props" Condition="Exists('$(NuGetPackageRoot)skiasharp.nativeassets.webassembly\2.88.9\buildTransitive\netstandard1.0\SkiaSharp.NativeAssets.WebAssembly.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.diagnostics.tracing.traceevent\3.1.21\buildTransitive\Microsoft.Diagnostics.Tracing.TraceEvent.props" Condition="Exists('$(NuGetPackageRoot)microsoft.diagnostics.tracing.traceevent\3.1.21\buildTransitive\Microsoft.Diagnostics.Tracing.TraceEvent.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.codeanalysis.analyzers\3.11.0\buildTransitive\Microsoft.CodeAnalysis.Analyzers.props" Condition="Exists('$(NuGetPackageRoot)microsoft.codeanalysis.analyzers\3.11.0\buildTransitive\Microsoft.CodeAnalysis.Analyzers.props')" />
     <Import Project="$(NuGetPackageRoot)harfbuzzsharp.nativeassets.webassembly\8.3.1.1\buildTransitive\netstandard1.0\HarfBuzzSharp.NativeAssets.WebAssembly.props" Condition="Exists('$(NuGetPackageRoot)harfbuzzsharp.nativeassets.webassembly\8.3.1.1\buildTransitive\netstandard1.0\HarfBuzzSharp.NativeAssets.WebAssembly.props')" />
     <Import Project="$(NuGetPackageRoot)avalonia\11.3.7\buildTransitive\Avalonia.props" Condition="Exists('$(NuGetPackageRoot)avalonia\11.3.7\buildTransitive\Avalonia.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgMicrosoft_CodeAnalysis_Analyzers Condition=" '$(PkgMicrosoft_CodeAnalysis_Analyzers)' == '' ">C:\Users\Дмитрий\.nuget\packages\microsoft.codeanalysis.analyzers\3.11.0</PkgMicrosoft_CodeAnalysis_Analyzers>
     <PkgAvalonia_BuildServices Condition=" '$(PkgAvalonia_BuildServices)' == '' ">C:\Users\Дмитрий\.nuget\packages\avalonia.buildservices\11.3.1</PkgAvalonia_BuildServices>
     <PkgAvalonia Condition=" '$(PkgAvalonia)' == '' ">C:\Users\Дмитрий\.nuget\packages\avalonia\11.3.7</PkgAvalonia>
   </PropertyGroup>

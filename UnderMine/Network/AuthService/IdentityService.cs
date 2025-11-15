@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
+using System.Net.Http.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using UnderMine.Models;
 using UnderMine.Services;
@@ -14,70 +14,55 @@ namespace UnderMine.Network.AuthService
         private readonly ContextData _contextData;
         private readonly HttpClient _httpClient;
 
-        public IdentityService(ContextData contextData)
+        // Backwards-compatible constructor: create HttpClient if caller doesn't provide one
+        public IdentityService(ContextData contextData) : this(contextData, new HttpClient { BaseAddress = new Uri(contextData.BaseUrl), Timeout = TimeSpan.FromSeconds(30) })
         {
-            _contextData = contextData ?? throw new ArgumentNullException(nameof(contextData));
-
-            _httpClient = new HttpClient()
-            {
-                BaseAddress = new Uri(_contextData.BaseUrl),
-                Timeout = TimeSpan.FromSeconds(30)
-            };
-
-            _httpClient.DefaultRequestHeaders.Accept.Clear();
-            _httpClient.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json")
-            );
         }
 
-        public async Task<LoginResult> Login(string username, string password)
+        public IdentityService(ContextData contextData, HttpClient httpClient)
         {
-            string logUrl = _contextData.BaseUrl + _contextData.LogApiKey;
+            _contextData = contextData ?? throw new ArgumentNullException(nameof(contextData));
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
+            if (_httpClient.BaseAddress == null)
+                _httpClient.BaseAddress = new Uri(_contextData.BaseUrl);
+
+            // Ensure JSON accept header
+            if (!_httpClient.DefaultRequestHeaders.Accept.Contains(new MediaTypeWithQualityHeaderValue("application/json")))
+            {
+                _httpClient.DefaultRequestHeaders.Accept.Clear();
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            }
+        }
+
+        public async Task<LoginResult> Login(string username, string password, CancellationToken cancellationToken = default)
+        {
             try
             {
-                var loginData = new { Login = username, Password = password };
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var json = JsonSerializer.Serialize(loginData);
+                var payload = new { login = username, password = password };
 
-
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync(logUrl, content);
-                
+                using var response = await _httpClient.PostAsJsonAsync(_contextData.LogApiKey, payload, cancellationToken).ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-
-                    var tokenResponse = JsonSerializer.Deserialize<LoginResult>(responseContent, options);
-
+                    var tokenResponse = await response.Content.ReadFromJsonAsync<LoginResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
                     if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.Token))
                     {
-                        return new LoginResult
-                        {
-                            Success = false,
-                            ErrorMessage = $"Error: empty token. Code {response.StatusCode}",
-                        };
+                        return new LoginResult { Success = false, ErrorMessage = $"Error: empty token. Code {(int)response.StatusCode}" };
                     }
-                    
+
                     return new LoginResult { Success = true, Token = tokenResponse.Token };
                 }
-                else
-                {
-                    return new LoginResult
-                    {
-                        Success = false,
-                        ErrorMessage = response.StatusCode switch
-                        {
-                            System.Net.HttpStatusCode.BadRequest => "Не верный запрос (400)",
-                            System.Net.HttpStatusCode.Unauthorized => "Неправильный логин или пароль (401)",
-                            System.Net.HttpStatusCode.Forbidden => "Доступ запрещён (403)",
-                            System.Net.HttpStatusCode.NotFound => "Ресурс не найден (404)",
-                            System.Net.HttpStatusCode.InternalServerError => "Ошибка сервера (500)",
-                            _ => $"Неизвестная ошибка: {(int)response.StatusCode}"
-                        },
-                    };
-                }
+
+                return new LoginResult { Success = false, ErrorMessage = MapStatusToMessage(response.StatusCode) };
+            }
+            catch (HttpRequestException ex)
+            {
+                return new LoginResult { Success = false, ErrorMessage = $"Ошибка сети: {ex.Message}" };
+            }
+            catch (TaskCanceledException)
+            {
+                return new LoginResult { Success = false, ErrorMessage = "Превышено время ожидания" };
             }
             catch (Exception ex)
             {
@@ -85,41 +70,30 @@ namespace UnderMine.Network.AuthService
             }
         }
 
-
-        public async Task<LoginResult> Register(string username, string password)
+        public async Task<LoginResult> Register(string username, string password, CancellationToken cancellationToken = default)
         {
-            string regUrl = _contextData.BaseUrl + _contextData.RegApiKey;
-            string deviceId = SystemInformation.GetStableDeviceId();
-
             try
             {
-                var registerData = new { Login = username, Password = password, deviceID = deviceId };
-                var json = JsonSerializer.Serialize(registerData);
+                string deviceId = SystemInformation.GetStableDeviceId();
+                var payload = new { login = username, password = password, deviceID = deviceId };
 
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync(regUrl, content);
-                var responseBody = await response.Content.ReadAsStringAsync();
-
-                string? apiMessage = null;
-                try
-                {
-                    using var doc = JsonDocument.Parse(responseBody);
-                    if (doc.RootElement.TryGetProperty("message", out var msgProp))
-                        apiMessage = msgProp.GetString();
-                }
-                catch
-                {
-                    /* тело не JSON — игнорируем */
-                }
+                using var response = await _httpClient.PostAsJsonAsync(_contextData.RegApiKey, payload, cancellationToken).ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return new LoginResult
-                    {
-                        Success = true,
-                        ErrorMessage = string.Empty
-                    };
+                    return new LoginResult { Success = true, ErrorMessage = string.Empty };
                 }
+
+                // Try to extract API message
+                string responseBody = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+                string? apiMessage = null;
+                try
+                {
+                    using var doc = System.Text.Json.JsonDocument.Parse(responseBody);
+                    if (doc.RootElement.TryGetProperty("message", out var msgProp))
+                        apiMessage = msgProp.GetString();
+                }
+                catch { }
 
                 string fallbackError = response.StatusCode switch
                 {
@@ -133,34 +107,31 @@ namespace UnderMine.Network.AuthService
                 return new LoginResult
                 {
                     Success = false,
-                    ErrorMessage = $"{fallbackError} ({(int)response.StatusCode})"
-                                   + (apiMessage != null ? $": {apiMessage}" : "")
+                    ErrorMessage = apiMessage != null ? $"{fallbackError} ({(int)response.StatusCode}): {apiMessage}" : $"{fallbackError} ({(int)response.StatusCode})"
                 };
             }
             catch (HttpRequestException ex)
             {
-                return new LoginResult
-                {
-                    Success = false,
-                    ErrorMessage = $"Ошибка сети: {ex.Message}"
-                };
+                return new LoginResult { Success = false, ErrorMessage = $"Ошибка сети: {ex.Message}" };
             }
             catch (TaskCanceledException)
             {
-                return new LoginResult
-                {
-                    Success = false,
-                    ErrorMessage = "Превышено время ожидания"
-                };
+                return new LoginResult { Success = false, ErrorMessage = "Превышено время ожидания" };
             }
             catch (Exception ex)
             {
-                return new LoginResult
-                {
-                    Success = false,
-                    ErrorMessage = $"Неизвестная ошибка: {ex.Message}"
-                };
+                return new LoginResult { Success = false, ErrorMessage = $"Неизвестная ошибка: {ex.Message}" };
             }
         }
+
+        private static string MapStatusToMessage(System.Net.HttpStatusCode status) => status switch
+        {
+            System.Net.HttpStatusCode.BadRequest => "Не верный запрос (400)",
+            System.Net.HttpStatusCode.Unauthorized => "Неправильный логин или пароль (401)",
+            System.Net.HttpStatusCode.Forbidden => "Доступ запрещён (403)",
+            System.Net.HttpStatusCode.NotFound => "Ресурс не найден (404)",
+            System.Net.HttpStatusCode.InternalServerError => "Ошибка сервера (500)",
+            _ => $"Неизвестная ошибка: {(int)status}"
+        };
     }
 }

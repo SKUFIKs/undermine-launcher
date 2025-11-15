@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System.Buffers;
 
 namespace UnderMine.Core.server_1
 {
@@ -33,6 +34,7 @@ namespace UnderMine.Core.server_1
         private readonly object _progressLock = new();
         private double _globalProgress;
 
+        private static readonly SemaphoreSlim _validationSemaphore = new SemaphoreSlim(Math.Max(1, Environment.ProcessorCount / 2));
 
         public ModLoader()
         {
@@ -44,7 +46,6 @@ namespace UnderMine.Core.server_1
             if (string.IsNullOrEmpty(manifestUrl))
                 throw new ArgumentException("Не удалось получить список модов");
 
-            // Создаём безопасную директорию для модов
             modsDirectory = GetSafeDirectory(modsDirectory);
             Directory.CreateDirectory(modsDirectory);
 
@@ -172,6 +173,7 @@ namespace UnderMine.Core.server_1
             var modFiles = Directory.GetFiles(modsDirectory, "*.jar");
             var corruptedMods = new List<string>();
 
+            // Validate sequentially to avoid too many concurrent CPU validations
             foreach (var modFile in modFiles)
             {
                 if (!await ValidateModIntegrity(modFile))
@@ -189,13 +191,13 @@ namespace UnderMine.Core.server_1
             string tmp = mod.FilePath + ".tmp";
             try
             {
-                await DownloadModAsync(mod.Url!, tmp);
+                // Download and compute hash during download
+                string computedHash = await DownloadModAsync(mod.Url!, tmp);
 
                 if (!string.IsNullOrEmpty(mod.ExpectedHash))
                 {
-                    string hash = await ComputeSha256Async(tmp);
-                    if (!hash.Equals(mod.ExpectedHash, StringComparison.OrdinalIgnoreCase))
-                        throw new Exception($"Hash mismatch (ожидалось {mod.ExpectedHash}, получено {hash})");
+                    if (!computedHash.Equals(mod.ExpectedHash, StringComparison.OrdinalIgnoreCase))
+                        throw new Exception($"Hash mismatch (ожидалось {mod.ExpectedHash}, получено {computedHash})");
                 }
 
                 if (!await ValidateModIntegrity(tmp))
@@ -221,7 +223,7 @@ namespace UnderMine.Core.server_1
             return !hash.Equals(mod.ExpectedHash, StringComparison.OrdinalIgnoreCase);
         }
 
-        private async Task DownloadModAsync(string url, string dest, int retries = 3)
+        private async Task<string> DownloadModAsync(string url, string dest, int retries = 3)
         {
             string modName = Path.GetFileName(dest);
 
@@ -239,41 +241,50 @@ namespace UnderMine.Core.server_1
 
                     await using var src = await resp.Content.ReadAsStreamAsync();
                     await using var dst = new FileStream(dest, FileMode.Create, FileAccess.Write, FileShare.None,
-                        BufferSize, true);
+                        BufferSize, FileOptions.Asynchronous | FileOptions.SequentialScan);
 
-                    var buffer = new byte[BufferSize];
-                    int bytesRead;
-                    var sw = Stopwatch.StartNew();
-
-                    while ((bytesRead = await src.ReadAsync(buffer)) > 0)
+                    var buffer = ArrayPool<byte>.Shared.Rent(BufferSize);
+                    try
                     {
-                        await dst.WriteAsync(buffer.AsMemory(0, bytesRead));
-                        downloadedBytes += bytesRead;
-                        
-                        if (sw.ElapsedMilliseconds >= 300)
+                        int bytesRead;
+                        var sw = Stopwatch.StartNew();
+
+                        using var hasher = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+                        while ((bytesRead = await src.ReadAsync(buffer, 0, buffer.Length)) > 0)
                         {
-                            sw.Restart();
+                            hasher.AppendData(buffer, 0, bytesRead);
+                            await dst.WriteAsync(buffer.AsMemory(0, bytesRead));
+                            downloadedBytes += bytesRead;
 
-                            double percent = totalBytes > 0
-                                ? (double)downloadedBytes / totalBytes * 100
-                                : 0;
+                            if (sw.ElapsedMilliseconds >= 300)
+                            {
+                                sw.Restart();
 
-                            Console.Write($"\r   {modName}: {percent:F1}%   ");
+                                double percent = totalBytes > 0
+                                    ? (double)downloadedBytes / totalBytes * 100
+                                    : 0;
+
+                                Console.Write($"\r   {modName}: {percent:F1}%   ");
+                            }
                         }
-                    }
 
-                    Console.WriteLine($"\r✓ {modName} загружен успешно.           ");
-                    
-                    lock (_progressLock)
-                    {
-                        _completedMods++;
-                        double totalProgress = (double)_completedMods / _totalMods;
+                        Console.WriteLine($"\r✓ {modName} загружен успешно.           ");
+
+                        int completed = Interlocked.Increment(ref _completedMods);
+                        double totalProgress = (double)completed / Math.Max(1, _totalMods);
                         _globalProgress = totalProgress;
-                    }
 
-                    double finalMapped = 50 + _globalProgress * 40;
-                    OnProgress?.Invoke("Установка модов...", finalMapped, "InstallingMods");
-                    return;
+                        double finalMapped = 50 + _globalProgress * 40;
+                        OnProgress?.Invoke("Установка модов...", finalMapped, "InstallingMods");
+
+                        var hash = hasher.GetHashAndReset();
+                        return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(buffer);
+                    }
                 }
                 catch when (i < retries)
                 {
@@ -286,27 +297,48 @@ namespace UnderMine.Core.server_1
                     throw;
                 }
             }
+
+            throw new Exception("Не удалось загрузить мод после нескольких попыток.");
         }
 
         private async Task<string> ComputeSha256Async(string path)
         {
-            using var sha = SHA256.Create();
+            using var sha = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
             await using var fs = File.OpenRead(path);
-            var hash = await sha.ComputeHashAsync(fs);
-            return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-        }
-
-        private Task<bool> ValidateModIntegrity(string file)
-        {
+            var buffer = ArrayPool<byte>.Shared.Rent(BufferSize);
             try
             {
-                if (!File.Exists(file)) return Task.FromResult(false);
+                int bytesRead;
+                while ((bytesRead = await fs.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                {
+                    sha.AppendData(buffer, 0, bytesRead);
+                }
+
+                var hash = sha.GetHashAndReset();
+                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
+            }
+        }
+
+        private async Task<bool> ValidateModIntegrity(string file)
+        {
+            await _validationSemaphore.WaitAsync();
+            try
+            {
+                if (!File.Exists(file)) return false;
                 using var zip = ZipFile.OpenRead(file);
-                return Task.FromResult(zip.Entries.Count > 0);
+                return zip.Entries.Count > 0;
             }
             catch
             {
-                return Task.FromResult(false);
+                return false;
+            }
+            finally
+            {
+                _validationSemaphore.Release();
             }
         }
 

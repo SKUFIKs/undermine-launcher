@@ -27,8 +27,11 @@
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="BenchmarkDotNet" Version="0.15.6" />
         <PackageReference Include="CmlLib.Core" Version="4.0.6" />
         <PackageReference Include="CmlLib.Core.Installer.Forge" Version="1.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+        <PackageReference Include="Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers" Version="18.3.36714.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="ReactiveUI" Version="20.4.1" />
         <PackageReference Include="System.Management" Version="10.0.0-preview.7.25380.108" />

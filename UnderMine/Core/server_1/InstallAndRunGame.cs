@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using CmlLib.Core;
 using CmlLib.Core.Auth;
@@ -13,20 +14,23 @@ using System.Runtime.InteropServices;
 
 namespace UnderMine.Core.server_1
 {
-    public class InstalGame1Server
+    public class InstalGame1Server : IDisposable
     {
         private readonly ServerInfo _serverInfo;
         private readonly MinecraftLauncher _launcher;
         private readonly string _baseDirectory;
         private readonly string _modsDirectory;
+        private readonly HttpClient _httpClient;
+        private readonly bool _disposeHttpClient;
 
         public event Action<string>? OnMessage;
         public event Action<string, double, string>? OnProgress;
 
-        public InstalGame1Server(ServerInfo serverInfo)
+        // Support IHttpClientFactory via httpClientFactory parameter. If provided, factory manages lifetime and we must not dispose the client.
+        public InstalGame1Server(ServerInfo serverInfo, IHttpClientFactory? httpClientFactory = null, HttpClient? httpClient = null)
         {
             _serverInfo = serverInfo ?? throw new ArgumentNullException(nameof(serverInfo));
-            
+
             _baseDirectory = Path.Combine(GetBaseDirectory(), "versions", "TechnoMagic");
             _modsDirectory = Path.Combine(_baseDirectory, "mods");
 
@@ -34,6 +38,22 @@ namespace UnderMine.Core.server_1
             Directory.CreateDirectory(_modsDirectory);
 
             _launcher = new MinecraftLauncher(new MinecraftPath(_baseDirectory));
+
+            if (httpClientFactory != null)
+            {
+                _httpClient = httpClientFactory.CreateClient();
+                _disposeHttpClient = false;
+            }
+            else if (httpClient is not null)
+            {
+                _httpClient = httpClient;
+                _disposeHttpClient = false;
+            }
+            else
+            {
+                _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(120) };
+                _disposeHttpClient = true;
+            }
         }
 
         private static string GetBaseDirectory()
@@ -73,8 +93,10 @@ namespace UnderMine.Core.server_1
             OnMessage?.Invoke(message);
         }
 
-        public async Task InstallAndRunAsync()
+        public async Task InstallAndRunAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var settings = await UserData.Load() ?? throw new InvalidOperationException("User settings not found");
             string mcVersion = _serverInfo.VersionMc1 ?? throw new InvalidOperationException("Minecraft version not specified");
             string forgeVersion = _serverInfo.ForgeV1 ?? throw new InvalidOperationException("Forge version not specified");
@@ -82,51 +104,62 @@ namespace UnderMine.Core.server_1
             string installerLink = _serverInfo.InstallerLink ?? throw new InvalidOperationException("Installer link not specified");
 
             ReportStage("Подготовка установки...", 0);
-            await InstallVanillaMinecraft(mcVersion);
+            await InstallVanillaMinecraft(mcVersion, cancellationToken).ConfigureAwait(false);
 
             ReportStage("Установка игры...", 25);
-            await LoadAndInstallForge(mcVersion, forgeVersion, installerLink);
+            await LoadAndInstallForge(mcVersion, forgeVersion, installerLink, cancellationToken).ConfigureAwait(false);
 
             ReportStage("Установка модов...", 50);
-            await InstallMods(manifestUrl);
+            await InstallMods(manifestUrl, cancellationToken).ConfigureAwait(false);
 
             ReportStage("Загрузка конфигов...", 90);
-            await LoadConfigsAndSettings();
+            await LoadConfigsAndSettings(cancellationToken).ConfigureAwait(false);
 
             ReportStage("Запуск игры...", 100);
-            await LaunchGame(mcVersion, forgeVersion, settings.MemorySettings);
+            await LaunchGame(mcVersion, forgeVersion, settings.MemorySettings, cancellationToken).ConfigureAwait(false);
 
             ReportStage("Установка завершена", 100);
         }
 
-        private async Task InstallVanillaMinecraft(string mcVersion)
+        private async Task InstallVanillaMinecraft(string mcVersion, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             string versionDir = Path.Combine(_baseDirectory, mcVersion);
             Directory.CreateDirectory(versionDir);
 
             string clientJar = Path.Combine(versionDir, mcVersion + ".jar");
             string clientJson = Path.Combine(versionDir, mcVersion + ".json");
 
-            using var httpClient = new HttpClient();
-            string manifestJson = await httpClient.GetStringAsync("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json");
-            var manifest = JObject.Parse(manifestJson);
-            var versionObj = manifest["versions"].First(v => v["id"]!.ToString() == mcVersion);
-            string versionUrl = versionObj["url"]!.ToString();
+            using (var response = await _httpClient.GetAsync("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json", cancellationToken).ConfigureAwait(false))
+            {
+                response.EnsureSuccessStatusCode();
+                string manifestJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var manifest = JObject.Parse(manifestJson);
+                var versionObj = manifest["versions"].FirstOrDefault(v => v["id"]?.ToString() == mcVersion)
+                                 ?? throw new InvalidOperationException($"Version {mcVersion} not found in manifest");
+                string versionUrl = versionObj["url"]!.ToString();
 
-            string versionJson = await httpClient.GetStringAsync(versionUrl);
-            File.WriteAllText(clientJson, versionJson);
+                using var versionResp = await _httpClient.GetAsync(versionUrl, cancellationToken).ConfigureAwait(false);
+                versionResp.EnsureSuccessStatusCode();
+                string versionJson = await versionResp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                await File.WriteAllTextAsync(clientJson, versionJson, cancellationToken).ConfigureAwait(false);
 
-            var versionJ = JObject.Parse(versionJson);
-            string jarUrl = versionJ["downloads"]["client"]["url"]!.ToString();
+                var versionJ = JObject.Parse(versionJson);
+                string jarUrl = versionJ["downloads"]?["client"]?["url"]?.ToString()
+                                ?? throw new InvalidOperationException("Client jar URL not found in version manifest");
 
-            if (!File.Exists(clientJar))
-                await DownloadFileAsync(httpClient, jarUrl, clientJar);
+                if (!File.Exists(clientJar))
+                    await DownloadFileAsync(_httpClient, jarUrl, clientJar, cancellationToken).ConfigureAwait(false);
+            }
 
             OnMessage?.Invoke("Vanilla Minecraft установлен");
         }
 
-        private async Task LoadAndInstallForge(string mcVersion, string forgeVersion, string installerLink)
+        private async Task LoadAndInstallForge(string mcVersion, string forgeVersion, string installerLink, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             Log($"Установка Forge {forgeVersion} для {mcVersion}...");
             string forgeDirName = $"{mcVersion}-forge-{forgeVersion}";
             string forgeDir = Path.Combine(_baseDirectory, forgeDirName);
@@ -138,9 +171,8 @@ namespace UnderMine.Core.server_1
 
             if (!File.Exists(installerPath))
             {
-                using var client = new HttpClient();
                 Log("Загрузка установщика...");
-                await DownloadFileAsync(client, installerLink, installerPath);
+                await DownloadFileAsync(_httpClient, installerLink, installerPath, cancellationToken).ConfigureAwait(false);
             }
 
             var profile = new ProfileGeneration();
@@ -160,7 +192,7 @@ namespace UnderMine.Core.server_1
                     CreateNoWindow = true
                 };
 
-                var process = new System.Diagnostics.Process { StartInfo = psi, EnableRaisingEvents = true };
+                using var process = new System.Diagnostics.Process { StartInfo = psi, EnableRaisingEvents = true };
 
                 process.OutputDataReceived += (s, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) Console.WriteLine($"[Forge] {e.Data}"); };
                 process.ErrorDataReceived += (s, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) Console.WriteLine($"[Forge:Error] {e.Data}"); };
@@ -169,10 +201,10 @@ namespace UnderMine.Core.server_1
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
 
-                var timeoutTask = Task.Delay(TimeSpan.FromMinutes(5));
-                var waitTask = process.WaitForExitAsync();
+                var timeoutTask = Task.Delay(TimeSpan.FromMinutes(5), cancellationToken);
+                var waitTask = process.WaitForExitAsync(cancellationToken);
 
-                var completedTask = await Task.WhenAny(waitTask, timeoutTask);
+                var completedTask = await Task.WhenAny(waitTask, timeoutTask).ConfigureAwait(false);
                 if (completedTask == timeoutTask)
                 {
                     try { process.Kill(true); } catch { }
@@ -186,9 +218,9 @@ namespace UnderMine.Core.server_1
             Log("Игра установлена");
         }
 
-        private async Task InstallMods(string manifestUrl)
+        private async Task InstallMods(string manifestUrl, CancellationToken cancellationToken)
         {
-            var modInstaller = new ModLoader();
+            using var modInstaller = new ModLoader();
             modInstaller.OnMessage += msg => OnMessage?.Invoke(msg);
             modInstaller.OnProgress += (_, percent, _) =>
             {
@@ -196,11 +228,11 @@ namespace UnderMine.Core.server_1
                 OnProgress?.Invoke("Установка модов", globalProgress, "");
             };
 
-            await modInstaller.InstallOrUpdateMods(_modsDirectory, manifestUrl);
+            await modInstaller.InstallOrUpdateMods(_modsDirectory, manifestUrl).ConfigureAwait(false);
             OnProgress?.Invoke("Установка модов завершена", 75, "");
         }
 
-        private async Task LoadConfigsAndSettings()
+        private async Task LoadConfigsAndSettings(CancellationToken cancellationToken)
         {
             var configLoader = new ConfigLoader(_serverInfo);
             await configLoader.ConfLoader();
@@ -211,8 +243,10 @@ namespace UnderMine.Core.server_1
             await settingsLoader.LoadSettings();
         }
 
-        private async Task LaunchGame(string mcVersion, string forgeVersion, int memorySettings, bool headless = false)
+        private async Task LaunchGame(string mcVersion, string forgeVersion, int memorySettings, CancellationToken cancellationToken, bool headless = false)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             string forgeVersionName = $"{mcVersion}-forge-{forgeVersion}";
             Console.WriteLine($"[Forge] Запуск игры. Этот процесс может длиться до 5-10 минут.");
 
@@ -222,7 +256,7 @@ namespace UnderMine.Core.server_1
                 Session = MSession.CreateOfflineSession(_serverInfo.Username)
             };
 
-            var forgeProcess = await _launcher.InstallAndBuildProcessAsync(forgeVersionName, launchOption);
+            var forgeProcess = await _launcher.InstallAndBuildProcessAsync(forgeVersionName, launchOption).ConfigureAwait(false);
 
             if (headless)
             {
@@ -232,18 +266,35 @@ namespace UnderMine.Core.server_1
 
             var processWrapper = new ProcessWrapper(forgeProcess);
             processWrapper.StartWithEvents();
-            await processWrapper.WaitForExitTaskAsync();
+            await processWrapper.WaitForExitTaskAsync().ConfigureAwait(false);
         }
 
-        private async Task DownloadFileAsync(HttpClient client, string url, string path)
+        private async Task DownloadFileAsync(HttpClient client, string url, string path, CancellationToken cancellationToken)
         {
-            using var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            using var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
-            await using var stream = await response.Content.ReadAsStreamAsync();
-            await using var file = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true);
+            await using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            await using var file = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 81920, FileOptions.Asynchronous | FileOptions.SequentialScan);
 
-            await stream.CopyToAsync(file);
+            await stream.CopyToAsync(file, 81920, cancellationToken).ConfigureAwait(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_disposeHttpClient)
+                {
+                    try { _httpClient.Dispose(); } catch { }
+                }
+            }
         }
     }
 }

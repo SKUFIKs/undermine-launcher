@@ -26,7 +26,6 @@ public partial class AuthWindow : Window
     private LoginResult _loginResult = null!;
 
 
-
     public AuthWindow()
     {
         InitializeComponent();

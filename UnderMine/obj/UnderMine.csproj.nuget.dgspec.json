@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Дмитрий\\RiderProjects\\UnderMine\\UnderMine\\UnderMine.csproj": {}
+    "C:\\Users\\Дмитрий\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\UnderMine.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Дмитрий\\RiderProjects\\UnderMine\\UnderMine\\UnderMine.csproj": {
+    "C:\\Users\\Дмитрий\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\UnderMine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Дмитрий\\RiderProjects\\UnderMine\\UnderMine\\UnderMine.csproj",
+        "projectUniqueName": "C:\\Users\\Дмитрий\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\UnderMine.csproj",
         "projectName": "UnderMine",
-        "projectPath": "C:\\Users\\Дмитрий\\RiderProjects\\UnderMine\\UnderMine\\UnderMine.csproj",
+        "projectPath": "C:\\Users\\Дмитрий\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\UnderMine.csproj",
         "packagesPath": "C:\\Users\\Дмитрий\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Дмитрий\\RiderProjects\\UnderMine\\UnderMine\\obj\\",
+        "outputPath": "C:\\Users\\Дмитрий\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -45,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net9.0": {
@@ -77,6 +76,10 @@
               "target": "Package",
               "version": "[11.3.3, )"
             },
+            "BenchmarkDotNet": {
+              "target": "Package",
+              "version": "[0.15.6, )"
+            },
             "CmlLib.Core": {
               "target": "Package",
               "version": "[4.0.6, )"
@@ -84,6 +87,14 @@
             "CmlLib.Core.Installer.Forge": {
               "target": "Package",
               "version": "[1.1.0, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers": {
+              "target": "Package",
+              "version": "[18.3.36714.1, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
@@ -114,12 +125,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "win-x64": {
-          "#import": []
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
