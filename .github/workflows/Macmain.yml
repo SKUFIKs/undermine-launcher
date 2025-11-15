@@ -1,0 +1,95 @@
+name: Build macOS PKG for UnderMine
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      # 1️⃣ Скачиваем репозиторий
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Устанавливаем .NET SDK
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      # 3️⃣ Публикуем Avalonia приложение для macOS
+      - name: Publish Avalonia app (macOS universal)
+        run: |
+          # Сборка для Intel
+          dotnet publish UnderMine/UnderMine.csproj \
+            -c Release \
+            -r osx-x64 \
+            --self-contained true \
+            /p:PublishTrimmed=false \
+            /p:DebugType=None \
+            /p:IncludeNativeLibrariesForSelfExtract=true
+
+          # Сборка для Apple Silicon
+          dotnet publish UnderMine/UnderMine.csproj \
+            -c Release \
+            -r osx-arm64 \
+            --self-contained true \
+            /p:PublishTrimmed=false \
+            /p:DebugType=None \
+            /p:IncludeNativeLibrariesForSelfExtract=true
+
+      # 4️⃣ Создаём структуру .app
+      - name: Create .app bundle
+        run: |
+          mkdir -p UnderMine.app/Contents/MacOS
+          mkdir -p UnderMine.app/Contents/Resources
+
+          # Копируем ARM64 сборку
+          cp -R UnderMine/bin/Release/net9.0/osx-arm64/publish/* UnderMine.app/Contents/MacOS/
+
+          # Создаём Info.plist
+          cat > UnderMine.app/Contents/Info.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>CFBundleDisplayName</key>
+              <string>UnderMine</string>
+              <key>CFBundleIdentifier</key>
+              <string>com.undermine.app</string>
+              <key>CFBundleVersion</key>
+              <string>1.0.0</string>
+              <key>CFBundleExecutable</key>
+              <string>UnderMine</string>
+              <key>CFBundlePackageType</key>
+              <string>APPL</string>
+          </dict>
+          </plist>
+          EOF
+
+          chmod +x UnderMine.app/Contents/MacOS/UnderMine
+
+      # 5️⃣ Подготовка payload для pkg
+      - name: Prepare pkg payload
+        run: |
+          mkdir -p payload/Applications
+          cp -R UnderMine.app payload/Applications/
+
+      # 6️⃣ Сборка .pkg установщика
+      - name: Build PKG
+        run: |
+          pkgbuild \
+            --root payload \
+            --identifier com.undermine.pkg \
+            --version 1.0.0 \
+            UnderMine_1.0.0_macOS.pkg
+
+      # 7️⃣ Загрузка артефакта для скачивания
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: UnderMine-macOS-pkg
+          path: UnderMine_1.0.0_macOS.pkg
