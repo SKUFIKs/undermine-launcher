@@ -89,15 +89,11 @@ jobs:
 
       # 7️⃣ Загрузка артефакта для скачивания
       # Вставить после сборки .pkg
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v2
-        with:
-          tag_name: v1.0.0
-          release_name: UnderMine macOS 1.0.0
-          draft: true
-          prerelease: false
-        env:
+      - name: Create GitHub Release & upload pkg  
+        uses: softprops/action-gh-release@v2  
+        with:  
+          files: UnderMine_1.0.0_macOS.pkg  
+        env:  
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Upload PKG to Release
