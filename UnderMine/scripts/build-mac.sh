@@ -21,14 +21,16 @@ cat > "$APP_DIR/Contents/Info.plist" <<EOL
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleName</key>
-    <string>$APP_NAME</string>
-    <key>CFBundleIdentifier</key>
-    <string>com.yourname.$APP_NAME</string>
-    <key>CFBundleVersion</key>
-    <string>1.0</string>
-    <key>CFBundleExecutable</key>
-    <string>$APP_NAME</string>
+        <key>CFBundleDisplayName</key>
+        <string>UnderMine</string>
+        <key>CFBundleIdentifier</key>
+        <string>com.undermine.app</string>
+        <key>CFBundleVersion</key>
+        <string>1.0.0</string>
+        <key>CFBundleExecutable</key>
+        <string>UnderMine</string>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
 </dict>
 </plist>
 EOL
