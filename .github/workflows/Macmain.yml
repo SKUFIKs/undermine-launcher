@@ -88,8 +88,23 @@ jobs:
             UnderMine_1.0.0_macOS.pkg
 
       # 7️⃣ Загрузка артефакта для скачивания
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      # Вставить после сборки .pkg
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v2
         with:
-          name: UnderMine-macOS-pkg
-          path: UnderMine_1.0.0_macOS.pkg
+          tag_name: v1.0.0
+          release_name: UnderMine macOS 1.0.0
+          draft: true
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Upload PKG to Release
+        uses: actions/upload-release-asset@v1
+        with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: UnderMine_1.0.0_macOS.pkg
+            asset_name: UnderMine_1.0.0_macOS.pkg
+            asset_content_type: application/octet-stream
+
