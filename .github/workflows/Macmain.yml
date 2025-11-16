@@ -91,7 +91,7 @@ jobs:
       # Вставить после сборки .pkg
       - name: Create GitHub Release
         id: create_release
-        uses: actions/create-release@v4
+        uses: actions/create-release@v2
         with:
           tag_name: v1.0.0
           release_name: UnderMine macOS 1.0.0
