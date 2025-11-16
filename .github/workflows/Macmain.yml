@@ -1,9 +1,9 @@
 name: Build macOS PKG for UnderMine
 
 on:
-  workflow_dispatch:
   push:
-    branches: [ master ]
+    tags:
+      - 'v*.*.*'
 
 jobs:
   build:
