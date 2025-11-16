@@ -89,7 +89,7 @@ jobs:
 
       # 7️⃣ Загрузка артефакта для скачивания
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: UnderMine-macOS-pkg
           path: UnderMine_1.0.0_macOS.pkg 
