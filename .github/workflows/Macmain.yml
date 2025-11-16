@@ -3,7 +3,7 @@ name: Build macOS PKG for UnderMine
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*.*.*'  # Workflow запускается только на теги вида v1.0.0
 
 jobs:
   build:
@@ -31,7 +31,6 @@ jobs:
             /p:PublishTrimmed=false \
             /p:DebugType=None \
             /p:IncludeNativeLibrariesForSelfExtract=true
-
           # Сборка для Apple Silicon
           dotnet publish UnderMine/UnderMine.csproj \
             -c Release \
@@ -46,10 +45,8 @@ jobs:
         run: |
           mkdir -p UnderMine.app/Contents/MacOS
           mkdir -p UnderMine.app/Contents/Resources
-
           # Копируем ARM64 сборку
           cp -R UnderMine/bin/Release/net9.0/osx-arm64/publish/* UnderMine.app/Contents/MacOS/
-
           # Создаём Info.plist
           cat > UnderMine.app/Contents/Info.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
@@ -61,7 +58,7 @@ jobs:
               <key>CFBundleIdentifier</key>
               <string>com.undermine.app</string>
               <key>CFBundleVersion</key>
-              <string>1.0.0</string>
+              <string>${GITHUB_REF#refs/tags/}</string>
               <key>CFBundleExecutable</key>
               <string>UnderMine</string>
               <key>CFBundlePackageType</key>
@@ -69,7 +66,6 @@ jobs:
           </dict>
           </plist>
           EOF
-
           chmod +x UnderMine.app/Contents/MacOS/UnderMine
 
       # 5️⃣ Подготовка payload для pkg
@@ -81,26 +77,18 @@ jobs:
       # 6️⃣ Сборка .pkg установщика
       - name: Build PKG
         run: |
+          PKG_NAME="UnderMine_${GITHUB_REF#refs/tags/}_macOS.pkg"
           pkgbuild \
             --root payload \
             --identifier com.undermine.pkg \
-            --version 1.0.0 \
-            UnderMine_1.0.0_macOS.pkg
+            --version ${GITHUB_REF#refs/tags/} \
+            "$PKG_NAME"
+          echo "PKG_NAME=$PKG_NAME" >> $GITHUB_ENV
 
-      # 7️⃣ Загрузка артефакта для скачивания
-      # Вставить после сборки .pkg
+      # 7️⃣ Публикация в GitHub Release
       - name: Create GitHub Release & upload PKG
         uses: softprops/action-gh-release@v2
         with:
-          files: UnderMine_1.0.0_macOS.pkg
+          files: ${{ env.PKG_NAME }}
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-
-      - name: Upload PKG to Release
-        uses: actions/upload-release-asset@v1
-        with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }}
-            asset_path: UnderMine_1.0.0_macOS.pkg
-            asset_name: UnderMine_1.0.0_macOS.pkg
-            asset_content_type: application/octet-stream
-
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
