@@ -1,68 +1,73 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFramework>net9.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
-        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-        <SignAssembly>False</SignAssembly>
-        <Authors>$(SKUF)</Authors>
-        <AssemblyVersion>1.0.0.0</AssemblyVersion>
-        <StartupObject></StartupObject>
-        <ApplicationIcon>8c610cb1-f3ab-44a0-9e6c-a79457efd8e4.ico</ApplicationIcon>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-      <Optimize>True</Optimize>
-    </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+		<SignAssembly>False</SignAssembly>
+		<Authors>$(SKUF)</Authors>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<ApplicationIcon>8c610cb1-f3ab-44a0-9e6c-a79457efd8e4.ico</ApplicationIcon>
 
-    <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.3.7" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.7" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.3" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.3" />
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.3" />
-        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.7">
-            <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
-            <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="BenchmarkDotNet" Version="0.15.6" />
-        <PackageReference Include="CmlLib.Core" Version="4.0.6" />
-        <PackageReference Include="CmlLib.Core.Installer.Forge" Version="1.1.0" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-        <PackageReference Include="Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers" Version="18.3.36714.1" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-        <PackageReference Include="ReactiveUI" Version="20.4.1" />
-        <PackageReference Include="System.Management" Version="10.0.0-preview.7.25380.108" />
-    </ItemGroup>
+		<!-- macOS настройки -->
+		<RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>
+		<UseAppHost>true</UseAppHost>
+		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>true</SelfContained>
+	</PropertyGroup>
 
-    <!-- Подключаем папки (чтобы они отображались в Rider/VS) -->
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<Optimize>True</Optimize>
+	</PropertyGroup>
 
-    <!-- Подключаем все ресурсы Avalonia -->
-    <ItemGroup>
-        <AvaloniaResource Include="Assets\**" />
-        <AvaloniaResource Include="Fonts\**" />
-        <AvaloniaResource Include="Java\**" />
-        <AvaloniaResource Include="Models\**" />
-        <AvaloniaResource Include="Network\**" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="8c610cb1-f3ab-44a0-9e6c-a79457efd8e4.ico" />
-    </ItemGroup>
-    <ItemGroup>
-      <None Include=".github\workflows\build-mac.yml" />
-      <None Include=".github\workflows\build.yml" />
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia.Desktop" Version="11.3.7" />
+		<PackageReference Include="Avalonia" Version="11.3.7" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="11.3.3" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.3" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.3" />
+		<PackageReference Include="Avalonia.Diagnostics" Version="11.3.7">
+			<IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+			<PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="BenchmarkDotNet" Version="0.15.6" />
+		<PackageReference Include="CmlLib.Core" Version="4.0.6" />
+		<PackageReference Include="CmlLib.Core.Installer.Forge" Version="1.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers" Version="18.3.36714.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="ReactiveUI" Version="20.4.1" />
+		<PackageReference Include="System.Management" Version="10.0.0-preview.7.25380.108" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <Compile Update="IU\AuthWindow.axaml.cs">
-            <DependentUpon>AuthWindow.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Services\Logger\ProgressView.axaml.cs">
-          <DependentUpon>ProgressView.axaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-    </ItemGroup>
+	<!-- Подключаем папки -->
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+		<AvaloniaResource Include="Fonts\**" />
+		<AvaloniaResource Include="Java\**" />
+		<AvaloniaResource Include="Models\**" />
+		<AvaloniaResource Include="Network\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="8c610cb1-f3ab-44a0-9e6c-a79457efd8e4.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include=".github\workflows\build-mac.yml" />
+		<None Include=".github\workflows\build.yml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="IU\AuthWindow.axaml.cs">
+			<DependentUpon>AuthWindow.axaml</DependentUpon>
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Services\Logger\ProgressView.axaml.cs">
+			<DependentUpon>ProgressView.axaml</DependentUpon>
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
 </Project>

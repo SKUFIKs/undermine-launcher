@@ -1,64 +1,69 @@
 #!/bin/bash
+
 set -e
 
-APP_NAME="UnderMineLauncher"
-PUBLISH_DIR="publish"
-APP_DIR="$PUBLISH_DIR/$APP_NAME.app"
+echo "Creating macOS .app bundle..."
 
-# Очистка предыдущих сборок
-rm -rf "$PUBLISH_DIR"
-mkdir -p "$PUBLISH_DIR"
+APP_NAME="UnderMine"
+PUBLISH_DIR="$1"
+OUTPUT_DIR="$2"
 
-# Сборка приложения под macOS
-dotnet publish -c Release -r osx-x64 --self-contained true -o "$APP_DIR"
+if [ -z "$PUBLISH_DIR" ] || [ -z "$OUTPUT_DIR" ]; then
+    echo "Usage: $0 <publish_dir> <output_dir>"
+    exit 1
+fi
 
-# Создаем директорию Contents, если её нет
-mkdir -p "$APP_DIR/Contents"
+APP_DIR="$OUTPUT_DIR/$APP_NAME.app"
+CONTENTS_DIR="$APP_DIR/Contents"
+MACOS_DIR="$CONTENTS_DIR/MacOS"
+RESOURCES_DIR="$CONTENTS_DIR/Resources"
 
-# Создаем Info.plist для macOS
-cat > "$APP_DIR/Contents/Info.plist" <<EOL
+# Create directory structure
+echo "Creating directory structure..."
+rm -rf "$APP_DIR"
+mkdir -p "$MACOS_DIR"
+mkdir -p "$RESOURCES_DIR"
+
+# Copy published files
+echo "Copying published files..."
+cp -r "$PUBLISH_DIR"/* "$MACOS_DIR/"
+
+# Create Info.plist
+echo "Creating Info.plist..."
+cat > "$CONTENTS_DIR/Info.plist" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
     <string>$APP_NAME</string>
+    <key>CFBundleDisplayName</key>
+    <string>$APP_NAME Launcher</string>
     <key>CFBundleIdentifier</key>
-    <string>com.yourname.$APP_NAME</string>
+    <string>com.UndergroundUrFU.undermine</string>
     <key>CFBundleVersion</key>
-    <string>1.0</string>
+    <string>1.0.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>10.15</string>
     <key>CFBundleExecutable</key>
     <string>$APP_NAME</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
 </dict>
 </plist>
-EOL
+EOF
 
-# Создаем директорию для DMG
-DMG_DIR="$PUBLISH_DIR/dmg"
-mkdir -p "$DMG_DIR"
+# Make executable
+chmod +x "$MACOS_DIR/$APP_NAME"
 
-# Путь к DMG
-DMG_PATH="$DMG_DIR/$APP_NAME.dmg"
-
-# Убедимся, что create-dmg установлен
-brew list create-dmg >/dev/null 2>&1 || brew install create-dmg
-
-# Создаем DMG
-create-dmg "$DMG_PATH" "$APP_DIR" \
-  --volname "$APP_NAME" \
-  --window-pos 200 120 \
-  --window-size 500 300 \
-  --icon-size 100 \
-  --app-drop-link 250 150
-  
-echo "📦 Проверяем содержимое директории публикации:"
-ls -R "$PUBLISH_DIR" || echo "❌ Папка $PUBLISH_DIR не найдена"
-
-echo "📦 Проверяем, где может лежать DMG:"
-find . -type f -name "*.dmg" || echo "❌ DMG-файл не найден"
-
-
-echo "✅ Сборка завершена: $DMG_PATH"
+echo "✅ Created $APP_NAME.app in $OUTPUT_DIR"
+echo "📁 App location: $APP_DIR"
 
 
 

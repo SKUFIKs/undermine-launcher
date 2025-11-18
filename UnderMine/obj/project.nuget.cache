@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "lGPZOTegN7U=",
+  "dgSpecHash": "HAll7nPhgiQ=",
   "success": true,
   "projectFilePath": "C:\\Users\\Дмитрий\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\UnderMine.csproj",
   "expectedPackageFiles": [
@@ -85,7 +85,10 @@
     "C:\\Users\\Дмитрий\\.nuget\\packages\\system.security.principal.windows\\5.0.0\\system.security.principal.windows.5.0.0.nupkg.sha512",
     "C:\\Users\\Дмитрий\\.nuget\\packages\\system.text.json\\8.0.5\\system.text.json.8.0.5.nupkg.sha512",
     "C:\\Users\\Дмитрий\\.nuget\\packages\\system.threading.tasks.dataflow\\8.0.1\\system.threading.tasks.dataflow.8.0.1.nupkg.sha512",
-    "C:\\Users\\Дмитрий\\.nuget\\packages\\tmds.dbus.protocol\\0.21.2\\tmds.dbus.protocol.0.21.2.nupkg.sha512"
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\tmds.dbus.protocol\\0.21.2\\tmds.dbus.protocol.0.21.2.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.runtime.osx-x64\\9.0.11\\microsoft.netcore.app.runtime.osx-x64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.osx-x64\\9.0.11\\microsoft.aspnetcore.app.runtime.osx-x64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.host.osx-x64\\9.0.11\\microsoft.netcore.app.host.osx-x64.9.0.11.nupkg.sha512"
   ],
   "logs": []
 }
