@@ -1,33 +1,29 @@
-name: Build macOS
+name: Build macOS PKG
 
 on:
   push:
-    branches: [ master ]
     tags: [v*]
 
-env:
-  DOTNET_VERSION: '9.0.x'
-
 jobs:
-  build-mac:
+  build:
     runs-on: macos-latest
-    
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-        
+        dotnet-version: 9.0.x
+
     - name: Publish app
       run: |
         dotnet publish UnderMine/UnderMine.csproj -c Release -r osx-x64 \
           --self-contained true \
           -p:PublishSingleFile=true \
           -o publish/osx-x64
-          
+
     - name: Create .app
       run: |
         mkdir -p dist/UnderMine.app/Contents/MacOS
@@ -40,35 +36,37 @@ jobs:
         <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
         <plist version="1.0">
         <dict>
-            <key>CFBundleName</key>
-            <string>UnderMine</string>
-            <key>CFBundleDisplayName</key>
-            <string>UnderMine Launcher</string>
-            <key>CFBundleIdentifier</key>
-            <string>com.UndergroundUrFU.undermine</string>
-            <key>CFBundleVersion</key>
-            <string>1.0.0</string>
-            <key>CFBundleExecutable</key>
-            <string>UnderMine</string>
-            <key>CFBundlePackageType</key>
-            <string>APPL</string>
-            <key>NSHighResolutionCapable</key>
-            <true/>
-          </dict>
-          </plist>
-          EOF
+          <key>CFBundleName</key>
+          <string>UnderMine</string>
+          <key>CFBundleDisplayName</key>
+          <string>UnderMine Launcher</string>
+          <key>CFBundleIdentifier</key>
+          <string>com.UndergroundUrFU.undermine</string>
+          <key>CFBundleVersion</key>
+          <string>1.0.0</string>
+          <key>CFBundleExecutable</key>
+          <string>UnderMine</string>
+          <key>CFBundlePackageType</key>
+          <string>APPL</string>
+          <key>NSHighResolutionCapable</key>
+          <true/>
+        </dict>
+        </plist>
+        EOF
 
-    - name: Create DMG
+    - name: Create PKG
       run: |
-        hdiutil create \
-          -volname "UnderMine Installer" \
-          -srcfolder dist/UnderMine.app \
-          -ov -format UDZO \
-          dist/UnderMine.dmg
+        mkdir -p pkg-payload/Applications
+        cp -R dist/UnderMine.app pkg-payload/Applications/
+        
+        pkgbuild \
+          --root pkg-payload \
+          --identifier com.UndergroundUrFU.undermine.pkg \
+          --version 1.0.0 \
+          --install-location / \
+          dist/UnderMine.pkg
 
     - name: Upload to Release
-      if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
-        files: |
-          dist/UnderMine.dmg
+        files: dist/UnderMine.pkg
