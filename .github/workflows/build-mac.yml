@@ -3,7 +3,7 @@ name: Build macOS
 on:
   push:
     branches: [ master ]
-  tags: [ 'v*' ]
+    tags: [v*]
 
 env:
   DOTNET_VERSION: '9.0.x'
