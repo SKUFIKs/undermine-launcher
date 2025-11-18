@@ -1,62 +1,74 @@
-name: Build & Sign macOS DMG
+name: Build macOS
 
 on:
   push:
-    branches: [master]
-  pull_request:
-    branches: [master]
-  workflow_dispatch:
+    branches: [ master ]
+  tags: [ 'v*' ]
 
-permissions:
-  id-token: write   # нужно для keyless-подписи через GitHub OIDC
-  contents: read
+env:
+  DOTNET_VERSION: '9.0.x'
 
 jobs:
   build-mac:
-    name: Build, Sign & Upload (macOS DMG)
     runs-on: macos-latest
-
+    
     steps:
-      - name: 🧱 Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Publish app
+      run: |
+        dotnet publish UnderMine/UnderMine.csproj -c Release -r osx-x64 \
+          --self-contained true \
+          -p:PublishSingleFile=true \
+          -o publish/osx-x64
+          
+    - name: Create .app
+      run: |
+        mkdir -p dist/UnderMine.app/Contents/MacOS
+        mkdir -p dist/UnderMine.app/Contents/Resources
+        cp -r publish/osx-x64/* dist/UnderMine.app/Contents/MacOS/
+        chmod +x dist/UnderMine.app/Contents/MacOS/UnderMine
+        
+        cat > dist/UnderMine.app/Contents/Info.plist << EOF
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+            <key>CFBundleName</key>
+            <string>UnderMine</string>
+            <key>CFBundleDisplayName</key>
+            <string>UnderMine Launcher</string>
+            <key>CFBundleIdentifier</key>
+            <string>com.UndergroundUrFU.undermine</string>
+            <key>CFBundleVersion</key>
+            <string>1.0.0</string>
+            <key>CFBundleExecutable</key>
+            <string>UnderMine</string>
+            <key>CFBundlePackageType</key>
+            <string>APPL</string>
+            <key>NSHighResolutionCapable</key>
+            <true/>
+          </dict>
+          </plist>
+          EOF
 
-      - name: 🧰 Print working directory
-        run: pwd
+    - name: Create DMG
+      run: |
+        hdiutil create \
+          -volname "UnderMine Installer" \
+          -srcfolder dist/UnderMine.app \
+          -ov -format UDZO \
+          dist/UnderMine.dmg
 
-      - name: 📂 List repo files
-        run: ls -R
-
-      - name: 🏗️ Make build script executable
-        run: chmod +x ./UnderMine/scripts/build-mac.sh
-
-      - name: 🚀 Run build script
-        run: ./UnderMine/scripts/build-mac.sh
-
-      - name: 🔏 Download and Setup Cosign
-        run: |
-          curl -Lo cosign https://github.com/sigstore/cosign/releases/latest/download/cosign-darwin-amd64
-          chmod +x cosign
-          sudo mv cosign /usr/local/bin/cosign
-
-      - name: 🔐 Sign DMG artifacts with GitHub OIDC (Cosign keyless)
-        env:
-          COSIGN_EXPERIMENTAL: "true"
-        run: |
-          for file in ./publish/dmg/*.dmg; do
-            if [ -f "$file" ]; then
-              echo "🔏 Signing $file ..."
-              cosign sign-blob "$file" \
-                --yes \
-                --bundle "$file.bundle.json" \
-                --output-signature "$file.sig"
-            fi
-          done
-
-      - name: 📤 Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: mac-build-signed
-          path: |
-            ./publish/dmg/*.dmg
-            ./publish/dmg/*.sig
-            ./publish/dmg/*.bundle.json
+    - name: Upload to Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          dist/UnderMine.dmg
