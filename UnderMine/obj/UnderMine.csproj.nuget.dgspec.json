@@ -59,6 +59,8 @@
               "version": "[11.3.7, )"
             },
             "Avalonia.Diagnostics": {
+              "include": "None",
+              "suppressParent": "All",
               "target": "Package",
               "version": "[11.3.7, )"
             },
@@ -90,6 +92,12 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.11, )",
+              "autoReferenced": true
+            },
             "Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers": {
               "target": "Package",
               "version": "[18.3.36714.1, )"
@@ -120,7 +128,19 @@
           "warn": true,
           "downloadDependencies": [
             {
+              "name": "Microsoft.AspNetCore.App.Runtime.osx-arm64",
+              "version": "[9.0.11, 9.0.11]"
+            },
+            {
               "name": "Microsoft.AspNetCore.App.Runtime.osx-x64",
+              "version": "[9.0.11, 9.0.11]"
+            },
+            {
+              "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
+              "version": "[9.0.11, 9.0.11]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.osx-arm64",
               "version": "[9.0.11, 9.0.11]"
             },
             {
@@ -128,7 +148,19 @@
               "version": "[9.0.11, 9.0.11]"
             },
             {
+              "name": "Microsoft.NETCore.App.Runtime.osx-arm64",
+              "version": "[9.0.11, 9.0.11]"
+            },
+            {
               "name": "Microsoft.NETCore.App.Runtime.osx-x64",
+              "version": "[9.0.11, 9.0.11]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.win-x64",
+              "version": "[9.0.11, 9.0.11]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
               "version": "[9.0.11, 9.0.11]"
             }
           ],
@@ -141,7 +173,13 @@
         }
       },
       "runtimes": {
+        "osx-arm64": {
+          "#import": []
+        },
         "osx-x64": {
+          "#import": []
+        },
+        "win-x64": {
           "#import": []
         }
       }

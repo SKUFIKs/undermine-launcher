@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "HAll7nPhgiQ=",
+  "dgSpecHash": "H9No+NNUDFM=",
   "success": true,
   "projectFilePath": "C:\\Users\\Дмитрий\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\UnderMine.csproj",
   "expectedPackageFiles": [
@@ -57,6 +57,7 @@
     "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.extensions.options\\8.0.0\\microsoft.extensions.options.8.0.0.nupkg.sha512",
     "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.extensions.options.configurationextensions\\8.0.0\\microsoft.extensions.options.configurationextensions.8.0.0.nupkg.sha512",
     "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.11\\microsoft.net.illink.tasks.9.0.11.nupkg.sha512",
     "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
     "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.visualstudio.diagnosticshub.benchmarkdotnetdiagnosers\\18.3.36714.1\\microsoft.visualstudio.diagnosticshub.benchmarkdotnetdiagnosers.18.3.36714.1.nupkg.sha512",
     "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
@@ -86,9 +87,15 @@
     "C:\\Users\\Дмитрий\\.nuget\\packages\\system.text.json\\8.0.5\\system.text.json.8.0.5.nupkg.sha512",
     "C:\\Users\\Дмитрий\\.nuget\\packages\\system.threading.tasks.dataflow\\8.0.1\\system.threading.tasks.dataflow.8.0.1.nupkg.sha512",
     "C:\\Users\\Дмитрий\\.nuget\\packages\\tmds.dbus.protocol\\0.21.2\\tmds.dbus.protocol.0.21.2.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.osx-arm64\\9.0.11\\microsoft.aspnetcore.app.runtime.osx-arm64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.host.osx-arm64\\9.0.11\\microsoft.netcore.app.host.osx-arm64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.runtime.osx-arm64\\9.0.11\\microsoft.netcore.app.runtime.osx-arm64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.host.osx-x64\\9.0.11\\microsoft.netcore.app.host.osx-x64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\9.0.11\\microsoft.aspnetcore.app.runtime.win-x64.9.0.11.nupkg.sha512",
     "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.runtime.osx-x64\\9.0.11\\microsoft.netcore.app.runtime.osx-x64.9.0.11.nupkg.sha512",
-    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.osx-x64\\9.0.11\\microsoft.aspnetcore.app.runtime.osx-x64.9.0.11.nupkg.sha512",
-    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.host.osx-x64\\9.0.11\\microsoft.netcore.app.host.osx-x64.9.0.11.nupkg.sha512"
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\9.0.11\\microsoft.windowsdesktop.app.runtime.win-x64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\9.0.11\\microsoft.netcore.app.runtime.win-x64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.osx-x64\\9.0.11\\microsoft.aspnetcore.app.runtime.osx-x64.9.0.11.nupkg.sha512"
   ],
   "logs": []
 }
