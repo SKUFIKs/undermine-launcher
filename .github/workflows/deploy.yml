@@ -45,10 +45,12 @@ jobs:
       with:
         dotnet-version: 9.0.x
 
-    # Сборка приложения
+    # ИСПРАВЛЕНИЕ: Явно указываем путь к .csproj файлу
+    # Я предполагаю, что файл лежит в папке UnderMine/UnderMine.csproj
+    # Если он лежит в корне, уберите "UnderMine/" из пути
     - name: Publish
       run: |
-        dotnet publish -c Release -r ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -p:AssemblyName=UnderMine -o ./publish
+        dotnet publish ./UnderMine/UnderMine.csproj -c Release -r ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -p:AssemblyName=UnderMine -o ./publish
 
     # --- Windows: Создание ZIP архива ---
     - name: Pack Windows (Zip)
@@ -56,8 +58,7 @@ jobs:
       run: |
         Compress-Archive -Path ./publish/* -DestinationPath ./UnderMine-${{ matrix.rid }}.zip
 
-    # --- Windows: Установка и запуск Inno Setup БЕЗ ЭКШЕНОВ ---
-    # Мы используем Chocolatey, который уже есть на серверах GitHub
+    # --- Windows: Установка и запуск Inno Setup (через Chocolatey) ---
     - name: Build Installer (Inno Setup)
       if: matrix.os == 'windows-latest'
       run: |
