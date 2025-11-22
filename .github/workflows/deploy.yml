@@ -1,0 +1,91 @@
+name: Build and Release Launcher
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os_name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            os_name: Windows
+            rid: win-x64
+            extension: .exe
+            
+          - os: ubuntu-latest
+            os_name: Linux
+            rid: linux-x64
+            extension: ""
+            
+          - os: macos-latest
+            os_name: MacOS-AppleSilicon
+            rid: osx-arm64
+            extension: ""
+
+          - os: macos-13
+            os_name: MacOS-Intel
+            rid: osx-x64
+            extension: ""
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 9
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    # Сборка приложения
+    - name: Publish
+      run: |
+        dotnet publish -c Release -r ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -p:AssemblyName=UnderMine -o ./publish
+
+    # --- Windows: Создание ZIP архива ---
+    - name: Pack Windows (Zip)
+      if: matrix.os == 'windows-latest'
+      run: |
+        Compress-Archive -Path ./publish/* -DestinationPath ./UnderMine-${{ matrix.rid }}.zip
+
+    # --- Windows: Создание Установщика (Setup.exe) ---
+    - name: Build Installer (Inno Setup)
+      if: matrix.os == 'windows-latest'
+      uses: MinnowTools/inno-setup-action@v1.2.2
+      with:
+        path: setup.iss
+
+    # --- Linux/Mac: Создание TAR.GZ ---
+    - name: Pack Unix
+      if: matrix.os != 'windows-latest'
+      run: |
+        chmod +x ./publish/UnderMine*
+        tar -czvf UnderMine-${{ matrix.rid }}.tar.gz -C ./publish .
+
+    # --- Загрузка файлов в Релиз (Windows) ---
+    - name: Upload Release Asset (Windows)
+      if: matrix.os == 'windows-latest'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./UnderMine-${{ matrix.rid }}.zip
+          ./Output/UnderMine-Setup.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # --- Загрузка файлов в Релиз (Linux/Mac) ---
+    - name: Upload Release Asset (Unix)
+      if: matrix.os != 'windows-latest'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ./UnderMine-${{ matrix.rid }}.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
