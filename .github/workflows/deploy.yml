@@ -56,13 +56,13 @@ jobs:
       run: |
         Compress-Archive -Path ./publish/* -DestinationPath ./UnderMine-${{ matrix.rid }}.zip
 
-    # --- Windows: Создание Установщика (Setup.exe) ---
-    # ИСПРАВЛЕНИЕ: Заменили MinnowTools на dspec12
+    # --- Windows: Установка и запуск Inno Setup БЕЗ ЭКШЕНОВ ---
+    # Мы используем Chocolatey, который уже есть на серверах GitHub
     - name: Build Installer (Inno Setup)
       if: matrix.os == 'windows-latest'
-      uses: dspec12/inno-setup-action@v1
-      with:
-        path: setup.iss
+      run: |
+        choco install innosetup --no-progress
+        & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
 
     # --- Linux/Mac: Создание TAR.GZ ---
     - name: Pack Unix
