@@ -57,9 +57,10 @@ jobs:
         Compress-Archive -Path ./publish/* -DestinationPath ./UnderMine-${{ matrix.rid }}.zip
 
     # --- Windows: Создание Установщика (Setup.exe) ---
+    # ИСПРАВЛЕНИЕ: Заменили MinnowTools на dspec12
     - name: Build Installer (Inno Setup)
       if: matrix.os == 'windows-latest'
-      uses: MinnowTools/inno-setup-action@v1.2.2
+      uses: dspec12/inno-setup-action@v1
       with:
         path: setup.iss
 
