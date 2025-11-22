@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls.Primitives;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnderMine.Models
 {
@@ -17,9 +18,10 @@ namespace UnderMine.Models
         public string GraphicSettings { get; set; } = "Average";
 
         private const string AppName = "UnderMine";
-
+        [UnconditionalSuppressMessage("SingleFile", "IL3002:Avoid calling members marked with 'RequiresAssemblyFilesAttribute' when publishing as a single-file", Justification = "<Pending>")]
         private static readonly string SettingsPath = GetSettingsPath();
 
+        [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")]
         private static string GetSettingsPath()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

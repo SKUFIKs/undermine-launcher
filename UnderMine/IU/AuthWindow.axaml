@@ -244,7 +244,7 @@
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom"
                                 Margin="0,0,0,30" Spacing="10">
-                        <Button x:Name="UpdateButton"
+						<Button x:Name="UpdateButton" 
                                 Content="Обновить"
                                 Classes="custom-Auth"
                                 Padding="15,5" />

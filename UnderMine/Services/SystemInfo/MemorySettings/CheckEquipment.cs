@@ -29,8 +29,8 @@ public class CheckEquipment
     private Task<Models.SystemInfo> CheckForWindows()
     {
         double totalMemoryBytes = 0;
-        
-        var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PhysicalMemory");
+
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PhysicalMemory");
 
         foreach (var o in searcher.Get())
         {

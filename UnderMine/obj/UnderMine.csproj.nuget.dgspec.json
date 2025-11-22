@@ -113,6 +113,10 @@
             "System.Management": {
               "target": "Package",
               "version": "[10.0.0-preview.7.25380.108, )"
+            },
+            "Velopack": {
+              "target": "Package",
+              "version": "[0.0.1298, )"
             }
           },
           "imports": [

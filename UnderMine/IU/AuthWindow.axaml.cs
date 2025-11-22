@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.IO;
 using System.Security.Cryptography;
@@ -13,6 +14,7 @@ using UnderMine.Models;
 using UnderMine.Network.AuthService;
 using UnderMine.Network.Services;
 using UnderMine.Services.SystemInfo.MemorySettings;
+using UnderMine.Services.Updater;
 
 
 namespace UnderMine.IU;
@@ -21,10 +23,11 @@ public partial class AuthWindow : Window
 {
     private readonly IdentityService _identityService;
     private UserApiService _userApiService;
+    private readonly Updater _update;
     private UserData? _userData;
     private readonly ContextData _contextData;
     private LoginResult _loginResult = null!;
-
+  
 
     public AuthWindow()
     {
@@ -34,7 +37,7 @@ public partial class AuthWindow : Window
         var loginResult = new LoginResult();
         _identityService = new IdentityService(_contextData);
         _userApiService = new UserApiService(_contextData, loginResult);
-
+        _update = new Updater();
         _ = LoadUserSettings();
         PassBox.PasswordChar = '•';
         this.Opened += OnOpened;
@@ -79,7 +82,8 @@ public partial class AuthWindow : Window
         var systemInfo = new SystemInfo();
         var check = new CheckEquipment(systemInfo);
         var info = await check.CheckOperatingSystemAsync();
-        Console.WriteLine($"Объем памяти: {info.TotalMemory} МБ");
+        var updaterInstance = new Updater();
+        await updaterInstance.UpdateLauncher();
     }
 
     private async Task LoadUserSettings()
@@ -321,6 +325,7 @@ public partial class AuthWindow : Window
         RegPanel.IsVisible = true;
         LogPanel.IsVisible = false;
     }
+    
 
     private void CloseErrorButton_OnClick(object? sender, RoutedEventArgs e)
     {
