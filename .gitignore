@@ -1,3 +1,5 @@
 ﻿/UnderMine/UnderMine.csproj
 bin/
 obj/
+publish/
+publish-linux/

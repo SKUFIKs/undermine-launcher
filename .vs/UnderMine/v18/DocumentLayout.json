@@ -123,8 +123,7 @@
               "RelativeToolTip": "UnderMine\\Services\\SystemInfo\\MemorySettings\\MemorySliderConfiguration.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T12:37:29.244Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T12:37:29.244Z"
             },
             {
               "$type": "Document",
@@ -136,8 +135,7 @@
               "RelativeToolTip": "UnderMine\\Network\\Services\\UserApiService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T12:24:23.772Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T12:24:23.772Z"
             },
             {
               "$type": "Document",
@@ -149,8 +147,7 @@
               "RelativeToolTip": "UnderMine\\Services\\SystemInfo\\MemorySettings\\CheckEquipment.cs",
               "ViewState": "AgIAAAoAAAAAAAAAAADgvyIAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T12:13:22.396Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T12:13:22.396Z"
             },
             {
               "$type": "Document",
@@ -162,8 +159,7 @@
               "RelativeToolTip": "UnderMine\\Network\\AuthService\\IdentityService.cs",
               "ViewState": "AgIAAA4AAAAAAAAAAAAQwBMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T12:15:16.066Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T12:15:16.066Z"
             },
             {
               "$type": "Document",
@@ -175,8 +171,7 @@
               "RelativeToolTip": "UnderMine\\Models\\ContextData.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T07:19:12.049Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T07:19:12.049Z"
             },
             {
               "$type": "Document",
@@ -188,8 +183,7 @@
               "RelativeToolTip": "UnderMine\\Services\\Updater\\Updater.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T12:04:13.831Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T12:04:13.831Z"
             },
             {
               "$type": "Document",
@@ -201,8 +195,7 @@
               "RelativeToolTip": "UnderMine\\IU\\MenuWindow.axaml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-11-15T12:24:47.323Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T12:24:47.323Z"
             },
             {
               "$type": "Document",
@@ -212,7 +205,7 @@
               "RelativeDocumentMoniker": "UnderMine\\IU\\AuthWindow.axaml.cs",
               "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\AuthWindow.axaml.cs",
               "RelativeToolTip": "UnderMine\\IU\\AuthWindow.axaml.cs",
-              "ViewState": "AgIAAEIAAAAAAAAAAAAhwFUAAAAvAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFUAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-22T09:53:33.206Z",
               "EditorCaption": ""
@@ -227,8 +220,7 @@
               "RelativeToolTip": "UnderMine\\Core\\server_1\\InstallAndRunGame.cs",
               "ViewState": "AgIAAGoAAAAAAAAAAAAcwMYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T12:24:34.775Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T12:24:34.775Z"
             },
             {
               "$type": "Document",
@@ -240,8 +232,7 @@
               "RelativeToolTip": "UnderMine\\Info.plist",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-11-18T13:35:40.851Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-18T13:35:40.851Z"
             },
             {
               "$type": "Document",
@@ -253,8 +244,7 @@
               "RelativeToolTip": "..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\10.0.100\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.targets",
               "ViewState": "AgIAAB4FAAAAAAAAAAAQwDEFAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
-              "WhenOpened": "2025-11-22T12:07:15.317Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T12:07:15.317Z"
             },
             {
               "$type": "Document",
@@ -266,8 +256,7 @@
               "RelativeToolTip": "UnderMine\\Models\\UserData.cs",
               "ViewState": "AgIAAAcAAAAAAAAAAAAjwBUAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-16T07:08:41.367Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-16T07:08:41.367Z"
             },
             {
               "$type": "Document",
@@ -279,8 +268,7 @@
               "RelativeToolTip": "UnderMine\\IU\\MenuWindow.axaml.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAASwCYAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T12:24:58.343Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T12:24:58.343Z"
             },
             {
               "$type": "Document",
@@ -292,8 +280,7 @@
               "RelativeToolTip": "UnderMine\\App.axaml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T09:50:18.093Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T09:50:18.093Z"
             },
             {
               "$type": "Document",
@@ -305,8 +292,7 @@
               "RelativeToolTip": "UnderMine\\IU\\AuthWindow.axaml",
               "ViewState": "AgIAAOMAAAAAAAAAAAAQwPYAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-11-22T09:53:31.205Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T09:53:31.205Z"
             },
             {
               "$type": "Document",
@@ -344,8 +330,7 @@
               "RelativeToolTip": "BenchmarkSuite1\\BenchmarkSuite1.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-11-18T13:17:30.962Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-18T13:17:30.962Z"
             },
             {
               "$type": "Document",
@@ -357,8 +342,7 @@
               "RelativeToolTip": "UnderMine\\UnderMine.csproj",
               "ViewState": "AgIAAEUAAAAAAAAAAAAAADsAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-11-18T13:17:36.932Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-18T13:17:36.932Z"
             },
             {
               "$type": "Document",
@@ -370,8 +354,7 @@
               "RelativeToolTip": "UnderMine\\Core\\server_1\\ModLoader.cs",
               "ViewState": "AgIAABMBAAAAAAAAAAAYwFQAAAB5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T16:25:56.203Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T16:25:56.203Z"
             },
             {
               "$type": "Document",
@@ -383,8 +366,7 @@
               "RelativeToolTip": "UnderMine\\Core\\server_1\\ConfigLoader.cs",
               "ViewState": "AgIAAGYAAAAAAAAAAAAmwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T12:15:14.306Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T12:15:14.306Z"
             },
             {
               "$type": "Document",
@@ -396,8 +378,7 @@
               "RelativeToolTip": "UnderMine\\Core\\server_1\\ProfileGeneration.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T16:30:54.765Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T16:30:54.765Z"
             },
             {
               "$type": "Document",
@@ -409,8 +390,7 @@
               "RelativeToolTip": "UnderMine\\Core\\server_1\\SettingsLoader.cs",
               "ViewState": "AgIAABgAAAAAAAAAAIBJwKABAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T07:19:13.846Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T07:19:13.846Z"
             }
           ]
         }
