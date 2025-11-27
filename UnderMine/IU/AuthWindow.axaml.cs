@@ -83,7 +83,7 @@ public partial class AuthWindow : Window
         var check = new CheckEquipment(systemInfo);
         var info = await check.CheckOperatingSystemAsync();
         var updaterInstance = new Updater();
-        await updaterInstance.UpdateLauncher();
+        //await updaterInstance.UpdateLauncher();
     }
 
     private async Task LoadUserSettings()
