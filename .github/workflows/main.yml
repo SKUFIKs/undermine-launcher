@@ -8,7 +8,7 @@ on:
 
 env:
   DOTNET_VERSION: '9.0.x'
-  APP_NAME: "UnderMineLauncher"
+  APP_NAME: "UnderMine"
   # Укажите точный путь к файлу проекта, чтобы не билдить весь .sln
   PROJECT_PATH: "./UnderMine/UnderMine.csproj" 
 
