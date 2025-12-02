@@ -9,7 +9,6 @@ on:
 env:
   DOTNET_VERSION: '9.0.x' # Ваша версия .NET
   APP_NAME: "UnderMineLauncher" # ИМЯ ВАШЕГО ПРИЛОЖЕНИЯ
-  VERSION: ${{ replace(github.ref_name, 'v', '') }} # Можно брать из тега, но для простоты хардкод или переменная
 
 jobs:
   # ========================================================
@@ -19,6 +18,18 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Extract Version from Tag
+        id: version_extract
+        run: |
+          # Получаем имя тега (например, v1.2.3)
+          TAG_NAME="${{ github.ref_name }}"
+          # Удаляем префикс 'v' с помощью sed (Linux/macOS) или Powershell (Windows)
+          # Используем Powershell для Windows-runner:
+          CLEAN_VERSION=$($TAG_NAME -replace '^v','')
+          echo "Очищенная версия: $CLEAN_VERSION"
+          # Сохраняем переменную для всех последующих шагов в этом Job
+          echo "VERSION=$CLEAN_VERSION" | Out-File -FilePath $env:GITHUB_ENV -Encoding UTF8 -Append
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -49,6 +60,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Extract Version from Tag
+        run: |
+          TAG_NAME="${{ github.ref_name }}"
+          CLEAN_VERSION=${TAG_NAME#v}
+          echo "Очищенная версия (Linux): $CLEAN_VERSION"
+          echo "VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
