@@ -52,7 +52,7 @@ jobs:
         run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 --self-contained -o ./publish /p:Version=${{ env.VERSION }}
 
       - name: Pack with Velopack
-        run: vpk pack -u UnderMineLauncher -v 0.0.2 -p ./publish -e mainExe=UnderMineLauncher.exe
+        run: vpk pack -u ${{ env.APP_NAME }} -v ${{ env.VERSION }} -p ./publish -e ${{ env.APP_NAME }}.exe
 
       - name: Upload Windows Artifacts
         uses: actions/upload-artifact@v4
