@@ -192,7 +192,7 @@ jobs:
           mkdir -p "${{ env.APP_NAME }}.app/Contents/MacOS"
           mkdir -p "${{ env.APP_NAME }}.app/Contents/Resources"
           
-          cp ./publish/* "${{ env.APP_NAME }}.app/Contents/MacOS/"
+          cp -r ./publish/* "${{ env.APP_NAME }}.app/Contents/MacOS/"
           
           echo '<?xml version="1.0" encoding="UTF-8"?>' > "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
