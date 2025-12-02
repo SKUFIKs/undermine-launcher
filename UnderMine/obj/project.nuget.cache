@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "lLsQMA197gI=",
+  "dgSpecHash": "q4yzgJIy/Fw=",
   "success": true,
   "projectFilePath": "C:\\Users\\Дмитрий\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\UnderMine.csproj",
   "expectedPackageFiles": [
@@ -88,7 +88,16 @@
     "C:\\Users\\Дмитрий\\.nuget\\packages\\system.text.json\\8.0.5\\system.text.json.8.0.5.nupkg.sha512",
     "C:\\Users\\Дмитрий\\.nuget\\packages\\system.threading.tasks.dataflow\\8.0.1\\system.threading.tasks.dataflow.8.0.1.nupkg.sha512",
     "C:\\Users\\Дмитрий\\.nuget\\packages\\tmds.dbus.protocol\\0.21.2\\tmds.dbus.protocol.0.21.2.nupkg.sha512",
-    "C:\\Users\\Дмитрий\\.nuget\\packages\\velopack\\0.0.1298\\velopack.0.0.1298.nupkg.sha512"
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\velopack\\0.0.1298\\velopack.0.0.1298.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.osx-arm64\\9.0.11\\microsoft.aspnetcore.app.runtime.osx-arm64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.host.osx-arm64\\9.0.11\\microsoft.netcore.app.host.osx-arm64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.runtime.osx-arm64\\9.0.11\\microsoft.netcore.app.runtime.osx-arm64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.host.osx-x64\\9.0.11\\microsoft.netcore.app.host.osx-x64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\9.0.11\\microsoft.aspnetcore.app.runtime.win-x64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.runtime.osx-x64\\9.0.11\\microsoft.netcore.app.runtime.osx-x64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\9.0.11\\microsoft.windowsdesktop.app.runtime.win-x64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\9.0.11\\microsoft.netcore.app.runtime.win-x64.9.0.11.nupkg.sha512",
+    "C:\\Users\\Дмитрий\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.osx-x64\\9.0.11\\microsoft.aspnetcore.app.runtime.osx-x64.9.0.11.nupkg.sha512"
   ],
   "logs": []
 }
