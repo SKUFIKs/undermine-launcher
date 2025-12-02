@@ -4,6 +4,7 @@ using UnderMine.Models;
 using UnderMine.Network.AuthService;
 using UnderMine.Services;
 using UnderMine.Services.SystemInfo.MemorySettings;
+using Velopack;
 
 namespace UnderMine;
 
