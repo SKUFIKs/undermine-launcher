@@ -1,14 +1,16 @@
 name: Build and Release
 
 on:
-  workflow_dispatch: # Позволяет запускать вручную
+  workflow_dispatch: # Ручной запуск
   push:
     tags:
-      - "v*" # Запускать при пуше тега, например v1.0.0
+      - "v*" # Запуск при пуше тега
 
 env:
-  DOTNET_VERSION: '9.0.x' # Ваша версия .NET
-  APP_NAME: "UnderMineLauncher" # ИМЯ ВАШЕГО ПРИЛОЖЕНИЯ
+  DOTNET_VERSION: '9.0.x'
+  APP_NAME: "UnderMineLauncher"
+  # Укажите точный путь к файлу проекта, чтобы не билдить весь .sln
+  PROJECT_PATH: "./UnderMine/UnderMine.csproj" 
 
 jobs:
   # ========================================================
@@ -18,18 +20,24 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Extract Version from Tag
-        id: version_extract
+
+      - name: Extract Version (PowerShell)
         run: |
-          # Получаем имя тега (например, v1.2.3)
-          TAG_NAME="${{ github.ref_name }}"
-          # Удаляем префикс 'v' с помощью sed (Linux/macOS) или Powershell (Windows)
-          # Используем Powershell для Windows-runner:
-          CLEAN_VERSION=$($TAG_NAME -replace '^v','')
-          echo "Очищенная версия: $CLEAN_VERSION"
-          # Сохраняем переменную для всех последующих шагов в этом Job
-          echo "VERSION=$CLEAN_VERSION" | Out-File -FilePath $env:GITHUB_ENV -Encoding UTF8 -Append
+          # Получаем ref_name (v1.0.0 или master)
+          $refName = "${{ github.ref_name }}"
+          
+          # Проверяем, начинается ли с 'v' (значит это релиз)
+          if ($refName -match "^v") {
+              $cleanVersion = $refName -replace "^v",""
+          } else {
+              # Если ручной запуск не с тега, ставим временную версию
+              Write-Host "Запуск не по тегу. Используем версию 0.0.1"
+              $cleanVersion = "0.0.1"
+          }
+          
+          echo "Очищенная версия: $cleanVersion"
+          # Записываем в env файл для Windows runners
+          "VERSION=$cleanVersion" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -40,11 +48,10 @@ jobs:
         run: dotnet tool install -g vpk
 
       - name: Publish App
-        run: dotnet publish -c Release -r win-x64 --self-contained -o ./publish
+        # Указываем конкретный проект PROJECT_PATH
+        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 --self-contained -o ./publish /p:Version=${{ env.VERSION }}
 
       - name: Pack with Velopack
-        # Обратите внимание: packId должен совпадать с именем проекта/Id
-        # Мы не используем подпись (signSkipDll), так как сертификата нет.
         run: vpk pack -u ${{ env.APP_NAME }} -v ${{ env.VERSION }} -p ./publish -e mainExe=${{ env.APP_NAME }}.exe
 
       - name: Upload Windows Artifacts
@@ -61,11 +68,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Extract Version from Tag
+      - name: Extract Version (Bash)
         run: |
-          TAG_NAME="${{ github.ref_name }}"
-          CLEAN_VERSION=${TAG_NAME#v}
-          echo "Очищенная версия: $CLEAN_VERSION"
+          REF_NAME="${{ github.ref_name }}"
+          if [[ $REF_NAME == v* ]]; then
+            CLEAN_VERSION=${REF_NAME#v}
+          else
+            echo "Запуск не по тегу. Используем версию 0.0.1"
+            CLEAN_VERSION="0.0.1"
+          fi
           echo "VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
 
       - name: Setup .NET
@@ -74,7 +85,8 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Publish App
-        run: dotnet publish -c Release -r linux-x64 --self-contained -o ./publish
+        # Указываем PROJECT_PATH и передаем версию явно
+        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r linux-x64 --self-contained -o ./publish /p:Version=${{ env.VERSION }}
 
       # --- Создание .deb ---
       - name: Create Deb Structure
@@ -84,20 +96,16 @@ jobs:
           mkdir -p deb-package/usr/share/applications
           mkdir -p deb-package/DEBIAN
           
-          # Копируем файлы приложения
           cp -r ./publish/* deb-package/usr/lib/${{ env.APP_NAME }}/
           
-          # Создаем симлинк для запуска
           ln -s /usr/lib/${{ env.APP_NAME }}/${{ env.APP_NAME }} deb-package/usr/bin/${{ env.APP_NAME }}
-
-          # Создаем файл control
+          
           echo "Package: ${{ env.APP_NAME }}" > deb-package/DEBIAN/control
           echo "Version: ${{ env.VERSION }}" >> deb-package/DEBIAN/control
           echo "Architecture: amd64" >> deb-package/DEBIAN/control
           echo "Maintainer: https://t.me/minecraft_urfu_underground" >> deb-package/DEBIAN/control
           echo "Description: UnderMineLauncher" >> deb-package/DEBIAN/control
           
-          # Создаем .desktop файл (нужен для меню)
           echo "[Desktop Entry]" > deb-package/usr/share/applications/${{ env.APP_NAME }}.desktop
           echo "Name=${{ env.APP_NAME }}" >> deb-package/usr/share/applications/${{ env.APP_NAME }}.desktop
           echo "Exec=${{ env.APP_NAME }}" >> deb-package/usr/share/applications/${{ env.APP_NAME }}.desktop
@@ -118,24 +126,21 @@ jobs:
           mkdir AppDir
           cp -r ./publish/* AppDir/
           
-          # AppImage требует AppRun и .desktop файл в корне
           echo "[Desktop Entry]" > AppDir/${{ env.APP_NAME }}.desktop
           echo "Name=${{ env.APP_NAME }}" >> AppDir/${{ env.APP_NAME }}.desktop
           echo "Exec=${{ env.APP_NAME }}" >> AppDir/${{ env.APP_NAME }}.desktop
           echo "Type=Application" >> AppDir/${{ env.APP_NAME }}.desktop
           echo "Categories=Utility;" >> AppDir/${{ env.APP_NAME }}.desktop
           
-          # Иконка (AppImage требует иконку, создадим пустышку если нет)
+          # Если иконки нет, создаем пустышку, чтобы appimagetool не падал
           touch AppDir/${{ env.APP_NAME }}.png
-
-          # Создаем AppRun (скрипт запуска)
+          
           echo '#!/bin/sh' > AppDir/AppRun
           echo 'cd "$(dirname "$0")"' >> AppDir/AppRun
           echo 'exec ./${{ env.APP_NAME }} "$@"' >> AppDir/AppRun
           chmod +x AppDir/AppRun
 
       - name: Build AppImage
-        # ARCH=x86_64 нужен appimagetool для понимания архитектуры
         run: ARCH=x86_64 ./appimagetool AppDir ${{ env.APP_NAME }}.AppImage
 
       - name: Upload Linux Artifacts
@@ -154,38 +159,46 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Extract Version (Bash)
+        run: |
+          REF_NAME="${{ github.ref_name }}"
+          if [[ $REF_NAME == v* ]]; then
+            CLEAN_VERSION=${REF_NAME#v}
+          else
+            echo "Запуск не по тегу. Используем версию 0.0.1"
+            CLEAN_VERSION="0.0.1"
+          fi
+          echo "VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Publish App
-        run: dotnet publish -c Release -r osx-x64 --self-contained -o ./publish
+        # Указываем PROJECT_PATH
+        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r osx-x64 --self-contained -o ./publish /p:Version=${{ env.VERSION }}
 
-      # Avalonia при publish создает бандл .app (обычно YourApp.app внутри папки)
-      # Если нет, создадим структуру вручную.
       - name: Prepare App Bundle
         run: |
           mkdir -p "${{ env.APP_NAME }}.app/Contents/MacOS"
           mkdir -p "${{ env.APP_NAME }}.app/Contents/Resources"
           
-          # Копируем бинарник и dll
           cp ./publish/* "${{ env.APP_NAME }}.app/Contents/MacOS/"
           
-          # Создаем Info.plist (минимально необходимый)
           echo '<?xml version="1.0" encoding="UTF-8"?>' > "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo '<plist version="1.0"><dict>' >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo "<key>CFBundleExecutable</key><string>${{ env.APP_NAME }}</string>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
-          echo "<key>CFBundleIdentifier</key><string>com.example.${{ env.APP_NAME }}</string>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
+          echo "<key>CFBundleIdentifier</key><string>com.underground.${{ env.APP_NAME }}</string>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo "<key>CFBundleName</key><string>${{ env.APP_NAME }}</string>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo "<key>CFBundleVersion</key><string>${{ env.VERSION }}</string>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo "<key>CFBundlePackageType</key><string>APPL</string>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
+          # Важно: включение поддержки High Resolution для Avalonia на Mac
+          echo "<key>NSHighResolutionCapable</key><true/>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo '</dict></plist>' >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
 
       - name: Ad-hoc Signing
-        # Это критично! Без этого приложение не запустится даже локально на M1/M2
-        # Мы используем "-" вместо identity, что означает "подпиши, но не проверяй сертификат"
         run: codesign --force --deep --sign - "${{ env.APP_NAME }}.app"
 
       - name: Create DMG
