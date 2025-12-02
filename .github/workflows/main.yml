@@ -62,11 +62,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Extract Version from Tag
-        run: |
-          TAG_NAME="${{ github.ref_name }}"
+        run: |
+          TAG_NAME="${{ github.ref_name }}"
           CLEAN_VERSION=${TAG_NAME#v}
-          echo "Очищенная версия (Linux): $CLEAN_VERSION"
-          echo "VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
+          echo "Очищенная версия: $CLEAN_VERSION"
+          echo "VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
