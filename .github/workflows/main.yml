@@ -4,31 +4,31 @@ on:
   workflow_dispatch: # Ручной запуск
   push:
     tags:
-      - "v*" # Запуск при пуше тега
+      - "v*" # Запуск при пуше тега, например v1.0.0
+
+permissions:
+  contents: write # Разрешаем создание релизов
 
 env:
   DOTNET_VERSION: '9.0.x'
   APP_NAME: "UnderMine"
-  # Укажите точный путь к файлу проекта, чтобы не билдить весь .sln
-  PROJECT_PATH: "./UnderMine/UnderMine.csproj" 
+  PROJECT_PATH: "./UnderMine/UnderMine.csproj"
 
 jobs:
-  
   # ========================================================
-  # LINUX (.deb и .AppImage)
+  # 1. LINUX BUILD (.deb и .AppImage)
   # ========================================================
   build-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Extract Version (Bash)
+      
+      - name: Extract Version
         run: |
           REF_NAME="${{ github.ref_name }}"
           if [[ $REF_NAME == v* ]]; then
             CLEAN_VERSION=${REF_NAME#v}
           else
-            echo "Запуск не по тегу. Используем версию 0.0.1"
             CLEAN_VERSION="0.0.1"
           fi
           echo "VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
@@ -39,7 +39,6 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Publish App
-        # Указываем PROJECT_PATH и передаем версию явно
         run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r linux-x64 --self-contained -o ./publish /p:Version=${{ env.VERSION }}
 
       # --- Создание .deb ---
@@ -51,7 +50,6 @@ jobs:
           mkdir -p deb-package/DEBIAN
           
           cp -r ./publish/* deb-package/usr/lib/${{ env.APP_NAME }}/
-          
           ln -s /usr/lib/${{ env.APP_NAME }}/${{ env.APP_NAME }} deb-package/usr/bin/${{ env.APP_NAME }}
           
           echo "Package: ${{ env.APP_NAME }}" > deb-package/DEBIAN/control
@@ -75,22 +73,20 @@ jobs:
           wget -O appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
           chmod +x appimagetool
 
-      - name: Prepare AppDir (с вашей иконкой)
+      - name: Prepare AppDir
         run: |
-          # Устанавливаем переменные для удобства
           ICON_SOURCE="UnderMine/build/icons/256x256.png" 
           ICON_NAME="${{ env.APP_NAME }}"
           
           mkdir AppDir
           cp -r ./publish/* AppDir/
+          
           if [ -f "$ICON_SOURCE" ]; then
-            
             cp "$ICON_SOURCE" "AppDir/$ICON_NAME.png"
-            echo "Иконка $ICON_NAME.png успешно скопирована."
           else   
-            echo "::warning::Файл иконки $ICON_SOURCE не найден. AppImage может быть без иконки."
             touch "AppDir/$ICON_NAME.png"
           fi
+          
           echo "[Desktop Entry]" > AppDir/$ICON_NAME.desktop
           echo "Name=${{ env.APP_NAME }}" >> AppDir/$ICON_NAME.desktop
           echo "Icon=$ICON_NAME" >> AppDir/$ICON_NAME.desktop 
@@ -102,32 +98,34 @@ jobs:
           echo 'cd "$(dirname "$0")"' >> AppDir/AppRun
           echo 'exec ./${{ env.APP_NAME }} "$@"' >> AppDir/AppRun
           chmod +x AppDir/AppRun
+
       - name: Build AppImage
         run: ARCH=x86_64 ./appimagetool AppDir ${{ env.APP_NAME }}.AppImage
 
+      # Загружаем файлы во временное хранилище артефактов
       - name: Upload Linux Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: linux-installers
+          name: installers-linux
           path: |
             *.deb
             *.AppImage
+          if-no-files-found: error
 
   # ========================================================
-  # MACOS (.dmg)
+  # 2. MACOS BUILD (.dmg)
   # ========================================================
   build-macos:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Extract Version (Bash)
+      
+      - name: Extract Version
         run: |
           REF_NAME="${{ github.ref_name }}"
           if [[ $REF_NAME == v* ]]; then
             CLEAN_VERSION=${REF_NAME#v}
           else
-            echo "Запуск не по тегу. Используем версию 0.0.1"
             CLEAN_VERSION="0.0.1"
           fi
           echo "VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
@@ -138,7 +136,6 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Publish App
-        # Указываем PROJECT_PATH
         run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r osx-x64 --self-contained -o ./publish /p:Version=${{ env.VERSION }}
 
       - name: Prepare App Bundle
@@ -156,7 +153,6 @@ jobs:
           echo "<key>CFBundleName</key><string>${{ env.APP_NAME }}</string>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo "<key>CFBundleVersion</key><string>${{ env.VERSION }}</string>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo "<key>CFBundlePackageType</key><string>APPL</string>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
-          # Важно: включение поддержки High Resolution для Avalonia на Mac
           echo "<key>NSHighResolutionCapable</key><true/>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo '</dict></plist>' >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
 
@@ -169,8 +165,44 @@ jobs:
           create-dmg "${{ env.APP_NAME }}.app" || true
           mv *.dmg ${{ env.APP_NAME }}.dmg
 
+      # Загружаем файлы во временное хранилище артефактов
       - name: Upload MacOS Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: macos-installer
+          name: installers-macos
           path: ${{ env.APP_NAME }}.dmg
+          if-no-files-found: error
+
+  # ========================================================
+  # 3. CREATE GITHUB RELEASE
+  # ========================================================
+  release:
+    # Запускаем только если предыдущие шаги прошли успешно
+    needs: [build-linux, build-macos]
+    runs-on: ubuntu-latest
+    # Запускаем только если это тег (v...)
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          # Скачиваем все артефакты в текущую папку
+          pattern: installers-*
+          merge-multiple: true
+
+      - name: List files (Debug)
+        run: ls -R
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          # Указываем, какие файлы прикрепить
+          files: |
+            *.deb
+            *.AppImage
+            *.dmg
