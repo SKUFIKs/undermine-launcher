@@ -35,6 +35,10 @@
 		<PackageReference Include="BenchmarkDotNet" Version="0.15.6" />
 		<PackageReference Include="CmlLib.Core" Version="4.0.6" />
 		<PackageReference Include="CmlLib.Core.Installer.Forge" Version="1.1.0" />
+		<PackageReference Include="GitInfo" Version="3.6.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers" Version="18.3.36714.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />

@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Microsoft.VisualStudio.Shell.Interop;
+using Avalonia.Threading;
 using System;
 using System.IO;
 using System.Security.Cryptography;
@@ -15,7 +16,7 @@ using UnderMine.Network.AuthService;
 using UnderMine.Network.Services;
 using UnderMine.Services.SystemInfo.MemorySettings;
 using UnderMine.Services.Updater;
-
+using System.Reflection;
 
 namespace UnderMine.IU;
 
@@ -40,51 +41,28 @@ public partial class AuthWindow : Window
         _update = new Updater();
         _ = LoadUserSettings();
         PassBox.PasswordChar = '•';
-        this.Opened += OnOpened;
-        this.PositionChanged += (s, e) => SaveWindowPosition();
         SystemScan();
         
-    }
-
-    private void SaveWindowPosition()
-    {
-        var settings = new WindowSettings()
-        {
-            X = this.Position.X,
-            Y = this.Position.Y,
-            Width = this.Width,
-            Height = this.Height
-        };
-        File.WriteAllText("windowSettings.json", JsonSerializer.Serialize(settings));
-    }
-
-
-    private WindowSettings? LoadWindowSettings()
-    {
-        if (!File.Exists("windowSettings.json")) return null;
-        var json = File.ReadAllText("windowSettings.json");
-        return JsonSerializer.Deserialize<WindowSettings>(json);
-    }
-
-    private void OnOpened(object? sender, EventArgs e)
-    {
-        var settings = LoadWindowSettings();
-        if (settings != null)
-        {
-            this.Position = new PixelPoint(settings.X, settings.Y);
-            this.Width = settings.Width;
-            this.Height = settings.Height;
-        }
     }
 
     private async void SystemScan()
     {
         var systemInfo = new SystemInfo();
         var check = new CheckEquipment(systemInfo);
+
         var info = await check.CheckOperatingSystemAsync();
+
         var updaterInstance = new Updater();
-        //await updaterInstance.UpdateLauncher();
-    }
+        string versionFromGitTag = ThisAssembly.Git.Tag;
+
+        // await updaterInstance.UpdateLauncher();
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            
+            Version.Content = $"{versionFromGitTag}";
+        });
+    }    
 
     private async Task LoadUserSettings()
     {
@@ -440,11 +418,5 @@ public partial class AuthWindow : Window
         {
             Environment.Exit(0);
         }
-        public class WindowSettings
-        {
-            public int X { get; set; }
-            public int Y { get; set; }
-            public double Width { get; set; }
-            public double Height { get; set; }
-        }
+        
 }

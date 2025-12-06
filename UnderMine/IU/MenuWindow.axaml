@@ -22,6 +22,7 @@
                 <ImageBrush Source="avares://UnderMine/Assets/Images/backgroundMenu.jpg"
                             Stretch="Fill" />
             </Border.Background>
+			
             <!-- Боковая панель -->
             <Panel Height="657" Width="263" Margin="0,-4,0,0"
                    HorizontalAlignment="Left" VerticalAlignment="Center">
@@ -79,6 +80,11 @@
 
             </Panel>
         </Border>
+		<Panel Margin="0,0,0,0">
+
+			<Label x:Name="Version" Content="1.0.0.0" Classes="LiteLabel" Margin="0,10,20,0"
+				   VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize ="12" />
+		</Panel>
 
 
         <!-- Шаблон панели -->
@@ -216,7 +222,7 @@
                                 Height="32">
                         </Button>
                     </Panel>
-                    <Panel>
+                    <Panel IsVisible="false">
                         <Label Classes="LiteTitle" Margin="22,235,0,0" Content="Логи игры:" FontSize="15"></Label>
                         <Panel VerticalAlignment="Top" HorizontalAlignment="Left" Width="442" Margin="42,263,0,0">
                             <TextBox x:Name="LogsPath" ></TextBox>
@@ -351,5 +357,6 @@
                 </Panel>
             </Panel>
         </Border>
-    </Panel>
+    
+	</Panel>
 </Window>

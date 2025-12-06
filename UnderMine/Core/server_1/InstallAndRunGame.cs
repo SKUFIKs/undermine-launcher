@@ -136,8 +136,8 @@ namespace UnderMine.Core.server_1
                 response.EnsureSuccessStatusCode();
                 string manifestJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var manifest = JObject.Parse(manifestJson);
-                JToken versionObj = manifest["versions"].FirstOrDefault(v => v["id"]?.ToString() == mcVersion)
-                                 ?? throw new InvalidOperationException($"Version {mcVersion} not found in manifest");
+                JToken versionObj = manifest["versions"].FirstOrDefault(v => v["id"]?.ToString() == mcVersion)!
+                   ?? throw new InvalidOperationException($"Version {mcVersion} not found in manifest");
                 string versionUrl = versionObj["url"]!.ToString();
 
                 using var versionResp = await _httpClient.GetAsync(versionUrl, cancellationToken).ConfigureAwait(false);

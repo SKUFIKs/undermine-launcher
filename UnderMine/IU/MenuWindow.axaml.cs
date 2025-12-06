@@ -46,9 +46,8 @@ public partial class MenuWindow : Window
         InitializeServersAsync(); 
         Load_Settings();
         Installation();
-        this.Opened += OnOpened;
         Console.SetOut(new Logger(UpdateConsoleLabel));
-        this.PositionChanged += (s, e) => SaveWindowPosition();
+        
 
         MemoryTextBox.Text = $"{MemorySlider.Value:F0} MB";
         MemorySlider.PropertyChanged += (_, e) =>
@@ -81,37 +80,7 @@ public partial class MenuWindow : Window
             UseShellExecute = true
         });
     }
-    private void OnOpened(object? sender, EventArgs e)
-    {
-        var settings = LoadWindowSettings();
-        if (settings != null)
-        {
-            this.Position = new PixelPoint(settings.X, settings.Y);
-            this.Width = settings.Width;
-            this.Height = settings.Height;
-        }
-    }
 
-    private void SaveWindowPosition()
-    {
-        var settings = new WindowSettings()
-        {
-            X = this.Position.X,
-            Y = this.Position.Y,
-            Width = this.Width,
-            Height = this.Height
-        };
-        File.WriteAllText("windowSettings.json", JsonSerializer.Serialize(settings));
-    }
-
-    private AuthWindow.WindowSettings? LoadWindowSettings()
-    {
-        if (!File.Exists("windowSettings.json")) return null;
-        var json = File.ReadAllText("windowSettings.json");
-        return JsonSerializer.Deserialize<AuthWindow.WindowSettings>(json);
-    }
-
-    
     private void AddLogMessage(string message)
     {
         Dispatcher.UIThread.Post(() =>
@@ -135,9 +104,13 @@ public partial class MenuWindow : Window
         {
             _userData.MemorySettings = (int)e.NewValue;
         };
-    }
-    
+        string versionFromGitTag = ThisAssembly.Git.Tag;
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
 
+            Version.Content = $"{versionFromGitTag}";
+        });
+    }
 
     private async Task InitializeMemorySliderAsync()
     {
@@ -383,11 +356,4 @@ public partial class MenuWindow : Window
         }
     }
 
-    public class WindowSettings
-    {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
-    }
 }
