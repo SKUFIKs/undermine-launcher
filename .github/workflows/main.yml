@@ -196,12 +196,17 @@ jobs:
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Важно передать токен через env
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ github.ref_name }} # Используем имя тега без префикса refs/tags/
           name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-          # Указываем, какие файлы прикрепить
+          make_latest: true             # Явно помечаем как "последний релиз"
+          generate_release_notes: true  # Генерируем список изменений автоматически
+          fail_on_unmatched_files: true # Ошибка, если файлы не найдены (помогает отладке)
           files: |
             *.deb
             *.AppImage
