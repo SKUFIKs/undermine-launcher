@@ -8,58 +8,12 @@ on:
 
 env:
   DOTNET_VERSION: '9.0.x'
-  APP_NAME: "UnderMineLauncher"
+  APP_NAME: "UnderMine"
   # Укажите точный путь к файлу проекта, чтобы не билдить весь .sln
   PROJECT_PATH: "./UnderMine/UnderMine.csproj" 
 
 jobs:
-  # ========================================================
-  # WINDOWS (Velopack)
-  # ========================================================
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Extract Version (PowerShell)
-        run: |
-          # Получаем ref_name (v1.0.0 или master)
-          $refName = "${{ github.ref_name }}"
-          
-          # Проверяем, начинается ли с 'v' (значит это релиз)
-          if ($refName -match "^v") {
-              $cleanVersion = $refName -replace "^v",""
-          } else {
-              # Если ручной запуск не с тега, ставим временную версию
-              Write-Host "Запуск не по тегу. Используем версию 0.0.1"
-              $cleanVersion = "0.0.1"
-          }
-          
-          echo "Очищенная версия: $cleanVersion"
-          # Записываем в env файл для Windows runners
-          "VERSION=$cleanVersion" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Install Velopack vpk
-        run: dotnet tool install -g vpk
-
-      - name: Publish App
-        # Указываем конкретный проект PROJECT_PATH
-        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 --self-contained -o ./publish /p:Version=${{ env.VERSION }}
-
-      - name: Pack with Velopack
-        run: vpk pack -u ${{ env.APP_NAME }} -v ${{ env.VERSION }} -p ./publish -e mainExe=${{ env.APP_NAME }}.exe
-
-      - name: Upload Windows Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-installer
-          path: Releases/*.exe
-
+  
   # ========================================================
   # LINUX (.deb и .AppImage)
   # ========================================================
@@ -121,25 +75,33 @@ jobs:
           wget -O appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
           chmod +x appimagetool
 
-      - name: Prepare AppDir
+      - name: Prepare AppDir (с вашей иконкой)
         run: |
+          # Устанавливаем переменные для удобства
+          ICON_SOURCE="UnderMine/build/icons/256x256.png" 
+          ICON_NAME="${{ env.APP_NAME }}"
+          
           mkdir AppDir
           cp -r ./publish/* AppDir/
-          
-          echo "[Desktop Entry]" > AppDir/${{ env.APP_NAME }}.desktop
-          echo "Name=${{ env.APP_NAME }}" >> AppDir/${{ env.APP_NAME }}.desktop
-          echo "Exec=${{ env.APP_NAME }}" >> AppDir/${{ env.APP_NAME }}.desktop
-          echo "Type=Application" >> AppDir/${{ env.APP_NAME }}.desktop
-          echo "Categories=Utility;" >> AppDir/${{ env.APP_NAME }}.desktop
-          
-          # Если иконки нет, создаем пустышку, чтобы appimagetool не падал
-          touch AppDir/${{ env.APP_NAME }}.png
+          if [ -f "$ICON_SOURCE" ]; then
+            
+            cp "$ICON_SOURCE" "AppDir/$ICON_NAME.png"
+            echo "Иконка $ICON_NAME.png успешно скопирована."
+          else   
+            echo "::warning::Файл иконки $ICON_SOURCE не найден. AppImage может быть без иконки."
+            touch "AppDir/$ICON_NAME.png"
+          fi
+          echo "[Desktop Entry]" > AppDir/$ICON_NAME.desktop
+          echo "Name=${{ env.APP_NAME }}" >> AppDir/$ICON_NAME.desktop
+          echo "Icon=$ICON_NAME" >> AppDir/$ICON_NAME.desktop 
+          echo "Exec=${{ env.APP_NAME }}" >> AppDir/$ICON_NAME.desktop
+          echo "Type=Application" >> AppDir/$ICON_NAME.desktop
+          echo "Categories=Utility;" >> AppDir/$ICON_NAME.desktop
           
           echo '#!/bin/sh' > AppDir/AppRun
           echo 'cd "$(dirname "$0")"' >> AppDir/AppRun
           echo 'exec ./${{ env.APP_NAME }} "$@"' >> AppDir/AppRun
           chmod +x AppDir/AppRun
-
       - name: Build AppImage
         run: ARCH=x86_64 ./appimagetool AppDir ${{ env.APP_NAME }}.AppImage
 
@@ -184,7 +146,7 @@ jobs:
           mkdir -p "${{ env.APP_NAME }}.app/Contents/MacOS"
           mkdir -p "${{ env.APP_NAME }}.app/Contents/Resources"
           
-          cp ./publish/* "${{ env.APP_NAME }}.app/Contents/MacOS/"
+          cp -r ./publish/* "${{ env.APP_NAME }}.app/Contents/MacOS/"
           
           echo '<?xml version="1.0" encoding="UTF-8"?>' > "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
