@@ -21,31 +21,32 @@ namespace UnderMine.Models
         [UnconditionalSuppressMessage("SingleFile", "IL3002:Avoid calling members marked with 'RequiresAssemblyFilesAttribute' when publishing as a single-file", Justification = "<Pending>")]
         private static readonly string SettingsPath = GetSettingsPath();
 
-        [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")]
+        [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")] 
         private static string GetSettingsPath()
         {
+            string basePath;
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return Path.Combine(
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-                    ?? throw new InvalidOperationException("Не удалось определить путь приложения"),
-                    "settings.json"
-                );
+                basePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                string home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                string dir = Path.Combine(home, "Library", "Application Support", AppName);
-                Directory.CreateDirectory(dir);
-                return Path.Combine(dir, "settings.json");
+                basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Library", "Application Support");
             }
             else
             {
-                string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string dir = Path.Combine(home, ".config", AppName);
-                Directory.CreateDirectory(dir);
-                return Path.Combine(dir, "settings.json");
+                basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config");
             }
+
+            string appDir = Path.Combine(basePath, AppName);
+  
+            if (!Directory.Exists(appDir))
+            {
+                Directory.CreateDirectory(appDir);
+            }
+
+            return Path.Combine(appDir, "settings.json");
         }
 
         public async Task Save()
