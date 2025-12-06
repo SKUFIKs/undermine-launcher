@@ -13,6 +13,8 @@ env:
   DOTNET_VERSION: '9.0.x'
   APP_NAME: "UnderMine"
   PROJECT_PATH: "./UnderMine/UnderMine.csproj"
+  # Путь к иконке в репозитории (исправлено)
+  ICON_PATH: "UnderMine/256x256.png"
 
 jobs:
   # ========================================================
@@ -44,25 +46,40 @@ jobs:
       # --- Создание .deb ---
       - name: Create Deb Structure
         run: |
+          # Создаем структуру папок
           mkdir -p deb-package/usr/bin
           mkdir -p deb-package/usr/lib/${{ env.APP_NAME }}
           mkdir -p deb-package/usr/share/applications
+          mkdir -p deb-package/usr/share/pixmaps
           mkdir -p deb-package/DEBIAN
           
+          # Копируем файлы приложения
           cp -r ./publish/* deb-package/usr/lib/${{ env.APP_NAME }}/
+          
+          # Создаем симлинк для запуска из терминала
           ln -s /usr/lib/${{ env.APP_NAME }}/${{ env.APP_NAME }} deb-package/usr/bin/${{ env.APP_NAME }}
           
+          # (!) КОПИРУЕМ ИКОНКУ В СИСТЕМНУЮ ПАПКУ
+          cp "${{ env.ICON_PATH }}" "deb-package/usr/share/pixmaps/${{ env.APP_NAME }}.png"
+          
+          # Создаем файл control
           echo "Package: ${{ env.APP_NAME }}" > deb-package/DEBIAN/control
           echo "Version: ${{ env.VERSION }}" >> deb-package/DEBIAN/control
           echo "Architecture: amd64" >> deb-package/DEBIAN/control
           echo "Maintainer: https://t.me/minecraft_urfu_underground" >> deb-package/DEBIAN/control
           echo "Description: UnderMineLauncher" >> deb-package/DEBIAN/control
           
+          # Создаем ярлык .desktop
           echo "[Desktop Entry]" > deb-package/usr/share/applications/${{ env.APP_NAME }}.desktop
           echo "Name=${{ env.APP_NAME }}" >> deb-package/usr/share/applications/${{ env.APP_NAME }}.desktop
           echo "Exec=${{ env.APP_NAME }}" >> deb-package/usr/share/applications/${{ env.APP_NAME }}.desktop
+          # (!) УКАЗЫВАЕМ ИМЯ ИКОНКИ (без расширения, система сама найдет её в pixmaps)
+          echo "Icon=${{ env.APP_NAME }}" >> deb-package/usr/share/applications/${{ env.APP_NAME }}.desktop
           echo "Type=Application" >> deb-package/usr/share/applications/${{ env.APP_NAME }}.desktop
           echo "Categories=Utility;" >> deb-package/usr/share/applications/${{ env.APP_NAME }}.desktop
+
+          # Делаем скрипты postinst/postrm исполняемыми (если они есть, тут их нет, но полезно для будущего)
+          chmod -R 755 deb-package/DEBIAN
 
       - name: Build .deb
         run: dpkg-deb --build deb-package ${{ env.APP_NAME }}_${{ env.VERSION }}_amd64.deb
@@ -75,25 +92,22 @@ jobs:
 
       - name: Prepare AppDir
         run: |
-          ICON_SOURCE="UnderMine/build/icons/256x256.png" 
-          ICON_NAME="${{ env.APP_NAME }}"
-          
           mkdir AppDir
           cp -r ./publish/* AppDir/
           
-          if [ -f "$ICON_SOURCE" ]; then
-            cp "$ICON_SOURCE" "AppDir/$ICON_NAME.png"
-          else   
-            touch "AppDir/$ICON_NAME.png"
-          fi
+          # (!) КОПИРУЕМ ИКОНКУ В КОРЕНЬ AppDir
+          cp "${{ env.ICON_PATH }}" "AppDir/${{ env.APP_NAME }}.png"
           
-          echo "[Desktop Entry]" > AppDir/$ICON_NAME.desktop
-          echo "Name=${{ env.APP_NAME }}" >> AppDir/$ICON_NAME.desktop
-          echo "Icon=$ICON_NAME" >> AppDir/$ICON_NAME.desktop 
-          echo "Exec=${{ env.APP_NAME }}" >> AppDir/$ICON_NAME.desktop
-          echo "Type=Application" >> AppDir/$ICON_NAME.desktop
-          echo "Categories=Utility;" >> AppDir/$ICON_NAME.desktop
+          # Создаем .desktop файл внутри AppDir
+          echo "[Desktop Entry]" > AppDir/${{ env.APP_NAME }}.desktop
+          echo "Name=${{ env.APP_NAME }}" >> AppDir/${{ env.APP_NAME }}.desktop
+          # Ссылка на файл иконки, лежащий рядом
+          echo "Icon=${{ env.APP_NAME }}" >> AppDir/${{ env.APP_NAME }}.desktop 
+          echo "Exec=${{ env.APP_NAME }}" >> AppDir/${{ env.APP_NAME }}.desktop
+          echo "Type=Application" >> AppDir/${{ env.APP_NAME }}.desktop
+          echo "Categories=Utility;" >> AppDir/${{ env.APP_NAME }}.desktop
           
+          # Создаем AppRun
           echo '#!/bin/sh' > AppDir/AppRun
           echo 'cd "$(dirname "$0")"' >> AppDir/AppRun
           echo 'exec ./${{ env.APP_NAME }} "$@"' >> AppDir/AppRun
@@ -102,7 +116,6 @@ jobs:
       - name: Build AppImage
         run: ARCH=x86_64 ./appimagetool AppDir ${{ env.APP_NAME }}.AppImage
 
-      # Загружаем файлы во временное хранилище артефактов
       - name: Upload Linux Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -145,6 +158,10 @@ jobs:
           
           cp -r ./publish/* "${{ env.APP_NAME }}.app/Contents/MacOS/"
           
+          # Примечание: Для macOS в идеале нужен файл .icns, а не .png.
+          # Если он есть, раскомментируйте строку ниже:
+          cp "UnderMine/AppIcon.icns" "${{ env.APP_NAME }}.app/Contents/Resources/AppIcon.icns"
+          
           echo '<?xml version="1.0" encoding="UTF-8"?>' > "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo '<plist version="1.0"><dict>' >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
@@ -154,6 +171,8 @@ jobs:
           echo "<key>CFBundleVersion</key><string>${{ env.VERSION }}</string>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo "<key>CFBundlePackageType</key><string>APPL</string>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo "<key>NSHighResolutionCapable</key><true/>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
+          # Если у вас появится .icns, добавьте эту строку:
+          echo "<key>CFBundleIconFile</key><string>AppIcon.icns</string>" >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
           echo '</dict></plist>' >> "${{ env.APP_NAME }}.app/Contents/Info.plist"
 
       - name: Ad-hoc Signing
@@ -165,7 +184,6 @@ jobs:
           create-dmg "${{ env.APP_NAME }}.app" || true
           mv *.dmg ${{ env.APP_NAME }}.dmg
 
-      # Загружаем файлы во временное хранилище артефактов
       - name: Upload MacOS Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -177,17 +195,13 @@ jobs:
   # 3. CREATE GITHUB RELEASE
   # ========================================================
   release:
-    # Запускаем только если предыдущие шаги прошли успешно
     needs: [build-linux, build-macos]
     runs-on: ubuntu-latest
-    # Запускаем только если это тег (v...)
     if: startsWith(github.ref, 'refs/tags/v')
-    
     steps:
       - name: Download All Artifacts
         uses: actions/download-artifact@v4
         with:
-          # Скачиваем все артефакты в текущую папку
           pattern: installers-*
           merge-multiple: true
 
@@ -198,15 +212,15 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Важно передать токен через env
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name }} # Используем имя тега без префикса refs/tags/
+          tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-          make_latest: true             # Явно помечаем как "последний релиз"
-          generate_release_notes: true  # Генерируем список изменений автоматически
-          fail_on_unmatched_files: true # Ошибка, если файлы не найдены (помогает отладке)
+          make_latest: true
+          generate_release_notes: true
+          fail_on_unmatched_files: true
           files: |
             *.deb
             *.AppImage
