@@ -30,9 +30,9 @@ public class CheckEquipment
     {
         double totalMemoryBytes = 0;
 
-        ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PhysicalMemory");
+        ManagementObjectSearcher searcher = new("SELECT * FROM Win32_PhysicalMemory");
 
-        foreach (var o in searcher.Get())
+        foreach (ManagementBaseObject? o in searcher.Get())
         {
             var mo = (ManagementObject)o;
             totalMemoryBytes += Convert.ToDouble(mo["Capacity"]);

@@ -51,7 +51,7 @@ namespace UnderMine.Core.server_1
 
             try
             {
-                ReportStage("Подготовка к установке модов...", 0);
+                ReportStage("Подготовка...", 0);
 
                 var manifest = await DownloadManifestAsync(manifestUrl);
 
@@ -173,7 +173,6 @@ namespace UnderMine.Core.server_1
             var modFiles = Directory.GetFiles(modsDirectory, "*.jar");
             var corruptedMods = new List<string>();
 
-            // Validate sequentially to avoid too many concurrent CPU validations
             foreach (var modFile in modFiles)
             {
                 if (!await ValidateModIntegrity(modFile))
@@ -191,7 +190,7 @@ namespace UnderMine.Core.server_1
             string tmp = mod.FilePath + ".tmp";
             try
             {
-                // Download and compute hash during download
+                
                 string computedHash = await DownloadModAsync(mod.Url!, tmp);
 
                 if (!string.IsNullOrEmpty(mod.ExpectedHash))
@@ -231,7 +230,7 @@ namespace UnderMine.Core.server_1
             {
                 try
                 {
-                    Console.WriteLine($"→ [Download] {modName}");
+                    Console.WriteLine($"[Download] {modName}");
 
                     using var resp = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
                     resp.EnsureSuccessStatusCode();
@@ -298,7 +297,7 @@ namespace UnderMine.Core.server_1
                 }
             }
 
-            throw new Exception("Не удалось загрузить мод после нескольких попыток.");
+            throw new Exception("Не удалось загрузить мод.");
         }
 
         private async Task<string> ComputeSha256Async(string path)

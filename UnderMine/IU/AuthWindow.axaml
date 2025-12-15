@@ -20,15 +20,13 @@
         </Border.Background>
 		
         <Panel>
-			<Grid Margin="0,10,0,0">
-			
-				<Label x:Name="Version" Content="1.0.0.0" Classes="LiteLabel" Margin="0,15,20,0"
-					   VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize ="12" />
+			<Grid Margin="0,0,10,0"  Height="20" Width="200" VerticalAlignment="Bottom" HorizontalAlignment="Right" >
+				<Label x:Name="Version" Classes="LiteLabel" Margin="0,0,0,0"  Height="40" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize ="12" HorizontalContentAlignment="Right" />
 			</Grid>
             <Grid x:Name="LogPanel" Height="423" Width="423" Margin="0,0,0,0" IsVisible="True">
                 <Border CornerRadius="22" Background="#171717">
                     <Panel>
-                        <Label Content="UnderMine Test" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+                        <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
                                HorizontalAlignment="Center" />
                         <Label Content="Авторизация" Classes="LiteTitle" Margin="0,60,0,0" VerticalAlignment="Top"
                                HorizontalAlignment="Center" />
@@ -83,7 +81,7 @@
             <Grid x:Name="RegPanel" Height="423" Width="423" Margin="0,0,0,0" IsVisible="False">
                 <Border CornerRadius="22" Background="#171717">
                     <Panel>
-                        <Label Content="UnderMine Test" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+                        <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
                                HorizontalAlignment="Center" />
                         <Label Content="Регистрация" Classes="LiteTitle" Margin="0,60,0,0" VerticalAlignment="Top"
                                HorizontalAlignment="Center" />
@@ -149,7 +147,7 @@
                     </Border>
                 </Panel>
                 <Panel>
-                    <Label Content="UnderMine Test" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+                    <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
                            HorizontalAlignment="Center" />
                     <Label Content="Кажется что-то пошло не так..." FontSize="16" Classes="LiteTitle" Margin="0,60,0,0"
                            VerticalAlignment="Top" HorizontalAlignment="Center" />
@@ -190,7 +188,7 @@
                     </Border>
                 </Panel>
                 <Panel>
-                    <Label Content="UnderMine Test" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+                    <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
                            HorizontalAlignment="Center" />
                     <Label Content="Регистрация пройдена." FontSize="16" Classes="LiteTitle" Margin="0,60,0,0"
                            VerticalAlignment="Top" HorizontalAlignment="Center" />
@@ -230,7 +228,7 @@
                 </Panel>
 
                 <Panel>
-                    <Label Content="UnderMine Test" Classes="BigTitle" Margin="0,10,0,0"
+                    <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0"
                            VerticalAlignment="Top" HorizontalAlignment="Center" />
                     <Label Content="Доступно новое обновление" FontSize="16" Classes="LiteTitle" Margin="0,60,0,0"
                            VerticalAlignment="Top" HorizontalAlignment="Center" />
@@ -269,7 +267,7 @@
                         Margin="0,0,0,0"
                         Background="#222222" CornerRadius="15">
                     <Panel>
-                        <Label Content="UnderMine Test" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+                        <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
                                HorizontalAlignment="Center" />
                         <Label Content="Пользовательское соглашение" FontSize="16" Classes="LiteTitle"
                                Margin="0,70,0,0"

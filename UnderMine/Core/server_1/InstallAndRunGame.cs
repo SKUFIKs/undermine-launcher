@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using UnderMine.Models;
 using UnderMine.Services;
 using System.Runtime.InteropServices;
+using UnderMine.Services.Logger;
 
 namespace UnderMine.Core.server_1
 {
@@ -23,10 +24,13 @@ namespace UnderMine.Core.server_1
         private readonly HttpClient _httpClient;
         private readonly bool _disposeHttpClient;
 
+        private readonly SmoothProgressUpdater _smoothUpdater;
+
         public event Action<string>? OnMessage;
         public event Action<string, double, string>? OnProgress;
+        public event Action<string, Exception>? OnError;
 
-        // Support IHttpClientFactory via httpClientFactory parameter. If provided, factory manages lifetime and we must not dispose the client.
+
         public InstalGame1Server(ServerInfo serverInfo, IHttpClientFactory? httpClientFactory = null, HttpClient? httpClient = null)
         {
             _serverInfo = serverInfo ?? throw new ArgumentNullException(nameof(serverInfo));
@@ -54,8 +58,15 @@ namespace UnderMine.Core.server_1
                 _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(120) };
                 _disposeHttpClient = true;
             }
+            _smoothUpdater = new SmoothProgressUpdater(
+                (message, progress, tag) => OnProgress?.Invoke(message, progress, tag)
+            );
         }
-
+        private void ReportError(string userMessage, Exception ex)
+        {
+            Console.WriteLine($"[ERROR] {userMessage}: {ex}"); 
+            OnError?.Invoke(userMessage, ex); 
+        }
         private static string GetBaseDirectory()
         {
             const string AppName = "UnderMine";
@@ -80,11 +91,12 @@ namespace UnderMine.Core.server_1
             }
         }
 
-        private void ReportStage(string message, double progress)
+        private async Task ReportStage(string message, double progress)
         {
             Console.WriteLine($"[Stage] {message} ({progress}%)");
             OnMessage?.Invoke(message);
-            OnProgress?.Invoke(message, progress, "");
+
+            await _smoothUpdater.UpdateSmoothly(message, progress, "");
         }
 
         private void Log(string message)
@@ -97,125 +109,142 @@ namespace UnderMine.Core.server_1
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var settings = await UserData.Load() ?? throw new InvalidOperationException("User settings not found");
-            string mcVersion = _serverInfo.VersionMc1 ?? throw new InvalidOperationException("Minecraft version not specified");
-            string forgeVersion = _serverInfo.ForgeV1 ?? throw new InvalidOperationException("Forge version not specified");
-            string manifestUrl = _serverInfo.ManifestLink1 ?? throw new InvalidOperationException("Manifest URL not specified");
-            string installerLink = _serverInfo.InstallerLink ?? throw new InvalidOperationException("Installer link not specified");
-
-            ReportStage("Подготовка установки...", 0);
-            await InstallVanillaMinecraft(mcVersion, cancellationToken).ConfigureAwait(false);
-
-            ReportStage("Установка игры...", 25);
-            await LoadAndInstallForge(mcVersion, forgeVersion, installerLink, cancellationToken).ConfigureAwait(false);
-
-            ReportStage("Установка модов...", 50);
-            await InstallMods(manifestUrl, cancellationToken).ConfigureAwait(false);
-
-            ReportStage("Загрузка конфигов...", 90);
-            await LoadConfigsAndSettings(cancellationToken).ConfigureAwait(false);
-
-            ReportStage("Запуск игры...", 100);
-            await LaunchGame(mcVersion, forgeVersion, settings.MemorySettings, cancellationToken).ConfigureAwait(false);
-
-            ReportStage("Установка завершена", 100);
-        }
-
-        private async Task InstallVanillaMinecraft(string mcVersion, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            string versionDir = Path.Combine(_baseDirectory, mcVersion);
-            Directory.CreateDirectory(versionDir);
-
-            string clientJar = Path.Combine(versionDir, mcVersion + ".jar");
-            string clientJson = Path.Combine(versionDir, mcVersion + ".json");
-
-            using (var response = await _httpClient.GetAsync("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json", cancellationToken).ConfigureAwait(false))
+            try
             {
-                response.EnsureSuccessStatusCode();
-                string manifestJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                var manifest = JObject.Parse(manifestJson);
-                JToken versionObj = manifest["versions"].FirstOrDefault(v => v["id"]?.ToString() == mcVersion)!
-                   ?? throw new InvalidOperationException($"Version {mcVersion} not found in manifest");
-                string versionUrl = versionObj["url"]!.ToString();
+                var settings = await UserData.Load() ?? throw new InvalidOperationException("User settings not found");
+                string mcVersion = _serverInfo.VersionMc1 ?? throw new InvalidOperationException("Minecraft version not specified");
+                string forgeVersion = _serverInfo.ForgeV1 ?? throw new InvalidOperationException("Forge version not specified");
+                string manifestUrl = _serverInfo.ManifestLink1 ?? throw new InvalidOperationException("Manifest URL not specified");
+                string installerLink = _serverInfo.InstallerLink ?? throw new InvalidOperationException("Installer link not specified");
 
-                using var versionResp = await _httpClient.GetAsync(versionUrl, cancellationToken).ConfigureAwait(false);
-                versionResp.EnsureSuccessStatusCode();
-                string versionJson = await versionResp.Content.ReadAsStringAsync().ConfigureAwait(false);
-                await File.WriteAllTextAsync(clientJson, versionJson, cancellationToken).ConfigureAwait(false);
+                await ReportStage("Подготовка...", 5);
 
-                var versionJ = JObject.Parse(versionJson);
-                string jarUrl = versionJ["downloads"]?["client"]?["url"]?.ToString()
-                                ?? throw new InvalidOperationException("Client jar URL not found in version manifest");
+                await ReportStage("Установка игры...", 25);
+                await LoadAndInstallForge(mcVersion, forgeVersion, installerLink, cancellationToken).ConfigureAwait(false);
 
-                if (!File.Exists(clientJar))
-                    await DownloadFileAsync(_httpClient, jarUrl, clientJar, cancellationToken).ConfigureAwait(false);
+                await ReportStage("Установка модов...", 50);
+                await InstallMods(manifestUrl, cancellationToken).ConfigureAwait(false);
+
+                await ReportStage("Установка модов завершена", 80);
+
+                await ReportStage("Загрузка конфигов...", 90);
+                await LoadConfigsAndSettings(cancellationToken).ConfigureAwait(false);
+
+                await ReportStage("Конфигурация завершена...", 95);
+
+                await ReportStage("Запуск игры...", 100);
+                await LaunchGame(mcVersion, forgeVersion, settings.MemorySettings, cancellationToken).ConfigureAwait(false);
+
+                await ReportStage("Установка завершена", 100);
             }
-
-            OnMessage?.Invoke("Vanilla Minecraft установлен");
+            catch (OperationCanceledException)
+            {
+                ReportError("Установка была отменена пользователем.", new Exception("Отмена"));
+                throw; 
+            }
+            catch (Exception ex)
+            {
+                ReportError($"{ex.Message}", ex);
+                throw; 
+            }
         }
 
         private async Task LoadAndInstallForge(string mcVersion, string forgeVersion, string installerLink, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            Log($"Установка Forge {forgeVersion} для {mcVersion}...");
-            string forgeDirName = $"{mcVersion}-forge-{forgeVersion}";
-            string forgeDir = Path.Combine(_baseDirectory, forgeDirName);
-            string tempDir = Path.Combine(_baseDirectory, "temp");
-            Directory.CreateDirectory(tempDir);
-
-            string installerName = $"forge-{mcVersion}-{forgeVersion}-installer.jar";
-            string installerPath = Path.Combine(tempDir, installerName);
-
-            if (!File.Exists(installerPath))
+            try
             {
-                Log("Загрузка установщика...");
-                await DownloadFileAsync(_httpClient, installerLink, installerPath, cancellationToken).ConfigureAwait(false);
-            }
+                Log($"Установка Forge {forgeVersion} для {mcVersion}...");
+                string forgeDirName = $"{mcVersion}-forge-{forgeVersion}";
+                string forgeDir = Path.Combine(_baseDirectory, forgeDirName);
+                string tempDir = Path.Combine(_baseDirectory, "temp");
+                Directory.CreateDirectory(tempDir);
 
-            var profile = new ProfileGeneration();
-            await profile.ProfileGenerate();
+                string installerName = $"forge-{mcVersion}-{forgeVersion}-installer.jar";
+                string installerPath = Path.Combine(tempDir, installerName);
 
-            if (!Directory.Exists(forgeDir))
-            {
-                Log("Запуск установщика...");
-                var psi = new System.Diagnostics.ProcessStartInfo
+                if (!File.Exists(installerPath))
                 {
-                    FileName = "java",
-                    Arguments = $"-jar \"{installerPath}\" --installClient",
-                    WorkingDirectory = _baseDirectory,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true
-                };
-
-                using var process = new System.Diagnostics.Process { StartInfo = psi, EnableRaisingEvents = true };
-
-                process.OutputDataReceived += (s, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) Console.WriteLine($"[Forge] {e.Data}"); };
-                process.ErrorDataReceived += (s, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) Console.WriteLine($"[Forge:Error] {e.Data}"); };
-
-                process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-
-                var timeoutTask = Task.Delay(TimeSpan.FromMinutes(5), cancellationToken);
-                var waitTask = process.WaitForExitAsync(cancellationToken);
-
-                var completedTask = await Task.WhenAny(waitTask, timeoutTask).ConfigureAwait(false);
-                if (completedTask == timeoutTask)
-                {
-                    try { process.Kill(true); } catch { }
-                    throw new TimeoutException("Установка Forge заняла слишком много времени и была прервана.");
+                    Log("Загрузка установщика...");
+                    try
+                    {
+                        await DownloadFileAsync(_httpClient, installerLink, installerPath, cancellationToken).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        ReportError($"Не удалось загрузить установщик", ex);
+                        throw; 
+                    }
                 }
 
-                if (process.ExitCode != 0)
-                    throw new Exception($"Forge installer завершился с ошибкой (код {process.ExitCode})");
-            }
+                var profile = new ProfileGeneration();
+                await profile.ProfileGenerate();
 
-            Log("Игра установлена");
+                if (!Directory.Exists(forgeDir))
+                {
+                    Log("Проверка файлов...");
+                    var psi = new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = "java",
+                        Arguments = $"-jar \"{installerPath}\" --installClient",
+                        WorkingDirectory = _baseDirectory,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    };
+
+                    using var process = new System.Diagnostics.Process { StartInfo = psi, EnableRaisingEvents = true };
+
+                    process.OutputDataReceived += (s, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) Console.WriteLine($"[Forge] {e.Data}"); };
+                    process.ErrorDataReceived += (s, e) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(e.Data))
+                        {
+                            Console.WriteLine($"[Error] {e.Data}");
+                        }
+                    }; 
+
+                    process.Start();
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+
+                    var timeoutTask = Task.Delay(TimeSpan.FromMinutes(5), cancellationToken);
+                    var waitTask = process.WaitForExitAsync(cancellationToken);
+
+                    var completedTask = await Task.WhenAny(waitTask, timeoutTask).ConfigureAwait(false);
+                    if (completedTask == timeoutTask)
+                    {
+                        try { process.Kill(true); } catch { }
+
+                        var timeoutEx = new TimeoutException("Установка Forge заняла слишком много времени и была прервана.");
+                        ReportError(timeoutEx.Message, timeoutEx);
+                        throw timeoutEx;
+                    }
+
+                    if (process.ExitCode != 0)
+                    {
+                        var errorMsg = $"Установка завершилась с ошибкой (код {process.ExitCode})";
+                        var exitEx = new Exception(errorMsg);
+                        ReportError(errorMsg, exitEx);
+                        throw exitEx;
+                    }
+                }
+
+                Log("Игра установлена");
+            }
+            catch (OperationCanceledException)
+            {
+                Log("Установка Forge отменена.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                
+                ReportError($"[Error]: {ex.Message}", ex);
+                throw; 
+            }
         }
 
         private async Task InstallMods(string manifestUrl, CancellationToken cancellationToken)
@@ -224,12 +253,16 @@ namespace UnderMine.Core.server_1
             modInstaller.OnMessage += msg => OnMessage?.Invoke(msg);
             modInstaller.OnProgress += (_, percent, _) =>
             {
-                double globalProgress = 50 + (percent * 0.25);
+                double globalProgress = 50 + (percent * 0.30); 
+
+                
                 OnProgress?.Invoke("Установка модов", globalProgress, "");
             };
 
             await modInstaller.InstallOrUpdateMods(_modsDirectory, manifestUrl).ConfigureAwait(false);
-            OnProgress?.Invoke("Установка модов завершена", 75, "");
+
+           
+            await ReportStage("Установка модов завершена", 80);
         }
 
         private async Task LoadConfigsAndSettings(CancellationToken cancellationToken)

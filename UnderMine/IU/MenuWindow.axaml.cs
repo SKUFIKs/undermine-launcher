@@ -1,14 +1,15 @@
-﻿using System;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia.Threading;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Interactivity;
-using Avalonia.Threading;
 using UnderMine.Core.server_1;
 using UnderMine.Fonts.Models;
 using UnderMine.Game.server_2;
@@ -34,8 +35,10 @@ public partial class MenuWindow : Window
     private ServerInfo _serverInfo = null!;
     private InstalGame1Server _installer;
     private string _logContent = "";
+    private static readonly IBrush DefaultColor = Brushes.Orange;
+    private static readonly IBrush CompleteColor = Brush.Parse("#3C6");
 
-    
+
     public MenuWindow(ContextData contextData, LoginResult loginResult)
     {
         InitializeComponent();
@@ -47,6 +50,7 @@ public partial class MenuWindow : Window
         Load_Settings();
         Installation();
         Console.SetOut(new Logger(UpdateConsoleLabel));
+
         
 
         MemoryTextBox.Text = $"{MemorySlider.Value:F0} MB";
@@ -63,6 +67,7 @@ public partial class MenuWindow : Window
     {
         if (text.Length > 120)
             text = text.Substring(0, 120) + "...";
+        
         LogLabel.Content = text;
     }
     private void TitleBar_PointerPressed(object sender, Avalonia.Input.PointerPressedEventArgs e)
@@ -85,7 +90,8 @@ public partial class MenuWindow : Window
     {
         Dispatcher.UIThread.Post(() =>
         {
-            _logContent = message;     
+            _logContent = message;
+            
             LogBox.Content = _logContent;
         });
     }
@@ -107,8 +113,7 @@ public partial class MenuWindow : Window
         string versionFromGitTag = ThisAssembly.Git.Tag;
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-
-            Version.Content = $"{versionFromGitTag}";
+            Version.Content = $"{versionFromGitTag}   ";
         });
     }
 
@@ -140,21 +145,32 @@ public partial class MenuWindow : Window
 
             if (!_serverInfo.Success)
             {
-                Loader.SetStatus($"Ошибка: {_serverInfo.ErrorMessage}");
+               
+                AddLogMessage($"Ошибка {_serverInfo.ErrorMessage}");
+                ErrorPanel.IsVisible = true;
+                ErrorBox.Text = $"Ошибка: {_serverInfo.ErrorMessage}";
                 return;
             }
-            
+
             _instalGame1Server = new InstalGame1Server(_serverInfo);
-            
+
+            _instalGame1Server.OnError += HandleException;
+
             _instalGame1Server.OnProgress += (task, percent, state) =>
             {
-                Dispatcher.UIThread.Post(() =>
+                Dispatcher.UIThread.Post(async () => 
                 {
                     Loader.Progress = percent;
-                    Loader.SetStatus($"{task}: {state}");
+
+                    AddLogMessage($"{task} {state}");
+
+                    if (percent == 25 || percent == 50 || percent == 90)
+                    {
+                        await Task.Delay(100); 
+                    }
                 });
             };
-            
+
             _instalGame1Server.OnMessage += AddLogMessage;
 
             UsernameLabel.Content = _userData.Username;
@@ -163,8 +179,8 @@ public partial class MenuWindow : Window
         }
         catch (Exception ex)
         {
-            Loader.SetStatus("Ошибка загрузки данных сервера");
-            Console.WriteLine("[ERROR] Ошибка получения ServerInfo: " + ex);
+            HandleException("Ошибка загрузки данных сервера", ex);
+            return;
         }
     }
 
@@ -213,6 +229,11 @@ public partial class MenuWindow : Window
     {
         Close();
     }
+    private void CloseErrorButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        ErrorPanel.IsVisible = false;
+        ErrorBox.Text = string.Empty;
+    }
 
     private void CancelButton_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -238,14 +259,18 @@ public partial class MenuWindow : Window
         {
             if (serverId == 1)
             {
+                if (_instalGame1Server == null)
+                {
+                    throw new InvalidOperationException("Сервер не был инициализирован.");
+                }
                 await _instalGame1Server.InstallAndRunAsync();
             }
             else if (serverId == 2)
                 await _instalGame2Server.InstallAndRunAsync();
         }
         catch (Exception ex)
-        {
-            Console.WriteLine("[GAME] Ошибка при запуске игры: " + ex);
+        {  
+            HandleException("Ошибка при запуске игры", ex); 
         }
         finally
         {
@@ -326,12 +351,23 @@ public partial class MenuWindow : Window
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Не удалось открыть директорию настроек: {ex.Message}");
+            HandleException("Не удалось открыть директорию настроек", ex);
         }
     }
     private void LogsSettings_OnClick (object? sender, RoutedEventArgs e)
     {
 
+    }
+
+    private void HandleException(string userMessage, Exception ex)
+    {
+        Console.WriteLine($"[Error] {userMessage}: {ex}");
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            ErrorPanel.IsVisible = true;
+            ErrorBox.Text = $"{userMessage}\n{ex.StackTrace}";
+        });
     }
 
     private static string GetBaseDirectory()

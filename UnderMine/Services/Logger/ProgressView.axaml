@@ -3,17 +3,17 @@
              x:Class="UnderMine.Services.Logger.ProgressView"
              Width="43" Height="43">
     <Grid>
-        <!-- Контур круга белый -->
         <Ellipse Stroke="#5C5C5C" StrokeThickness="5" Fill="Transparent"/>
+
+		<Path x:Name="ProgressPath" Stroke="Orange" StrokeThickness="5" StrokeLineCap="Round"/>
         
-        <!-- Дуга прогресса оранжевая -->
-        <Path Stroke="Orange" StrokeThickness="5" StrokeLineCap="Round" x:Name="ProgressPath"/>
-        
-        <!-- Текст процента -->
-        <TextBlock x:Name="PercentText" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                   FontSize="10" FontWeight="Bold" Foreground="White"/>
+        <TextBlock x:Name="PercentText" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center" 
+                   FontSize="10" 
+                   FontWeight="Bold" 
+                   Foreground="White"
+                   Text="0%"/>
     </Grid>
 </UserControl>
-
-
 

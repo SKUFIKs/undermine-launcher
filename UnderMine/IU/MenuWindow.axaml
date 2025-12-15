@@ -6,24 +6,25 @@
         x:Class="UnderMine.IU.MenuWindow"
         xmlns:models="clr-namespace:UnderMine.Fonts.Models"
         xmlns:logger="clr-namespace:UnderMine.Services.Logger"
-        RenderOptions.EdgeMode="Unspecified"
-        RenderOptions.BitmapInterpolationMode="MediumQuality"
+        
+        
+		RenderOptions.BitmapInterpolationMode="MediumQuality"
         UseLayoutRounding="True"
-        Width="1177" Height="662"
-        CanResize="False"
-        WindowStartupLocation="CenterScreen"
-        SystemDecorations="None"
-        Background="Transparent"
-        Title="UnderMine">
 
-    <Panel>
+	    Width="1177" Height="662"
+	    CanResize="False"
+	    WindowStartupLocation="CenterScreen"
+	    SystemDecorations="None"
+	    Background="Transparent"
+	    Title="UnderMine">
+
+	<Panel>
         <Border CornerRadius="30" BorderThickness="0" ClipToBounds="True" PointerPressed="TitleBar_PointerPressed">
             <Border.Background>
                 <ImageBrush Source="avares://UnderMine/Assets/Images/backgroundMenu.jpg"
                             Stretch="Fill" />
             </Border.Background>
-			
-            <!-- Боковая панель -->
+
             <Panel Height="657" Width="263" Margin="0,-4,0,0"
                    HorizontalAlignment="Left" VerticalAlignment="Center">
                 <StackPanel Spacing="10" Margin="40">
@@ -69,63 +70,62 @@
                     </RadioButton>
                 </StackPanel>
                 <Panel Width="203" Height="58" Margin="23,25,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
-                    <Border>
+                    <Border Width="50" Height="50" Margin="0,0,150,0">
                         <Border.Background>
                             <ImageBrush Source="avares://UnderMine/Assets/Images/UnderMineIcon.jpg" Stretch="Fill"></ImageBrush>
                         </Border.Background>
                     </Border>
                     <Label Classes="LiteTitle" Margin="60,0,0,0" Content="UnderMine" FontSize="20"></Label>
-                    <Label Classes="LiteTitle" Margin="60,25,0,0" Content="Test" FontSize="20"></Label>
+                    <Label Classes="LiteTitle" Margin="60,25,0,0" Content="Server" FontSize="20"></Label>
                 </Panel>
 
             </Panel>
         </Border>
-		<Panel Margin="0,0,0,0">
+		<Grid Margin="0,0,10,10"  Height="20" Width="200" VerticalAlignment="Bottom" HorizontalAlignment="Right"  >
+			<Label x:Name="Version" Classes="LiteLabel" Margin="0,0,0,0"  Height="40" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize ="12" HorizontalContentAlignment="Right" />
+		</Grid>
 
-			<Label x:Name="Version" Content="1.0.0.0" Classes="LiteLabel" Margin="0,10,20,0"
-				   VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize ="12" />
+		<Panel>
+			<Border VerticalAlignment="Top" HorizontalAlignment="Right" Width="200" Height="65" Margin="0,20,30,0"
+					Background="#222222" CornerRadius="15">
+
+				<Grid ColumnDefinitions="45,*" Margin="10,0,10,0">
+
+					<Border Grid.Column="0" Width="40" Height="40" VerticalAlignment="Center" HorizontalAlignment="Left"
+							CornerRadius="20" ClipToBounds="True">
+						<Border.Background>
+							<ImageBrush Source="avares://UnderMine/Assets/Images/profile.jpg"/>
+						</Border.Background>
+					</Border>
+
+					<Label x:Name="UsernameLabel" Classes="LiteLabel" Grid.Column="1" Margin="0,0,15,0"
+						   VerticalAlignment="Center" HorizontalAlignment="Left"
+						   FontSize="16" >
+					</Label>
+				</Grid>
+			</Border>
+
 		</Panel>
 
+		<Panel x:Name="ProgressBar" IsVisible="False">
+			<Border VerticalAlignment="Top" HorizontalAlignment="Center"
+					Width="275" Height="65"
+					Background="#222222" CornerRadius="15" Margin="0,20,0,0">
 
-        <!-- Шаблон панели -->
-        <Panel HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662" IsVisible="False">
-            <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
-                    Background="#222222" CornerRadius="15">
-            </Border>
-        </Panel>
+				<Grid ColumnDefinitions="Auto, *" Margin="15,0">
 
-        <Panel>
-            <Border VerticalAlignment="Top" HorizontalAlignment="Right" Width="200" Height="65" Margin="0,20,30,0"
-                    Background="#222222" CornerRadius="15">
-            </Border>
-            <Panel Margin="0,0,20,0">
-                <Border Width="40" Height="40" Margin="0,34,159,0" VerticalAlignment="Top" HorizontalAlignment="Right">
-                    <Border.Background>
-                        <ImageBrush Source="avares://UnderMine/Assets/Images/profile.jpg"></ImageBrush>
-                    </Border.Background>
-                </Border>
-                <Label x:Name="UsernameLabel" Margin="998,32,0,0" HorizontalContentAlignment="Left" FontSize="16"
-                       Classes="LiteLabel" VerticalContentAlignment="Top" HorizontalAlignment="Left">
-                </Label>
-            </Panel>
-        </Panel>
+					<Border Grid.Column="0" Width="43" Height="43" VerticalAlignment="Center">
+						<logger:ProgressView x:Name="Loader" />
+					</Border>
 
-        <Panel x:Name="ProgressBar" IsVisible="False">
-            <Border VerticalAlignment="Top" HorizontalAlignment="Center" Width="275" Height="65" Background="#222222"
-                    Margin="0,20,0,0"
-                    CornerRadius="15">
-            </Border>
-            <Panel>
-                <Border Width="43" Height="43" Margin="0,31,210,0" VerticalAlignment="Top" HorizontalAlignment="Center">
-                    <logger:ProgressView x:Name="Loader" />
-                </Border>
-                <Label x:Name="LogBox" Margin="510,32,0,0" HorizontalContentAlignment="Left" FontSize="14"
-                       Classes="LiteLabel" VerticalContentAlignment="Top" HorizontalAlignment="Left">
-                </Label>
-            </Panel>
-        </Panel>
-
-        <!-- Новости проекта -->
+					<Label x:Name="LogBox" Grid.Column="1"
+						   VerticalAlignment="Center" HorizontalAlignment="Left"
+						   Margin="15,0,0,0"
+						   FontSize="14" Classes="LiteLabel"
+						   Content="Загрузка..."/>
+				</Grid>
+			</Border>
+		</Panel>
         <Panel x:Name="NewsPanel" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
                IsVisible="True">
             <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
@@ -233,19 +233,19 @@
                                 Height="32">
                         </Button>
                     </Panel>
-                    <Panel Height="45" Width="338" Margin="35,0,0,30" VerticalAlignment="Bottom"
-                           HorizontalAlignment="Left">
-                        <RadioButton HorizontalAlignment="Left" x:Name="SaveButton" Click="SaveButton_OnClick"
-                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
-                                     Width="158" GroupName="SettingsGroup" Classes="menu-btn" IsChecked="True">
-                            <TextBlock Text="Сохранить" />
-                        </RadioButton>
-                        <RadioButton HorizontalAlignment="Right" x:Name="DefaultButton" Click="DefaultButton_OnClick"
-                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
-                                     Width="158" GroupName="SettingsGroup" Classes="menu-btn">
-                            <TextBlock Text="По умолчанию" />
-                        </RadioButton>
-                    </Panel>
+					<Panel Height="45" Width="338" Margin="35,0,0,30" VerticalAlignment="Bottom"
+      HorizontalAlignment="Left">
+						<Button HorizontalAlignment="Left" x:Name="SaveButton" Click="SaveButton_OnClick"
+								HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
+								Width="158" Classes="menu-btn">
+							<TextBlock Text="Сохранить" />
+						</Button>
+						<Button HorizontalAlignment="Right" x:Name="DefaultButton" Classes="menu-btn" Click="DefaultButton_OnClick"
+								HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
+								Width="158" >
+							<TextBlock Text="По умолчанию" />
+						</Button>
+					</Panel>
                 </Panel>
             </Border>
         </Panel>
@@ -277,31 +277,31 @@
                     Background="#222222" CornerRadius="15">
                 <Grid>
                     <ScrollViewer Margin="20,20,20,80">
-                        <TextBlock Width="830" TextWrapping="Wrap" Classes="NewsTitle" TextAlignment="Left" Foreground="White">
-                            <Run Text="Сервер TechnoMagic" FontWeight="Bold" FontSize="26" />
-                            <LineBreak />
-                            <LineBreak />
-                            <Run Text="Сервер TechnoMagic основан на сборке Create Chronicles: Bosses and Beyond." FontWeight="Bold" /> 
-                            <LineBreak />
-                            <LineBreak />
-                            <Run Text="Вас ждет проработанная система прогресса состоящая из 10 глав. " FontWeight="Bold" />
-                            <Run Text="В ней объедина автоматизация, исследование, магия и битва с боссами. В вашем распоряжении более 800 квестов, которые постепенно познакомят вас с развитием технологий и магических искусств." FontWeight="Bold" />
-                            <LineBreak />
-                            <LineBreak />
-                            <Run Text="Изучайте мир с модом Create, стройте производственные линии и получайте доступ к новому контенту с каждой главой.
-" FontWeight="Bold" /> <LineBreak />
-                            <LineBreak />
-                            <Run Text="Сражайтесь с боссами из L’EnderCataclysm, Mowzie’s Mobs и Bosses of Mass Destruction, развивая при этом собственное древо талантов.
-" FontWeight="Bold" /> <LineBreak />
-                            <LineBreak />
-                            <Run Text="Посетите новые измерения – от Twilight Forest до The Aether и Blue Skies, исследуйте необычные пещеры из Alex’s Caves, приручайте драконов из Ice and Fire и отправляйтесь в космос с Ad Astra.
-" FontWeight="Bold" /> <LineBreak />
-                            <LineBreak />
-                            <Run Text="Ждем вас на нашем сервере :) " FontWeight="Bold" />
-                            <LineBreak />
-                            <LineBreak />
-                            
-                        </TextBlock>
+						<TextBlock Width="830" TextWrapping="Wrap" Classes="NewsTitle" TextAlignment="Left" Foreground="White">
+							<Run Text="Сервер TechnoMagic" FontWeight="Bold" FontSize="26" />
+							<LineBreak />
+							<LineBreak />
+							<Run Text="Сервер TechnoMagic основан на сборке Create Chronicles: Bosses and Beyond." FontWeight="Bold" />
+							<LineBreak />
+							<LineBreak />
+							<Run Text="Вас ждет проработанная система прогресса, состоящая из 10 глав." FontWeight="Bold" />
+							<Run Text=" Она объединяет автоматизацию, исследование, магию и битвы с боссами. " FontWeight="Bold" />
+							<Run Text="В вашем распоряжении более 800 квестов, которые постепенно помогут освоить развитие технологий и магических искусств." FontWeight="Bold" />
+							<LineBreak />
+							<LineBreak />
+							<Run Text="Изучайте мир с модом Create, стройте производственные линии и получайте доступ к новому контенту с каждой главой." FontWeight="Bold" />
+							<LineBreak />
+							<LineBreak />
+							<Run Text=" Сражайтесь с боссами из L’EnderCataclysm, Mowzie’s Mobs и Bosses of Mass Destruction, развивая при этом собственное древо талантов." FontWeight="Bold" />
+							<LineBreak />
+							<LineBreak />
+							<Run Text="Посетите новые измерения – от Twilight Forest до The Aether и Blue Skies, исследуйте необычные пещеры из Alex’s Caves, приручайте драконов из Ice and Fire и отправляйтесь в космос с Ad Astra." FontWeight="Bold" />
+							<LineBreak />
+							<LineBreak />
+							<Run Text="Ждем вас на нашем сервере! :)" FontWeight="Bold" />
+							<LineBreak />
+							<LineBreak />
+						</TextBlock>
                     </ScrollViewer>
 
                     <Button x:Name="PlayButton" Click="PlayButton_OnClick" Content="Играть" HorizontalAlignment="Left"
@@ -328,7 +328,7 @@
         <Border x:Name="SelectServer" Height="415" Width="442" Margin="0,0,0,0" Background="#171717" CornerRadius="22"
                 VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="False">
             <Panel x:DataType="models:MenuWindowViewModel">
-                <Label Content="UnderMine Test" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+                <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
                        HorizontalAlignment="Center" />
                 <Label Content="Выбор сервера" Classes="LiteTitle" Margin="0,60,0,0" VerticalAlignment="Top"
                        HorizontalAlignment="Center" />
@@ -357,6 +357,44 @@
                 </Panel>
             </Panel>
         </Border>
-    
+		<Grid x:Name="ErrorPanel" Height="423" Width="423" IsVisible="False">
+			<Panel>
+				<Border CornerRadius="22" Background="#171717">
+				</Border>
+			</Panel>
+			<Panel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,80,0,0" Height="117" Width="117">
+				<Border>
+					<Border.Background>
+						<ImageBrush Source="avares://UnderMine/Assets/Images/ErrorIcon.jpg" Stretch="Fill"></ImageBrush>
+					</Border.Background>
+				</Border>
+			</Panel>
+			<Panel>
+				<Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+					   HorizontalAlignment="Center" />
+				<Label Content="Кажется что-то пошло не так..." FontSize="16" Classes="LiteTitle" Margin="0,60,0,0"
+					   VerticalAlignment="Top" HorizontalAlignment="Center" />
+			</Panel>
+			<Panel>
+				<Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,170,0,0" Width="386"
+					  Height="72">
+					<Label Content="Код ошибки:" Classes="LiteLabel" Margin="5,0,0,0" VerticalAlignment="Top"
+						   HorizontalAlignment="Left" />
+					<TextBox Classes="custom-paneltextbox" Margin="0,175,0,0" VerticalContentAlignment="Top"
+							 TextWrapping="Wrap" IsReadOnly="True" AcceptsReturn="True"
+							 HorizontalContentAlignment="Left" Padding="5,5" x:Name="ErrorBox"
+							 VerticalAlignment="Bottom"
+							 Width="386" Height="145" HorizontalAlignment="Center">
+					</TextBox>
+					<Button x:Name="CloseErrorButton"
+							Content="Закрыть"
+							Classes="custom-Auth"
+							Margin="0,242,0,0"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Bottom"
+							Click="CloseErrorButton_OnClick" />
+				</Grid>
+			</Panel>
+		</Grid>
 	</Panel>
 </Window>

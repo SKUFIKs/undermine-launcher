@@ -1,59 +1,106 @@
 ﻿using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Metadata;
 
 namespace UnderMine.Services.Logger;
 
 public partial class ProgressView : UserControl
 {
+    private static readonly IBrush DefaultColor = Brushes.Orange;
+    private static readonly IBrush CompleteColor = Brush.Parse("#3C6"); 
+
+    private readonly StreamGeometry _geometry = new StreamGeometry();
+
+    public static readonly StyledProperty<double> ProgressProperty =
+        AvaloniaProperty.Register<ProgressView, double>(
+            nameof(Progress),
+            defaultValue: 0,
+            coerce: CoerceProgress 
+        );
+
+    static ProgressView()
+    {
+        ProgressProperty.Changed.AddClassHandler<ProgressView>((sender, args) =>
+        {
+            sender.UpdateUi();
+        });
+    }
+
+    public double Progress
+    {
+        get => GetValue(ProgressProperty);
+        set => SetValue(ProgressProperty, value);
+    }
+
+    private static double CoerceProgress(AvaloniaObject control, double value)
+    {
+        return Math.Clamp(value, 0, 100);
+    }
+
     public ProgressView()
     {
         InitializeComponent();
+        ProgressPath.Data = _geometry;
         UpdateUi();
-    }
-
-    private double _progress;
-    public double Progress
-    {
-        get => _progress;
-        set
-        {
-            _progress = Math.Clamp(value, 0, 100);
-            UpdateUi();
-        }
     }
 
     private void UpdateUi()
     {
-        PercentText.Text = $"{_progress:F0}%";
+        double currentProgress = Progress;
 
-        double angle = _progress / 100 * 360;
-        double radius = 18; // радиус круга
+        if (ProgressPath != null)
+        {
+            ProgressPath.Stroke = currentProgress >= 100 ? CompleteColor : DefaultColor;
+        }
+
+        if (PercentText != null)
+            PercentText.Text = $"{currentProgress:F0}%";
+
+        
+
+        double renderProgress = currentProgress >= 100 ? 99.999 : currentProgress;
+
+        double angle = renderProgress / 100 * 360;
+
+        double radius = 19.0;
         double cx = 21.5;
         double cy = 21.5;
 
-        // Для 0% просто очищаем дугу
-        if (_progress <= 0)
+        double startAngleRad = -Math.PI / 2;
+        double endAngleRad = startAngleRad + (angle * Math.PI / 180);
+
+        Point startPoint = new Point(
+            cx + radius * Math.Cos(startAngleRad),
+            cy + radius * Math.Sin(startAngleRad)
+        );
+
+        Point endPoint = new Point(
+            cx + radius * Math.Cos(endAngleRad),
+            cy + radius * Math.Sin(endAngleRad)
+        );
+
+        bool isLargeArc = angle > 180;
+
+        using (var context = _geometry.Open())
         {
-            ProgressPath.Data = null;
-            return;
+            context.BeginFigure(startPoint, false);
+            context.ArcTo(
+                endPoint,
+                new Size(radius, radius),
+                0, 
+                isLargeArc,
+                SweepDirection.Clockwise
+            );
+            context.EndFigure(false);
         }
 
-        double radians = angle * Math.PI / 180;
-        double x = cx + radius * Math.Sin(radians);
-        double y = cy - radius * Math.Cos(radians);
-
-        int largeArcFlag = angle > 180 ? 1 : 0;
-
-        string pathData = string.Format(System.Globalization.CultureInfo.InvariantCulture,
-            "M {0} {1} A {2} {2} 0 {3} 1 {4} {5}",
-            cx, cy - radius, radius, largeArcFlag, x, y);
-
-        ProgressPath.Data = Geometry.Parse(pathData);
+        InvalidateVisual(); 
     }
 
     public void SetStatus(string text)
     {
-        
+
     }
 }

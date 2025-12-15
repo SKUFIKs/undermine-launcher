@@ -9,7 +9,7 @@
 		<SignAssembly>False</SignAssembly>
 		<Authors>$(SKUF)</Authors>
 		<AssemblyVersion>1.0.0</AssemblyVersion>
-		<ApplicationIcon>icon.ico</ApplicationIcon>
+		<ApplicationIcon>256x256.ico</ApplicationIcon>
 
 		<!-- macOS настройки -->
 		<RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>
@@ -56,13 +56,16 @@
 		<AvaloniaResource Include="Network\**" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Remove="Network\NetworkStatus\CheckServerStatus.cs" />
+	  <Compile Remove="Network\NetworkStatus\ChekNetworkStatus.cs" />
+	</ItemGroup>
+	<ItemGroup>
 	  <None Remove="app.manifest" />
 	  <None Remove="icon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="build\icon.ico" />
-		<Content Include="icon.ico" />
+		<Content Include="256x256.ico" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include=".github\workflows\build-mac.yml" />
@@ -83,7 +86,6 @@
 
 	<ItemGroup>
 	  <Folder Include="publish\" />
-	  <Folder Include="scripts\" />
 	</ItemGroup>
 
 	<ItemGroup>

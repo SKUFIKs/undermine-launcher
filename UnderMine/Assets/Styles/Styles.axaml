@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Design.PreviewWith>
         <Border Padding="20">
-            <!-- Add Controls for Previewer Here -->
+            
         </Border>
     </Design.PreviewWith>
 
@@ -144,7 +144,6 @@
             </ControlTemplate>
         </Setter>
 
-        <!-- Плавные переходы между состояниями -->
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="Background" Duration="0:0:0.15" />
@@ -152,20 +151,16 @@
         </Setter>
     </Style>
 
-    <!-- Наведение -->
     <Style Selector="Button.custom-Auth:pointerover">
-        <Setter Property="Background" Value="#5C5C5C" /> <!-- 80% -->
+        <Setter Property="Background" Value="#5C5C5C" /> 
     </Style>
 
-    <!-- Нажатие -->
     <Style Selector="Button.custom-Auth:pressed">
-        <Setter Property="Background" Value="#2E2E2E" /> <!-- темнее -->
+        <Setter Property="Background" Value="#2E2E2E" /> 
     </Style>
 
-    <!-- Неактивна -->
     <Style Selector="Button.custom-Auth:disabled">
-        <Setter Property="Background" Value="#5C5C5C" /> <!-- полупрозрачная -->
-         <!-- поблекший белый -->
+        <Setter Property="Background" Value="#5C5C5C" /> 
     </Style>
     <Style Selector="Button.Button">
         <Setter Property="Width" Value="215" />
@@ -203,22 +198,17 @@
         </Setter>
     </Style>
 
-    <!-- Hover -->
     <Style Selector="Button.custom-Auth:pointerover">
-        <Setter Property="Background" Value="#A14B0F" /> <!-- 80% -->
+        <Setter Property="Background" Value="#A14B0F" /> 
     </Style>
 
-    <!-- Нажатие -->
     <Style Selector="Button.custom-Auth:pressed">
-        <Setter Property="Background" Value="#C35910" /> <!-- темнее -->
+        <Setter Property="Background" Value="#C35910" /> 
     </Style>
 
-    <!-- Неактивна -->
     <Style Selector="Button.custom-Auth:disabled">
-        <Setter Property="Background" Value="#2E2E2E" /> <!-- полупрозрачная -->
-        <!-- поблекший белый -->
+        <Setter Property="Background" Value="#2E2E2E" /> 
     </Style>
-    <!-- Стиль для боковых кнопок меню -->
     <Style Selector="RadioButton.menu-btn">
         <Setter Property="Width" Value="215" />
         <Setter Property="Height" Value="56.25" />
@@ -250,13 +240,49 @@
         </Setter>
     </Style>
 
-    <!-- Hover -->
     <Style Selector="RadioButton.menu-btn:pointerover /template/ Border#border">
         <Setter Property="Background" Value="#2A2A2A" />
     </Style>
 
-    <!-- Checked (активная кнопка) -->
     <Style Selector="RadioButton.menu-btn:checked /template/ Border#border">
         <Setter Property="Background" Value="#E76F2A" />
     </Style>
+	<Style Selector="Button.menu-btn">
+		<Setter Property="Width" Value="215" />
+		<Setter Property="Height" Value="56.25" />
+		<Setter Property="HorizontalContentAlignment" Value="Left" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="FontFamily" Value="Montserrat-VariableFont_wght" />
+		<Setter Property="FontSize" Value="15" />
+		<Setter Property="FontWeight" Value="Bold" />
+		<Setter Property="Foreground" Value="White" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Background" Value="#2A2A2A" />
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border x:Name="border"
+						Background="{TemplateBinding Background}"
+						CornerRadius="10"
+						Padding="10">
+					<ContentPresenter
+						Content="{TemplateBinding Content}"
+						ContentTemplate="{TemplateBinding ContentTemplate}"
+						HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+						VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+						RecognizesAccessKey="True"
+						TextBlock.Foreground="{TemplateBinding Foreground}" />
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="Button.menu-btn:pointerover /template/ Border#border">
+		<Setter Property="Background" Value="#2A2A2A" />
+	</Style>
+
+	<Style Selector="Button.menu-btn:pressed /template/ Border#border">
+		<Setter Property="Background" Value="#E76F2A" />
+	</Style>
 </Styles>

@@ -59,8 +59,7 @@ public partial class AuthWindow : Window
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            
-            Version.Content = $"{versionFromGitTag}";
+            Version.Content = $"{versionFromGitTag}    ";
         });
     }    
 

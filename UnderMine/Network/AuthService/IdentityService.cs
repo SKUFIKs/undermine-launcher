@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json; 
 using System.Threading;
 using System.Threading.Tasks;
 using UnderMine.Models;
@@ -26,12 +27,7 @@ namespace UnderMine.Network.AuthService
             if (_httpClient.BaseAddress == null)
                 _httpClient.BaseAddress = new Uri(_contextData.BaseUrl);
 
-            // Ensure JSON accept header
-            if (!_httpClient.DefaultRequestHeaders.Accept.Contains(new MediaTypeWithQualityHeaderValue("application/json")))
-            {
-                _httpClient.DefaultRequestHeaders.Accept.Clear();
-                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            }
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         public async Task<LoginResult> Login(string username, string password, CancellationToken cancellationToken = default)
@@ -39,8 +35,7 @@ namespace UnderMine.Network.AuthService
             try
             {
                 string deviceId = SystemInformation.GetStableDeviceId();
-
-                var payload = new { Login = username, Password = password, DeviceId = deviceId };  
+                var payload = new { Login = username, Password = password, DeviceId = deviceId };
 
                 using var response = await _httpClient.PostAsJsonAsync(_contextData.LogApiKey, payload, cancellationToken).ConfigureAwait(false);
 
@@ -51,23 +46,15 @@ namespace UnderMine.Network.AuthService
                     {
                         return new LoginResult { Success = false, ErrorMessage = $"Error: empty token. Code {(int)response.StatusCode}" };
                     }
-
                     return new LoginResult { Success = true, Token = tokenResponse.Token };
                 }
 
-                return new LoginResult { Success = false, ErrorMessage = MapStatusToMessage(response.StatusCode) };
-            }
-            catch (HttpRequestException ex)
-            {
-                return new LoginResult { Success = false, ErrorMessage = $"Ошибка сети: {ex.Message}" };
-            }
-            catch (TaskCanceledException)
-            {
-                return new LoginResult { Success = false, ErrorMessage = "Превышено время ожидания" };
+                string errorMsg = await GetErrorMessageAsync(response, cancellationToken);
+                return new LoginResult { Success = false, ErrorMessage = errorMsg };
             }
             catch (Exception ex)
             {
-                return new LoginResult { Success = false, ErrorMessage = $"Ошибка авторизации: {ex.Message}" };
+                return HandleException(ex);
             }
         }
 
@@ -85,54 +72,67 @@ namespace UnderMine.Network.AuthService
                     return new LoginResult { Success = true, ErrorMessage = string.Empty };
                 }
 
-                // Try to extract API message
-                string responseBody = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                string? apiMessage = null;
-                try
-                {
-                    using var doc = System.Text.Json.JsonDocument.Parse(responseBody);
-                    if (doc.RootElement.TryGetProperty("message", out var msgProp))
-                        apiMessage = msgProp.GetString();
-                }
-                catch { }
-
-                string fallbackError = response.StatusCode switch
-                {
-                    System.Net.HttpStatusCode.BadRequest => "Неверный запрос",
-                    System.Net.HttpStatusCode.Conflict => "Пользователь уже существует",
-                    System.Net.HttpStatusCode.TooManyRequests => "Превышен лимит аккаунтов на устройстве",
-                    System.Net.HttpStatusCode.InternalServerError => "Ошибка сервера",
-                    _ => "Неизвестная ошибка"
-                };
-
-                return new LoginResult
-                {
-                    Success = false,
-                    ErrorMessage = apiMessage != null ? $"{fallbackError} ({(int)response.StatusCode}): {apiMessage}" : $"{fallbackError} ({(int)response.StatusCode})"
-                };
-            }
-            catch (HttpRequestException ex)
-            {
-                return new LoginResult { Success = false, ErrorMessage = $"Ошибка сети: {ex.Message}" };
-            }
-            catch (TaskCanceledException)
-            {
-                return new LoginResult { Success = false, ErrorMessage = "Превышено время ожидания" };
+                string errorMsg = await GetErrorMessageAsync(response, cancellationToken);
+                return new LoginResult { Success = false, ErrorMessage = errorMsg };
             }
             catch (Exception ex)
             {
-                return new LoginResult { Success = false, ErrorMessage = $"Неизвестная ошибка: {ex.Message}" };
+                return HandleException(ex);
             }
+        }
+
+        private async Task<string> GetErrorMessageAsync(HttpResponseMessage response, CancellationToken ct)
+        {
+            string defaultMessage = MapStatusToMessage(response.StatusCode);
+            string? serverMessage = null;
+
+            try
+            {
+                string responseBody = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+
+                if (!string.IsNullOrWhiteSpace(responseBody))
+                {
+                    using var doc = JsonDocument.Parse(responseBody);  
+                    if (doc.RootElement.TryGetProperty("message", out var msgProp))
+                    {
+                        serverMessage = msgProp.GetString();
+                    }
+                }
+            }
+            catch
+            {
+                // Если JSON не парсится, просто игнорируем тело и возвращаем статус
+            }
+
+            if (!string.IsNullOrEmpty(serverMessage))
+            {
+                return $"{serverMessage} (Код: {(int)response.StatusCode})";
+            }
+
+            return defaultMessage;
+        }
+
+        private LoginResult HandleException(Exception ex)
+        {
+            if (ex is HttpRequestException)
+                return new LoginResult { Success = false, ErrorMessage = $"Ошибка сети: {ex.Message}" };
+            if (ex is TaskCanceledException)
+                return new LoginResult { Success = false, ErrorMessage = "Превышено время ожидания" };
+
+            return new LoginResult { Success = false, ErrorMessage = $"Ошибка: {ex.Message}" };
         }
 
         private static string MapStatusToMessage(System.Net.HttpStatusCode status) => status switch
         {
-            System.Net.HttpStatusCode.BadRequest => "Не верный запрос (400)",
-            System.Net.HttpStatusCode.Unauthorized => "Неправильный логин или пароль (401)",
+            System.Net.HttpStatusCode.BadRequest => "Неверный запрос (400)",
+            System.Net.HttpStatusCode.Unauthorized => "Ошибка авторизации (401)",
             System.Net.HttpStatusCode.Forbidden => "Доступ запрещён (403)",
-            System.Net.HttpStatusCode.NotFound => "Ресурс не найден (404)",
+            System.Net.HttpStatusCode.NotFound => "Сервис не найден (404)",
+            System.Net.HttpStatusCode.Conflict => "Такой пользователь уже существует (409)",
+            System.Net.HttpStatusCode.Gone => "Аккаунт забанен или удален (410)", 
+            System.Net.HttpStatusCode.TooManyRequests => "Слишком много попыток (429)",
             System.Net.HttpStatusCode.InternalServerError => "Ошибка сервера (500)",
-            _ => $"Неизвестная ошибка: {(int)status}"
+            _ => $"Ошибка {(int)status}"
         };
     }
 }

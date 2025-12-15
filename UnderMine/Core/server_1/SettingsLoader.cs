@@ -54,8 +54,8 @@ namespace UnderMine.Core.server_1
                 ["damageTiltStrength"] = "1.0",
                 ["highContrast"] = "false",
                 ["gamma"] = "0.5",
-                ["renderDistance"] = "12",
-                ["simulationDistance"] = "12",
+                ["renderDistance"] = "10",
+                ["simulationDistance"] = "8",
                 ["entityDistanceScaling"] = "1.0",
                 ["guiScale"] = "2",
                 ["particles"] = "1",
@@ -151,7 +151,7 @@ namespace UnderMine.Core.server_1
                 ["key_info.structure_gel.building_tool.undo"] = "key.keyboard.z:CONTROL",
                 ["key_info.structure_gel.building_tool.redo"] = "key.keyboard.y:CONTROL",
                 ["key_key.structure_gel.open_building_tool_gui"] = "key.keyboard.r",
-                ["key_iris.keybind.reload"] = "key.keyboard.r",
+                ["key_iris.keybind.reload"] = "key.keyboard.0",
                 ["key_iris.keybind.toggleShaders"] = "key.keyboard.k",
                 ["key_iris.keybind.shaderPackSelection"] = "key.keyboard.o",
                 ["key_framedblocks.key.update_cull"] = "key.keyboard.f9",
@@ -416,13 +416,11 @@ namespace UnderMine.Core.server_1
                 ["modelPart_right_pants_leg"] = "true",
                 ["modelPart_hat"] = "true"
             };
-
             using (var writer = new StreamWriter(path)) 
             {
                 foreach (var kv in options) 
                     writer.WriteLine($"{kv.Key}:{kv.Value}");
             }
-
             return Task.CompletedTask;
         }
 
@@ -443,7 +441,6 @@ namespace UnderMine.Core.server_1
             }
             else
             {
-                // Linux
                 string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                 string dir = Path.Combine(home, ".config", AppName);
                 Directory.CreateDirectory(dir);
