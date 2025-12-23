@@ -1,25 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Path = System.IO.Path;
+using UnderMine.Core.Interfaces;
+using UnderMine.Services.Location;
 
-namespace UnderMine.Core.server_1
+namespace UnderMine.Core.Services
 {
-    public class SettingsLoader
+    public class SettingsService : ISettingsService
     {
-        public Task LoadSettings()
+        private readonly PathService _pathService;
+
+        public SettingsService(PathService pathService)
         {
-            string baseDir = GetBaseDirectory();
-            string path = Path.Combine(baseDir, "versions", "TechnoMagic", "options.txt");
+            _pathService = pathService;
+        }
 
-            if (File.Exists(path)) 
-                return Task.CompletedTask;
+        public async Task LoadDefaultSettingsAsync(string _gamePath)
+        {
+            if (string.IsNullOrWhiteSpace(_gamePath))
+                throw new ArgumentException("Путь к игре не может быть пустым", nameof(_gamePath));
 
-            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
-            var options = new Dictionary<string, string>
+            _gamePath = _gamePath.Trim().Trim('\"');
+
+            
+            string filePath = Path.Combine(_gamePath, "options.txt");
+
+            if (File.Exists(filePath)) return;
+
+            try
+            {
+
+                string directoryPath = Path.GetDirectoryName(filePath);
+                if (!string.IsNullOrEmpty(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                var options = GetDefaultOptions();
+
+                var encoding = new System.Text.UTF8Encoding(false);
+
+                using (var writer = new StreamWriter(filePath, false, encoding))
+                {
+                    foreach (var kv in options)
+                    {
+                        await writer.WriteLineAsync($"{kv.Key}:{kv.Value}");
+                    }
+                    await writer.FlushAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ошибка при создании файла: {filePath}. Причина: {ex.Message}", ex);
+            }
+        }
+
+        private Dictionary<string, string> GetDefaultOptions()
+        {
+            return new Dictionary<string, string>
             {
                 ["version"] = "3465",
                 ["autoJump"] = "false",
@@ -416,36 +456,6 @@ namespace UnderMine.Core.server_1
                 ["modelPart_right_pants_leg"] = "true",
                 ["modelPart_hat"] = "true"
             };
-            using (var writer = new StreamWriter(path)) 
-            {
-                foreach (var kv in options) 
-                    writer.WriteLine($"{kv.Key}:{kv.Value}");
-            }
-            return Task.CompletedTask;
-        }
-
-        private static string GetBaseDirectory()
-        {
-            const string AppName = "UnderMine";
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return AppContext.BaseDirectory;
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                string home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                string dir = Path.Combine(home, "Library", "Application Support", AppName);
-                Directory.CreateDirectory(dir);
-                return dir;
-            }
-            else
-            {
-                string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string dir = Path.Combine(home, ".config", AppName);
-                Directory.CreateDirectory(dir);
-                return dir;
-            }
         }
     }
 }

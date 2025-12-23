@@ -16,13 +16,11 @@ public class Logger : TextWriter
 
     public override void WriteLine(string? value)
     {
-        if (value != null)
+        if (!string.IsNullOrWhiteSpace(value))
         {
             Dispatcher.UIThread.Post(() => _writeAction(value));
         }
     }
-
-    public override void Write(char value) { }
 
     public override Encoding Encoding => Encoding.UTF8;
 }

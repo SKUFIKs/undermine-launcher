@@ -46,6 +46,15 @@ public class ServerInfo
     
     [JsonPropertyName("ConfLink")]
     public string ConfLink  {get; init;} = null!;
+
+    [JsonPropertyName("LibraryExpectedChecksum")]
+    public string LibraryExpectedChecksum { get; init; } = "750358cbb093fcdbd129127b5df493800b9cb9d6";
+    [JsonPropertyName("VersionExpectedChecksum")]
+    public string VersionExpectedChecksum { get; init; } = "5be32f73845fc8ef6927c2d1decc72eccc161be2";
+    [JsonPropertyName("AssetsExpectedChecksum")]
+    public string AssetsExpectedChecksum { get; init; } = "empty";
+
+
     public bool Success { get; set; }
     
     public string ErrorMessage { get; set; } = string.Empty;

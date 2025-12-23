@@ -2,399 +2,411 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
-        x:Class="UnderMine.IU.MenuWindow"
         xmlns:models="clr-namespace:UnderMine.Fonts.Models"
         xmlns:logger="clr-namespace:UnderMine.Services.Logger"
-        
-        
-		RenderOptions.BitmapInterpolationMode="MediumQuality"
+        mc:Ignorable="d"
+        x:Class="UnderMine.IU.MenuWindow"
+        RenderOptions.BitmapInterpolationMode="MediumQuality"
         UseLayoutRounding="True"
+        Width="1177" Height="662"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+        Background="Transparent"
+        Title="UnderMine">
 
-	    Width="1177" Height="662"
-	    CanResize="False"
-	    WindowStartupLocation="CenterScreen"
-	    SystemDecorations="None"
-	    Background="Transparent"
-	    Title="UnderMine">
+	<Window.Styles>
+		<Style Selector="Border.Card">
+			<Setter Property="Background" Value="#222222"/>
+			<Setter Property="CornerRadius" Value="15"/>
+		</Style>
+		<Style Selector="RadioButton.menu-btn">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Margin" Value="0"/>
+			<Setter Property="Padding" Value="10,5"/>
+			<Setter Property="Cursor" Value="Hand"/>
+		</Style>
+		<Style Selector="RadioButton.menu-btn TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="Foreground" Value="White"/>
+		</Style>
+		<Style Selector="Panel.ContentPage">
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Width" Value="910"/>
+			<Setter Property="Height" Value="662"/>
+		</Style>
+		<Style Selector="Panel.ContentPage > Border">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="Width" Value="876"/>
+			<Setter Property="Height" Value="513"/>
+			<Setter Property="Margin" Value="0,40,30,0"/>
+			<Setter Property="Background" Value="#222222"/>
+			<Setter Property="CornerRadius" Value="15"/>
+		</Style>
+	</Window.Styles>
 
 	<Panel>
-        <Border CornerRadius="30" BorderThickness="0" ClipToBounds="True" PointerPressed="TitleBar_PointerPressed">
-            <Border.Background>
-                <ImageBrush Source="avares://UnderMine/Assets/Images/backgroundMenu.jpg"
-                            Stretch="Fill" />
-            </Border.Background>
+		<Border Background="#171717" CornerRadius="30" ClipToBounds="True" PointerPressed="TitleBar_PointerPressed">
 
-            <Panel Height="657" Width="263" Margin="0,-4,0,0"
-                   HorizontalAlignment="Left" VerticalAlignment="Center">
-                <StackPanel Spacing="10" Margin="40">
+			<Grid ColumnDefinitions="263, *">
 
-                    <RadioButton x:Name="NewsButton" Click="NewsButton_OnClick" GroupName="MenuGroup"
-                                 Classes="menu-btn" IsChecked="True" Margin="0,140,0,0">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Image Source="avares://UnderMine/Assets/Images/news.jpg" Width="20" Height="20" />
-                            <TextBlock Text="Новости" />
-                        </StackPanel>
-                    </RadioButton>
+				<Grid Grid.Column="0" RowDefinitions="Auto, *">
 
-                    <RadioButton x:Name="ServerSelectionButton" Click="ServerSelectionButton_OnClick"
-                                 GroupName="MenuGroup" Classes="menu-btn">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Image Source="avares://UnderMine/Assets/Images/servers.jpg" Width="20" Height="20" />
-                            <TextBlock Text="Сервера" />
-                        </StackPanel>
-                    </RadioButton>
+					<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="23,25,0,0" HorizontalAlignment="Center">
+						<Image Source="avares://UnderMine/Assets/Images/UnderMineIcon.jpg"
+							   Width="50"
+							   Height="50"
+							   Stretch="Fill"/>
 
-                    <RadioButton x:Name="ProfileButton" Click="ProfileButton_OnClick" GroupName="MenuGroup"
-                                 Classes="menu-btn">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Image Source="avares://UnderMine/Assets/Images/profile.jpg" Width="20" Height="20" />
-                            <TextBlock Text="Профиль" />
-                        </StackPanel>
-                    </RadioButton>
+						<StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+							<Label Classes="LiteTitle" Content="UnderMine" FontSize="20" Padding="0"/>
+							<Label Classes="LiteTitle" Content="Server" FontSize="20" Padding="0"/>
+						</StackPanel>
+					</StackPanel>
+					
 
-                    <RadioButton x:Name="SettingsButton" Click="SettingsButton_OnClick" GroupName="MenuGroup"
-                                 Classes="menu-btn">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Image Source="avares://UnderMine/Assets/Images/settings.jpg" Width="20" Height="20" />
-                            <TextBlock Text="Настройки" />
-                        </StackPanel>
-                    </RadioButton>
+					<StackPanel Grid.Row="1" Spacing="15" Margin="40,40,0,0" VerticalAlignment="Center">
+						<RadioButton x:Name="NewsButton" Click="NewsButton_OnClick" GroupName="MenuGroup" Classes="menu-btn" IsChecked="True">
+							<StackPanel Orientation="Horizontal" Spacing="10">
+								<Image Source="avares://UnderMine/Assets/Images/news.jpg" Width="20" Height="20" />
+								<TextBlock Text="Новости" />
+							</StackPanel>
+						</RadioButton>
 
-                    <RadioButton x:Name="ExitButton" Click="ExitButton_OnClick" GroupName="MenuGroup"
-                                 Classes="menu-btn" Margin="0,90,0,0">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Image Source="avares://UnderMine/Assets/Images/exit.jpg" Width="20" Height="20" />
-                            <TextBlock Text="Выход" />
-                        </StackPanel>
-                    </RadioButton>
-                </StackPanel>
-                <Panel Width="203" Height="58" Margin="23,25,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
-                    <Border Width="50" Height="50" Margin="0,0,150,0">
-                        <Border.Background>
-                            <ImageBrush Source="avares://UnderMine/Assets/Images/UnderMineIcon.jpg" Stretch="Fill"></ImageBrush>
-                        </Border.Background>
-                    </Border>
-                    <Label Classes="LiteTitle" Margin="60,0,0,0" Content="UnderMine" FontSize="20"></Label>
-                    <Label Classes="LiteTitle" Margin="60,25,0,0" Content="Server" FontSize="20"></Label>
-                </Panel>
+						<RadioButton x:Name="ServerSelectionButton" Click="ServerSelectionButton_OnClick" GroupName="MenuGroup" Classes="menu-btn">
+							<StackPanel Orientation="Horizontal" Spacing="10">
+								<Image Source="avares://UnderMine/Assets/Images/servers.jpg" Width="20" Height="20" />
+								<TextBlock Text="Сервера" />
+							</StackPanel>
+						</RadioButton>
 
-            </Panel>
-        </Border>
-		<Grid Margin="0,0,10,10"  Height="20" Width="200" VerticalAlignment="Bottom" HorizontalAlignment="Right"  >
-			<Label x:Name="Version" Classes="LiteLabel" Margin="0,0,0,0"  Height="40" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize ="12" HorizontalContentAlignment="Right" />
-		</Grid>
+						<RadioButton x:Name="ProfileButton" Click="ProfileButton_OnClick" GroupName="MenuGroup" Classes="menu-btn">
+							<StackPanel Orientation="Horizontal" Spacing="10">
+								<Image Source="avares://UnderMine/Assets/Images/profile.jpg" Width="20" Height="20" />
+								<TextBlock Text="Профиль" />
+							</StackPanel>
+						</RadioButton>
 
-		<Panel>
-			<Border VerticalAlignment="Top" HorizontalAlignment="Right" Width="200" Height="65" Margin="0,20,30,0"
-					Background="#222222" CornerRadius="15">
+						<RadioButton x:Name="SettingsButton" Click="SettingsButton_OnClick" GroupName="MenuGroup" Classes="menu-btn">
+							<StackPanel Orientation="Horizontal" Spacing="10">
+								<Image Source="avares://UnderMine/Assets/Images/settings.jpg" Width="20" Height="20" />
+								<TextBlock Text="Настройки" />
+							</StackPanel>
+						</RadioButton>
 
-				<Grid ColumnDefinitions="45,*" Margin="10,0,10,0">
+						<Panel Height="30"/>
 
-					<Border Grid.Column="0" Width="40" Height="40" VerticalAlignment="Center" HorizontalAlignment="Left"
-							CornerRadius="20" ClipToBounds="True">
-						<Border.Background>
-							<ImageBrush Source="avares://UnderMine/Assets/Images/profile.jpg"/>
-						</Border.Background>
-					</Border>
+						<RadioButton x:Name="ExitButton" Click="ExitButton_OnClick" GroupName="MenuGroup" Classes="menu-btn">
+							<StackPanel Orientation="Horizontal" Spacing="10">
+								<Image Source="avares://UnderMine/Assets/Images/exit.jpg" Width="20" Height="20" />
+								<TextBlock Text="Выход" />
+							</StackPanel>
+						</RadioButton>
+					</StackPanel>
+			
+				</Grid>
 
-					<Label x:Name="UsernameLabel" Classes="LiteLabel" Grid.Column="1" Margin="0,0,15,0"
-						   VerticalAlignment="Center" HorizontalAlignment="Left"
-						   FontSize="16" >
-					</Label>
+				<Panel Grid.Column="1">
+
+					<StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,30,0" Spacing="10" ZIndex="10">
+						<Border Width="200" Height="65" Background="#222222" CornerRadius="15" >
+							<Grid ColumnDefinitions="Auto,*" Margin="10">
+								<Border Grid.Column="0" Width="40" Height="40" CornerRadius="20" ClipToBounds="True">
+									<Border.Background>
+										<ImageBrush Source="avares://UnderMine/Assets/Images/profile.jpg" Stretch="UniformToFill"/>
+									</Border.Background>
+								</Border>
+								<Label x:Name="UsernameLabel" Grid.Column="1" Classes="LiteLabel" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" FontSize="16"/>
+							</Grid>
+						</Border>
+					</StackPanel>
+					<Grid Margin="0,0,10,0"  Height="20" Width="200" VerticalAlignment="Bottom" HorizontalAlignment="Right" >
+						<Label x:Name="Version" Classes="LiteLabel" Margin="0,0,0,0"  Height="40" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize ="12" HorizontalContentAlignment="Right" />
+					</Grid>
+
+					<Panel x:Name="NewsPanel" Classes="ContentPage" IsVisible="True">
+						<Border >
+							<ScrollViewer>
+								<TextBlock Classes="NewsTitle" Margin="20" TextWrapping="Wrap" Foreground="#FFFFFF">
+									<Run Text="Новости" Classes="BigTitle" FontWeight="Bold" FontSize="26" Foreground="AliceBlue" />
+									<LineBreak />
+									<LineBreak />
+									<Run Text="TechnoMagic | " FontWeight="Bold" Foreground="AliceBlue" />
+									<Run Text="Открытый бета-тест" FontWeight="Bold" Foreground="AliceBlue" />
+									<LineBreak />
+									<LineBreak />
+									<Run Text="Прошло немало времени с прошлого сезона, и за это время мы усердно трудились над новым проектом. Теперь рады сообщить — новый сезон открыт!" FontWeight="Bold" />
+									<LineBreak />
+									<LineBreak />
+									<Run Text="Это пока не финальная версия, а открытый тест, доступный всем игрокам. Мы не успели реализовать всё задуманное, но теперь будем продолжать развитие вместе с вами." FontWeight="Bold" />
+									<LineBreak />
+									<LineBreak />
+									<Run Text="Играть можно уже сейчас!" FontWeight="Bold" />
+									<LineBreak />
+									<Run Text="Если у вас появятся идеи по улучшению, или вы обнаружите баги, проблемы или зависания, обязательно сообщите нам через Telegram-бота: " FontWeight="Bold" />
+									<InlineUIContainer>
+										<TextBlock Text="@minecraft_urfu_underground_bot" FontWeight="Bold" Foreground="#747474"
+                                                   TextDecorations="Underline" PointerPressed="TelegramLink_PointerPressed" Cursor="Hand" />
+									</InlineUIContainer>
+									<LineBreak />
+									<LineBreak />
+									<Run Text="Хорошей игры! " FontWeight="Bold" />
+								</TextBlock>
+							</ScrollViewer>
+						</Border>
+					</Panel>
+
+					<Panel x:Name="SettingsPanel" Classes="ContentPage" IsVisible="False">
+						<Border >
+							<Grid RowDefinitions="Auto, Auto, Auto, Auto, *" Margin="25,20,25,20">
+								<Label Grid.Row="0" Content="Настройки игры" Classes="BigTitle" FontSize="24" />
+
+								<StackPanel Grid.Row="1" Margin="0,20,0,0" Spacing="5" Width="600" HorizontalAlignment="Left">
+									<Label Classes="LiteTitle" Content="Память(ОЗУ):" FontSize="15"/>
+
+									<Grid ColumnDefinitions="*, Auto" Margin="20,5,0,0">
+										<StackPanel Grid.Column="0" Width="450">
+											<Slider x:Name="MemorySlider"
+													IsSnapToTickEnabled="True"
+													TickPlacement="BottomRight"
+													VerticalAlignment="Center"
+													Margin="0"/>
+
+											<Grid ColumnDefinitions="*,*,*,*" Margin="10,5,10,0" ClipToBounds="False">
+
+												<Label x:Name="FirstValue"
+													   Grid.Column="0"
+													   
+													   HorizontalAlignment="Left"
+													   HorizontalContentAlignment="Center"
+													    Margin="-15,0,0,0"
+													   FontSize="12" Padding="0"/>
+
+												<Label x:Name="SecondValue"
+													   Grid.Column="0" Grid.ColumnSpan="2"
+													   
+													   HorizontalAlignment="Center"
+													   
+													   FontSize="12" Padding="0"/>
+
+												<Label x:Name="ThirdValue"
+													   Grid.Column="1" Grid.ColumnSpan="2"
+													   HorizontalAlignment="Center"
+													   FontSize="12" Padding="0"/>
+												<Label x:Name="FourthValue"
+													   Grid.Column="2" Grid.ColumnSpan="2"
+													   HorizontalAlignment="Center"
+													   FontSize="12" Padding="0"/>
+												<Label x:Name="FifthValue"
+													   Grid.Column="3"
+													   HorizontalAlignment="Right"
+													   HorizontalContentAlignment="Center"
+													    Margin="0,0,-15,0"
+													   FontSize="12" Padding="0"/>
+											</Grid>
+										</StackPanel>
+
+										<TextBox Grid.Column="1"
+												 x:Name="MemoryTextBox"
+												 Width="95" Height="35"
+												 Margin="15,0,0,0"
+												 IsReadOnly="True"
+												 VerticalAlignment="Top"
+												 VerticalContentAlignment="Center"
+												 HorizontalContentAlignment="Center"/>
+									</Grid>
+								</StackPanel>
+
+								<StackPanel Grid.Row="2" Margin="0,20,0,0" Spacing="5" MaxWidth="600" HorizontalAlignment="Left">
+									<Label Classes="LiteTitle" Content="Путь установки игры:" FontSize="15"/>
+									<Grid ColumnDefinitions="*, Auto" Margin="20,5,0,0">
+										<TextBox Grid.Column="0" x:Name="InstallationPath" Margin="0,0,20,0"/>
+										<Button Grid.Column="1" x:Name="OverviewSettings" Click="OverviewSettings_OnClick"
+												Content="Обзор" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="90" Background="SlateGray"/>
+									</Grid>
+								</StackPanel>
+
+								<StackPanel Grid.Row="3" Margin="0,20,0,0" Spacing="5" IsVisible="False" MaxWidth="550" HorizontalAlignment="Left">
+									<Label Classes="LiteTitle" Content="Логи игры:" FontSize="15"/>
+									<Grid ColumnDefinitions="*, Auto" Margin="20,5,0,0">
+										<TextBox Grid.Column="0" x:Name="LogsPath" Margin="0,0,20,0"/>
+										<Button Grid.Column="1" x:Name="LogsSettings" Click="LogsSettings_OnClick"
+												Content="Обзор" Width="90" Background="SlateGray"/>
+									</Grid>
+								</StackPanel>
+
+								<StackPanel Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Bottom" Spacing="20" Margin="10,0,0,10">
+									<Button x:Name="SaveButton" Click="SaveButton_OnClick" Classes="menu-btn" Width="158" Height="45"
+											HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#333">
+										<TextBlock Text="Сохранить" />
+									</Button>
+									<Button x:Name="DefaultButton" Click="DefaultButton_OnClick" Classes="menu-btn" Width="158" Height="45"
+											HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#333">
+										<TextBlock Text="По умолчанию" />
+									</Button>
+								</StackPanel>
+							</Grid>
+						</Border>
+					</Panel>
+
+					<Panel x:Name="ProfilePanel" Classes="ContentPage" IsVisible="False">
+						<Border >
+							<StackPanel Margin="26,20,0,0">
+								<Label Content="Игровой профиль" Classes="BigTitle" FontSize="24"/>
+								<Label Classes="LiteTitle" Margin="0,20,0,0" FontSize="15"
+                                       Content="Игровой профиль еще не готов. Мы сообщим, когда он будет реализован."/>
+							</StackPanel>
+						</Border>
+					</Panel>
+
+					<Panel x:Name="PlayServer" Classes="ContentPage" IsVisible="False">
+						<Border >
+							<Grid RowDefinitions="*, 120">
+								<ScrollViewer Grid.Row="0" Margin="20">
+									<TextBlock TextWrapping="Wrap" Classes="NewsTitle" Foreground="White">
+										<Run Text="Сервер TechnoMagic" FontWeight="Bold" FontSize="26" />
+										<LineBreak />
+										<LineBreak />
+										<Run Text="Сервер TechnoMagic основан на сборке Create Chronicles: Bosses and Beyond." FontWeight="Bold" />
+										<LineBreak />
+										<LineBreak />
+										<Run Text="Вас ждет проработанная система прогресса, состоящая из 10 глав. Она объединяет автоматизацию, исследование, магию и битвы с боссами. В вашем распоряжении более 800 квестов, которые постепенно помогут освоить развитие технологий и магических искусств." FontWeight="Bold" />
+										<LineBreak />
+										<LineBreak />
+										<Run Text="Изучайте мир с модом Create, стройте производственные линии и получайте доступ к новому контенту с каждой главой. Сражайтесь с боссами из L’EnderCataclysm, Mowzie’s Mobs и Bosses of Mass Destruction, развивая при этом собственное древо талантов. Посетите новые измерения – от Twilight Forest до The Aether и Blue Skies, исследуйте необычные пещеры из Alex’s Caves, приручайте драконов из Ice and Fire и отправляйтесь в космос с Ad Astra." FontWeight="Bold" />
+										<LineBreak />
+										<LineBreak />
+										<Run Text="Ждем вас на нашем сервере! :)" FontWeight="Bold" />
+									</TextBlock>
+								</ScrollViewer>
+
+								<Panel Grid.Row="1" Margin="25,30,0,0">
+									<Button x:Name="PlayButton"
+											VerticalAlignment="Top"
+											Click="PlayButton_OnClick"
+											Content="Играть"
+											Classes="custom-Auth"
+											HorizontalAlignment="Left"/>
+
+									<Label x:Name="LogLabel"
+										   VerticalAlignment="Bottom"
+										   Classes="LiteLabel"
+										   FontSize="11"
+										   Foreground="#4B4B4B"
+										   Margin="0,0,0,0"/>
+								</Panel>
+							</Grid>
+						</Border>
+					</Panel>
+
+					<Panel x:Name="WaitingСhoice" Classes="ContentPage" IsVisible="False">
+						<Border  />
+					</Panel>
+				</Panel>
+			</Grid>
+		</Border>
+
+		<Border x:Name="SelectServer" Width="442" Height="415" Background="#171717" CornerRadius="22" IsVisible="False" >
+			<Panel x:DataType="models:MenuWindowViewModel">
+				<StackPanel VerticalAlignment="Top" Margin="0,10,0,0">
+					<Label Content="UnderMine" Classes="BigTitle" HorizontalAlignment="Center"/>
+					<Label Content="Выбор сервера" Classes="LiteTitle" Margin="0,15,0,0" HorizontalAlignment="Center"/>
+				</StackPanel>
+
+				<Border Margin="30,80,30,80" Background="#3B3B3B" BorderBrush="#747474" BorderThickness="2" CornerRadius="10" >
+					<ListBox CornerRadius="10" ItemsSource="{Binding Servers}" SelectedItem="{Binding SelectedServer, Mode=TwoWay}">
+						<ListBox.ItemTemplate>
+							<DataTemplate x:DataType="models:Server">
+								<TextBlock Text="{Binding Name}" />
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+				</Border>
+
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20" Spacing="20">
+					<RadioButton x:Name="SelectButton" Click="SelectButton_OnClick" GroupName="ServerGroup" Classes="menu-btn"
+                                 Width="158" Height="45" HorizontalContentAlignment="Center" IsChecked="True">
+						<TextBlock Text="Выбрать" />
+					</RadioButton>
+					<RadioButton x:Name="CancelButton" Click="CancelButton_OnClick" GroupName="ServerGroup" Classes="menu-btn"
+                                 Width="158" Height="45" HorizontalContentAlignment="Center">
+						<TextBlock Text="Отменить" />
+					</RadioButton>
+				</StackPanel>
+			</Panel>
+		</Border>
+
+		<Grid x:Name="ErrorPanel" Width="423" Height="423" IsVisible="False">
+			<Border CornerRadius="22" Background="#171717">
+				<Grid RowDefinitions="Auto, Auto, Auto, Auto" VerticalAlignment="Center" Margin="30,10,30,10">
+
+					<Image Source="avares://UnderMine/Assets/Images/ErrorIcon.jpg"
+						   Width="100" Height="100"
+						   Stretch="Uniform"
+						   Margin="0,0,0,20"/>
+
+					<StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,-30">
+						<Label Content="UnderMine" Classes="BigTitle" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold"/>
+						<Label Content="Кажется что-то пошло не так..." FontSize="16" Classes="LiteTitle" Margin="0,0,0,0" HorizontalAlignment="Center"/>
+					</StackPanel>
+
+					<Grid Grid.Row="2" Margin="0,30,0,0">
+						<TextBox x:Name="ErrorBox"
+								 Classes="custom-paneltextbox"
+								 IsReadOnly="True"
+								 TextWrapping="Wrap"
+								 AcceptsReturn="True"
+								 Height="160"
+								 Width="365"
+								 Background="#252525"
+								 BorderThickness="1"
+								 BorderBrush="#444444"
+								 Padding="10,10"
+								 FontSize="13"/>
+					</Grid>
+
+					<Button Grid.Row="3"
+							x:Name="CloseErrorButton"
+							Click="CloseErrorButton_OnClick"
+							Content="Закрыть"
+							Classes="custom-Auth"
+							HorizontalAlignment="Center"
+							Margin="0,10,0,0"/>
 				</Grid>
 			</Border>
-
-		</Panel>
-
-		<Panel x:Name="ProgressBar" IsVisible="False">
-			<Border VerticalAlignment="Top" HorizontalAlignment="Center"
-					Width="275" Height="65"
-					Background="#222222" CornerRadius="15" Margin="0,20,0,0">
-
+		</Grid>
+		<Panel x:Name="ProgressBar" IsVisible="False" Width="275" Height="65" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,15,0,0" ZIndex="100">
+			<Border Background="#222222" CornerRadius="15">
 				<Grid ColumnDefinitions="Auto, *" Margin="15,0">
+					<Grid Grid.Column="0" Width="43" Height="43" VerticalAlignment="Center">
+						<logger:ProgressView x:Name="Loader" ZIndex="1" />
 
-					<Border Grid.Column="0" Width="43" Height="43" VerticalAlignment="Center">
-						<logger:ProgressView x:Name="Loader" />
-					</Border>
+						<TextBlock x:Name="PercentText"
+           Text="0%"
+           FontSize="10"
+           FontWeight="Bold"
+           Foreground="White"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"
+           TextAlignment="Center"
+           UseLayoutRounding="True"
+           Background="#222222"
+           ZIndex="10"/>
+					</Grid>
 
-					<Label x:Name="LogBox" Grid.Column="1"
-						   VerticalAlignment="Center" HorizontalAlignment="Left"
+					<Label x:Name="LogBox"
+						   Grid.Column="1"
+						   VerticalAlignment="Center"
 						   Margin="15,0,0,0"
-						   FontSize="14" Classes="LiteLabel"
+						   FontSize="14"
+						   Classes="LiteLabel"
 						   Content="Загрузка..."/>
 				</Grid>
 			</Border>
 		</Panel>
-        <Panel x:Name="NewsPanel" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
-               IsVisible="True">
-            <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
-                    Background="#222222" CornerRadius="15">
-                <ScrollViewer>
-                    <TextBlock Classes="NewsTitle" Width="830" Margin="20" TextWrapping="Wrap" TextAlignment="Left" Foreground="#FFFFFF"
-                               >
-                        <Run Text="Новости" Classes="BigTitle" FontWeight="Bold" FontSize="26" Foreground="AliceBlue" />
-                        <LineBreak />
-                        <LineBreak />
-                        <Run Text="TechnoMagic | " FontWeight="Bold" Foreground="AliceBlue" />
-                        <Run Text="Открытый бета-тест" FontWeight="Bold" Foreground="AliceBlue" />
-                        <LineBreak />
-                        <LineBreak />
-                        <Run
-                            Text="Прошло немало времени с прошлого сезона, и за это время мы усердно трудились над новым проектом. Теперь рады сообщить — новый сезон открыт!"
-                            FontWeight="Bold" />
-                        <LineBreak />
-                        <LineBreak />
-                        <Run Text="Это пока не финальная версия, а открытый тест, доступный всем игрокам. Мы не успели реализовать всё задуманное, но теперь будем продолжать развитие вместе с вами." FontWeight="Bold" />
-                        <LineBreak />
-                        <LineBreak />
-                        <Run Text="Играть можно уже сейчас!" FontWeight="Bold" />
-                        <LineBreak />
-                        <Run Text="Если у вас появятся идеи по улучшению, или вы обнаружите баги, проблемы или зависания, обязательно сообщите нам через Telegram-бота: " FontWeight="Bold" />
-                        <InlineUIContainer>
-                            <TextBlock Text="@minecraft_urfu_underground_bot" FontWeight="Bold" Foreground="#747474"
-                                       TextDecorations="Underline" PointerPressed="TelegramLink_PointerPressed"
-                                       Cursor="Hand" />
-                        </InlineUIContainer>
-                        <LineBreak />
-                        <LineBreak />
-                        <Run Text="Хорошей игры! " FontWeight="Bold" />
-                        <LineBreak />
-                        <LineBreak />
-                    </TextBlock>
-                </ScrollViewer>
-            </Border>
-        </Panel>
-
-
-        <!-- Панель настроек -->
-        <Panel x:Name="SettingsPanel" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
-               IsVisible="False">
-            <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
-                    Background="#222222" CornerRadius="15">
-                <Panel>
-                    <Panel>
-                        <Label Content="Настройки игры" Classes="BigTitle" Margin="26,20,0,0" FontSize="24"
-                               VerticalAlignment="Top" HorizontalAlignment="Left" />
-                    </Panel>
-                    <Panel>
-                        <Label Classes="LiteTitle" Margin="22,60,0,0" Content="Память(ОЗУ):" FontSize="15"></Label>
-                        <Panel VerticalAlignment="Top" HorizontalAlignment="Left" Width="442" Margin="42,85,0,0">
-                            <Slider x:Name="MemorySlider" IsSnapToTickEnabled="True" TickPlacement="BottomRight"></Slider>
-                        </Panel>
-                        <TextBox x:Name="MemoryTextBox" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                 Margin="500,94,0,0" Width="90"
-                                 Height="22" IsReadOnly="True">
-                        </TextBox>
-                        <Panel Height="20" Width="482" Margin="22,125,0,0" VerticalAlignment="Top"
-                               HorizontalAlignment="Left">
-                            <Label x:Name="FirstValue" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                                   Margin="0,0,425,0" Content="">
-                            </Label>
-                            <Label x:Name="SecondValue" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                                   Margin="0,0,212.5,0" Content="">
-                            </Label>
-                            <Label x:Name="ThirdValue" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                                   Margin="0,0,0,0" Content="">
-                            </Label>
-                            <Label x:Name="FourthValue" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                                   Margin="212.5,0,0,0" Content="">
-                            </Label>
-                            <Label x:Name="FifthValue" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                                   Margin="425,0,0,0" Content="">
-                            </Label>
-                        </Panel>
-                    </Panel>
-                    <Panel>
-                        <Label Classes="LiteTitle" Margin="22,165,0,0" Content="Путь установки игры:" FontSize="15"></Label>
-                        <Panel VerticalAlignment="Top" HorizontalAlignment="Left" Width="442" Margin="42,195,0,0">
-                            <TextBox x:Name="InstallationPath"></TextBox>
-                        </Panel>
-                        <Button HorizontalAlignment="Left" x:Name="OverviewSettings" Click="OverviewSettings_OnClick"
-                                VerticalAlignment="Top" Content="Обзор" VerticalContentAlignment="Center"
-                                HorizontalContentAlignment="Center" Margin="500,195,0,0" Width="90"
-                                Background="SlateGray"
-                                Height="32">
-                        </Button>
-                    </Panel>
-                    <Panel IsVisible="false">
-                        <Label Classes="LiteTitle" Margin="22,235,0,0" Content="Логи игры:" FontSize="15"></Label>
-                        <Panel VerticalAlignment="Top" HorizontalAlignment="Left" Width="442" Margin="42,263,0,0">
-                            <TextBox x:Name="LogsPath" ></TextBox>
-                        </Panel>
-                        <Button HorizontalAlignment="Left" x:Name ="LogsSettings" Click="LogsSettings_OnClick" Content="Обзор" HorizontalContentAlignment="Center"
-                                VerticalContentAlignment="Center" VerticalAlignment="Top" Margin="500,263,0,0"
-                                Width="90" Background="SlateGray"
-                                Height="32">
-                        </Button>
-                    </Panel>
-					<Panel Height="45" Width="338" Margin="35,0,0,30" VerticalAlignment="Bottom"
-      HorizontalAlignment="Left">
-						<Button HorizontalAlignment="Left" x:Name="SaveButton" Click="SaveButton_OnClick"
-								HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
-								Width="158" Classes="menu-btn">
-							<TextBlock Text="Сохранить" />
-						</Button>
-						<Button HorizontalAlignment="Right" x:Name="DefaultButton" Classes="menu-btn" Click="DefaultButton_OnClick"
-								HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
-								Width="158" >
-							<TextBlock Text="По умолчанию" />
-						</Button>
-					</Panel>
-                </Panel>
-            </Border>
-        </Panel>
-
-        <!-- Игровой профиль -->
-        <Panel x:Name="ProfilePanel" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
-               IsVisible="False">
-            <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
-                    Background="#222222" CornerRadius="15">
-                <Panel>
-                    <Panel>
-                        <Label Content="Игровой профиль" Classes="BigTitle" Margin="26,20,0,0" FontSize="24"
-                               VerticalAlignment="Top" HorizontalAlignment="Left" />
-                        <Panel>
-                            <Label Classes="LiteTitle" Margin="22,65,0,0"
-                                   Content="Игровой профиль еще не готов. Мы сообщим, когда он будет реализован."
-                                   FontSize="15">
-                            </Label>
-                        </Panel>
-                    </Panel>
-                </Panel>
-            </Border>
-        </Panel>
-
-        <!-- Выбор сервера. Сервер 1 -->
-        <Panel x:Name="PlayServer" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
-               IsVisible="False">
-            <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
-                    Background="#222222" CornerRadius="15">
-                <Grid>
-                    <ScrollViewer Margin="20,20,20,80">
-						<TextBlock Width="830" TextWrapping="Wrap" Classes="NewsTitle" TextAlignment="Left" Foreground="White">
-							<Run Text="Сервер TechnoMagic" FontWeight="Bold" FontSize="26" />
-							<LineBreak />
-							<LineBreak />
-							<Run Text="Сервер TechnoMagic основан на сборке Create Chronicles: Bosses and Beyond." FontWeight="Bold" />
-							<LineBreak />
-							<LineBreak />
-							<Run Text="Вас ждет проработанная система прогресса, состоящая из 10 глав." FontWeight="Bold" />
-							<Run Text=" Она объединяет автоматизацию, исследование, магию и битвы с боссами. " FontWeight="Bold" />
-							<Run Text="В вашем распоряжении более 800 квестов, которые постепенно помогут освоить развитие технологий и магических искусств." FontWeight="Bold" />
-							<LineBreak />
-							<LineBreak />
-							<Run Text="Изучайте мир с модом Create, стройте производственные линии и получайте доступ к новому контенту с каждой главой." FontWeight="Bold" />
-							<LineBreak />
-							<LineBreak />
-							<Run Text=" Сражайтесь с боссами из L’EnderCataclysm, Mowzie’s Mobs и Bosses of Mass Destruction, развивая при этом собственное древо талантов." FontWeight="Bold" />
-							<LineBreak />
-							<LineBreak />
-							<Run Text="Посетите новые измерения – от Twilight Forest до The Aether и Blue Skies, исследуйте необычные пещеры из Alex’s Caves, приручайте драконов из Ice and Fire и отправляйтесь в космос с Ad Astra." FontWeight="Bold" />
-							<LineBreak />
-							<LineBreak />
-							<Run Text="Ждем вас на нашем сервере! :)" FontWeight="Bold" />
-							<LineBreak />
-							<LineBreak />
-						</TextBlock>
-                    </ScrollViewer>
-
-                    <Button x:Name="PlayButton" Click="PlayButton_OnClick" Content="Играть" HorizontalAlignment="Left"
-                            VerticalAlignment="Bottom" Margin="20,0,0,20" Classes="custom-Auth" />
-                </Grid>
-            </Border>
-
-            <Label x:Name="LogLabel" Classes="LiteLabel" Margin="8,0,0,50" VerticalAlignment="Bottom"
-                   HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                   FontSize="11" Foreground="#4B4B4B" />
-        </Panel>
-
-
-        <!-- Выбор сервера. Ожидание выбора -->
-        <Panel x:Name="WaitingСhoice" HorizontalAlignment="Right" VerticalAlignment="Center" Width="910" Height="662"
-               IsVisible="False">
-            <Border VerticalAlignment="Center" HorizontalAlignment="Right" Width="876" Height="513" Margin="0,40,30,0"
-                    Background="#222222" CornerRadius="15">
-            </Border>
-        </Panel>
-
-
-        <!-- Выбор сервера -->
-        <Border x:Name="SelectServer" Height="415" Width="442" Margin="0,0,0,0" Background="#171717" CornerRadius="22"
-                VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="False">
-            <Panel x:DataType="models:MenuWindowViewModel">
-                <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
-                       HorizontalAlignment="Center" />
-                <Label Content="Выбор сервера" Classes="LiteTitle" Margin="0,60,0,0" VerticalAlignment="Top"
-                       HorizontalAlignment="Center" />
-                <Border Height="239" Width="382" Margin="0,15,0,0" Background="#3B3B3B" BorderBrush="#747474"
-                        BorderThickness="2" CornerRadius="10" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <ListBox CornerRadius="10" ItemsSource="{Binding Servers}"
-                             SelectedItem="{Binding SelectedServer, Mode=TwoWay}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate x:DataType="models:Server">
-                                <TextBlock Text="{Binding Name}" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Border>
-                <Panel Height="45" Width="338" Margin="0,0,0,20" VerticalAlignment="Bottom">
-                    <RadioButton x:Name="SelectButton" Click="SelectButton_OnClick" HorizontalAlignment="Left"
-                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
-                                 Width="158" GroupName="ServerGroup" Classes="menu-btn" IsChecked="True">
-                        <TextBlock Text="Выбрать" />
-                    </RadioButton>
-                    <RadioButton x:Name="CancelButton" Click="CancelButton_OnClick" HorizontalAlignment="Right"
-                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45"
-                                 Width="158" GroupName="ServerGroup" Classes="menu-btn">
-                        <TextBlock Text="Отменить" />
-                    </RadioButton>
-                </Panel>
-            </Panel>
-        </Border>
-		<Grid x:Name="ErrorPanel" Height="423" Width="423" IsVisible="False">
-			<Panel>
-				<Border CornerRadius="22" Background="#171717">
-				</Border>
-			</Panel>
-			<Panel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,80,0,0" Height="117" Width="117">
-				<Border>
-					<Border.Background>
-						<ImageBrush Source="avares://UnderMine/Assets/Images/ErrorIcon.jpg" Stretch="Fill"></ImageBrush>
-					</Border.Background>
-				</Border>
-			</Panel>
-			<Panel>
-				<Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
-					   HorizontalAlignment="Center" />
-				<Label Content="Кажется что-то пошло не так..." FontSize="16" Classes="LiteTitle" Margin="0,60,0,0"
-					   VerticalAlignment="Top" HorizontalAlignment="Center" />
-			</Panel>
-			<Panel>
-				<Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,170,0,0" Width="386"
-					  Height="72">
-					<Label Content="Код ошибки:" Classes="LiteLabel" Margin="5,0,0,0" VerticalAlignment="Top"
-						   HorizontalAlignment="Left" />
-					<TextBox Classes="custom-paneltextbox" Margin="0,175,0,0" VerticalContentAlignment="Top"
-							 TextWrapping="Wrap" IsReadOnly="True" AcceptsReturn="True"
-							 HorizontalContentAlignment="Left" Padding="5,5" x:Name="ErrorBox"
-							 VerticalAlignment="Bottom"
-							 Width="386" Height="145" HorizontalAlignment="Center">
-					</TextBox>
-					<Button x:Name="CloseErrorButton"
-							Content="Закрыть"
-							Classes="custom-Auth"
-							Margin="0,242,0,0"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Bottom"
-							Click="CloseErrorButton_OnClick" />
-				</Grid>
-			</Panel>
-		</Grid>
 	</Panel>
 </Window>
