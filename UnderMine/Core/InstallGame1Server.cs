@@ -100,7 +100,7 @@ namespace UnderMine.Core
 
                 var VersionExpectedChecksum = _serverInfo.VersionExpectedChecksum;
                 var LibraryExpectedChecksum = _serverInfo.LibraryExpectedChecksum;
-                var AssetsExpectedChecksum = _serverInfo.LibraryExpectedChecksum;
+                var AssetsExpectedChecksum = _serverInfo.AssetsExpectedChecksum;
 
                 _progressManager.Report("Examination", 0.0, "Проверка файлов...");
 
