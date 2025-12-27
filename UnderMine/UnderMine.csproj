@@ -57,8 +57,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Remove="C:\Users\Дмитрий\.nuget\packages\microsoft.visualstudio.diagnosticshub.benchmarkdotnetdiagnosers\18.3.36714.1\contentFiles\cs\any\BenchmarkProfilerAgentConfig.g.cs" />
-	  <Compile Remove="Network\NetworkStatus\CheckServerStatus.cs" />
-	  <Compile Remove="Network\NetworkStatus\ChekNetworkStatus.cs" />
 	</ItemGroup>
 	<ItemGroup>
 	  <None Remove="app.manifest" />

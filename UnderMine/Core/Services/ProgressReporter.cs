@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using UnderMine.Services.Location;
-using Avalonia.Utilities;
 
 namespace UnderMine.Core.Services
 {
@@ -12,12 +14,19 @@ namespace UnderMine.Core.Services
     {
         public event Action<string>? OnLog;
         private readonly string _logFilePath;
+        private readonly TextWriter _originalConsoleOut;
+        private const int MaxLogFiles = 5;
+
+        private readonly StreamWriter _fileWriter;    
+        private readonly object _lockObj = new();
 
         public ProgressReporter()
         {
             var pathService = new PathService();
-            string baseStorage = pathService.GetStorageDirectory().Value;
+            string baseStorage = pathService.GetStorageDirectory()?.Value ?? AppDomain.CurrentDomain.BaseDirectory;
             string logsDirectory = Path.Combine(baseStorage, "launcher-logs");
+
+            Task.Run(() => CleanupOldLogs(logsDirectory));
 
             if (!Directory.Exists(logsDirectory))
             {
@@ -27,9 +36,55 @@ namespace UnderMine.Core.Services
             string fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log";
             _logFilePath = Path.Combine(logsDirectory, fileName);
 
-            WriteDetailedSystemInfo();
-        }
+            var fileStream = new FileStream(_logFilePath, FileMode.Create, FileAccess.Write, FileShare.Read);
+            _fileWriter = new StreamWriter(fileStream, Encoding.UTF8) { AutoFlush = true };
 
+            _originalConsoleOut = Console.Out;
+
+            var multiWriter = new MultiTextWriter(_originalConsoleOut, this);
+            Console.SetOut(multiWriter);
+            Console.SetError(multiWriter);
+
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            {
+                Log($"[FATAL EXCEPTION] {e.ExceptionObject}", "CRITICAL");
+                Flush(); 
+            };
+
+            Task.Run(WriteDetailedSystemInfo);
+        }
+        private void CleanupOldLogs(string directoryPath)
+        {
+            try
+            {
+                var directory = new DirectoryInfo(directoryPath);
+                if (!directory.Exists) return;
+
+                var files = directory.GetFiles("*.log")
+                                     .OrderByDescending(f => f.LastWriteTime)
+                                     .ToList();
+
+                if (files.Count >= MaxLogFiles)
+                {
+                    var filesToDelete = files.Skip(MaxLogFiles); 
+                    foreach (var file in filesToDelete)
+                    {
+                        try { file.Delete(); } catch { }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _originalConsoleOut.WriteLine($"[WARN] Failed to cleanup logs: {ex.Message}");
+            }
+        }
+        public void Flush()
+        {
+            lock (_lockObj)
+            {
+                _fileWriter?.Flush();
+            }
+        }
         private void WriteDetailedSystemInfo()
         {
             try
@@ -40,25 +95,20 @@ namespace UnderMine.Core.Services
                 sb.AppendLine("============================================");
                 sb.AppendLine($"Timestamp:      {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 sb.AppendLine($"OS:             {RuntimeInformation.OSDescription} ({RuntimeInformation.OSArchitecture})");
-                sb.AppendLine($"Framework:      {RuntimeInformation.FrameworkDescription}");
-                sb.AppendLine($"Machine Name:   {Environment.MachineName}");
-                sb.AppendLine($"User:           {Environment.UserName}");
-
-                sb.AppendLine($"CPU Model:      {GetCpuName()}");
-                sb.AppendLine($"Cores Count:    {Environment.ProcessorCount}");
-
-                sb.AppendLine($"Total RAM:      {GetTotalMemoryGb()} GB");
-
-                sb.AppendLine($"GPU (Primary):  {GetGpuName()}");
-
+                sb.AppendLine($"CPU:            {GetCpuName()}");
+                sb.AppendLine($"RAM:            {GetTotalMemoryGb()} GB");
+                sb.AppendLine($"GPU:            {GetGpuName()}");
                 sb.AppendLine("============================================");
-                sb.AppendLine();
 
-                File.AppendAllText(_logFilePath, sb.ToString());
+
+                lock (_lockObj)
+                {
+                    _fileWriter.WriteLine(sb.ToString());
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ERROR] Failed to collect system info: {ex.Message}");
+                Log($"[ERROR] Failed to collect system info: {ex.Message}");
             }
         }
 
@@ -151,20 +201,61 @@ namespace UnderMine.Core.Services
             }
             catch { return "Unknown"; }
         }
+        private class MultiTextWriter : TextWriter
+        {
+            private readonly TextWriter _baseWriter;
+            private readonly ProgressReporter _reporter;
+            public override Encoding Encoding => _baseWriter.Encoding;
+
+            public MultiTextWriter(TextWriter baseWriter, ProgressReporter reporter)
+            {
+                _baseWriter = baseWriter;
+                _reporter = reporter;
+            }
+            public override void WriteLine(string? value)
+            {
+                if (value != null) _reporter.Log(value);
+            }
+
+            public override void WriteLine(object? value) => WriteLine(value?.ToString());
+
+            public override void Write(string? value)
+            {
+
+                if (!string.IsNullOrWhiteSpace(value))
+                    _reporter.Log(value, "RAW");
+            }
+        }
 
         public void Log(string message, string level = "INFO")
         {
-            string timeStamp = DateTime.Now.ToString("HH:mm:ss");
-            string fullMessage = $"[{timeStamp}] [{level}] {message}";
+            if (string.IsNullOrEmpty(message)) return;
+
+            string timestamp = DateTime.Now.ToString("HH:mm:ss");
+            string fullMessage = message.StartsWith("[")
+                ? message
+                : $"[{timestamp}] [{level}] {message}";
+
+            lock (_lockObj)
+            {
+                _originalConsoleOut.WriteLine(fullMessage);
+
+                try
+                {
+                    _fileWriter.WriteLine(fullMessage);
+                }
+                catch { /* Игнорируем ошибки записи, чтобы не уронить приложение */ }
+            }
 
             OnLog?.Invoke(fullMessage);
-            Console.WriteLine(fullMessage);
-
-            try
+        }
+        public void Dispose()
+        {
+            lock (_lockObj)
             {
-                File.AppendAllText(_logFilePath, fullMessage + Environment.NewLine);
+                _fileWriter?.Dispose();
             }
-            catch { }
+            Console.SetOut(_originalConsoleOut); 
         }
     }
 

@@ -6,23 +6,27 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using UnderMine.Models;
+using UnderMine.Core.Services; 
 
-namespace UnderMine.Network.Services
+namespace UnderMine.Network
 {
     public class UserApiService
     {
         private readonly ContextData _contextData;
         private readonly LoginResult _loginResult;
         private readonly HttpClient _httpClient;
+        private readonly ProgressReporter _reporter; 
 
-        public UserApiService(ContextData contextData, LoginResult loginResult) : this(contextData, loginResult, new HttpClient { BaseAddress = new Uri(contextData.BaseUrl), Timeout = TimeSpan.FromSeconds(30) })
+        public UserApiService(ContextData contextData, LoginResult loginResult, ProgressReporter reporter)
+            : this(contextData, loginResult, reporter, new HttpClient { BaseAddress = new Uri(contextData.BaseUrl), Timeout = TimeSpan.FromSeconds(30) })
         {
         }
 
-        public UserApiService(ContextData contextData, LoginResult loginResult, HttpClient httpClient)
+        public UserApiService(ContextData contextData, LoginResult loginResult, ProgressReporter reporter, HttpClient httpClient)
         {
             _contextData = contextData ?? throw new ArgumentNullException(nameof(contextData));
             _loginResult = loginResult ?? throw new ArgumentNullException(nameof(loginResult));
+            _reporter = reporter ?? throw new ArgumentNullException(nameof(reporter)); 
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
             if (_httpClient.BaseAddress == null)
@@ -39,6 +43,7 @@ namespace UnderMine.Network.Services
         {
             if (string.IsNullOrEmpty(_loginResult.Token))
             {
+                _reporter.Log("[API] Токен авторизации отсутствует. Запрос информации о сервере невозможен.", "WARN");
                 return new ServerInfo
                 {
                     Success = false,
@@ -48,6 +53,8 @@ namespace UnderMine.Network.Services
 
             try
             {
+                _reporter.Log("[API] Запрос информации о сервере...", "INFO"); 
+
                 var request = new HttpRequestMessage(HttpMethod.Get, _contextData.EntranceApiKey);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _loginResult.Token);
 
@@ -65,6 +72,8 @@ namespace UnderMine.Network.Services
                         _ => $"Unknown error: {(int)response.StatusCode}"
                     };
 
+                    _reporter.Log($"[API] Ошибка получения инфо сервера: {errorMsg}", "WARN");
+
                     return new ServerInfo
                     {
                         Success = false,
@@ -81,6 +90,7 @@ namespace UnderMine.Network.Services
 
                 if (serverInfo == null)
                 {
+                    _reporter.Log("[API] Сервер вернул пустой ответ (null).", "WARN");
                     return new ServerInfo
                     {
                         Success = false,
@@ -89,18 +99,22 @@ namespace UnderMine.Network.Services
                 }
 
                 serverInfo.Success = true;
+                _reporter.Log("[API] Информация о сервере успешно получена.", "INFO"); 
                 return serverInfo;
             }
             catch (HttpRequestException ex)
             {
+                _reporter.Log($"[API] Сетевая ошибка при запросе сервера: {ex.Message}", "ERROR");
                 return new ServerInfo { Success = false, ErrorMessage = $"Ошибка сети: {ex.Message}" };
             }
             catch (TaskCanceledException)
             {
+                _reporter.Log("[API] Тайм-аут запроса к серверу.", "WARN");
                 return new ServerInfo { Success = false, ErrorMessage = "Превышено время ожидания" };
             }
             catch (Exception ex)
             {
+                _reporter.Log($"[API] Неизвестная ошибка: {ex.Message}", "ERROR");
                 return new ServerInfo { Success = false, ErrorMessage = $"Неизвестная ошибка: {ex.Message}" };
             }
         }

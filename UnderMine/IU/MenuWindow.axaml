@@ -120,7 +120,7 @@
 										<ImageBrush Source="avares://UnderMine/Assets/Images/profile.jpg" Stretch="UniformToFill"/>
 									</Border.Background>
 								</Border>
-								<Label x:Name="UsernameLabel" Grid.Column="1" Classes="LiteLabel" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" FontSize="16"/>
+								<Label x:Name="UsernameLabel" Grid.Column="1" Classes="LiteLabel" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" FontSize="16"/>
 							</Grid>
 						</Border>
 					</StackPanel>
@@ -360,6 +360,9 @@
 								 IsReadOnly="True"
 								 TextWrapping="Wrap"
 								 AcceptsReturn="True"
+								 VerticalContentAlignment="Top"
+								 HorizontalContentAlignment="Left"
+								 IsHitTestVisible="False"
 								 Height="160"
 								 Width="365"
 								 Background="#252525"

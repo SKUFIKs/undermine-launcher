@@ -1,11 +1,14 @@
-﻿using CmlLib.Core.Installer.Forge;
+﻿using BenchmarkDotNet.Exporters;
+using CmlLib.Core.Installer.Forge;
 using CmlLib.Core.ProcessBuilder;
+using Microsoft.VisualStudio.OLE.Interop;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using UnderMine.Core.Interfaces;
 using UnderMine.Core.Services;
+using UnderMine.IU;
 using UnderMine.Models;
 using UnderMine.Services.Location;
 using UnderMine.Services.ProgressBar;
@@ -26,12 +29,10 @@ namespace UnderMine.Core
         private readonly ConfigService _configService;
         private readonly ISettingsService _settingsService;
 
-        // Эти поля вызывали NullReference, если использовался не тот конструктор
         private readonly string _gamePath;
         private readonly string _modsPath;
         private readonly string _tempPath;
 
-        // ОСТАВЛЯЕМ ОДИН ГЛАВНЫЙ КОНСТРУКТОР
         public InstalGame1Server(
             ServerInfo serverInfo,
             FileDownloader downloader,
@@ -67,10 +68,10 @@ namespace UnderMine.Core
         public void InitProgress()
         {
             _progressManager.RegisterStage("Profile", 0.05); 
-            _progressManager.RegisterStage("Examination", 0.15); 
-            _progressManager.RegisterStage("Forge", 0.35); 
-            _progressManager.RegisterStage("Mods", 0.35);
-            _progressManager.RegisterStage("Configs", 0.05); 
+            _progressManager.RegisterStage("Examination", 0.20); 
+            _progressManager.RegisterStage("Forge", 0.25); 
+            _progressManager.RegisterStage("Mods", 0.30);
+            _progressManager.RegisterStage("Configs", 0.15); 
             _progressManager.RegisterStage("Launch", 0.05); 
         }
 
@@ -79,6 +80,7 @@ namespace UnderMine.Core
             var settings = await UserData.Load() ?? throw new InvalidOperationException("User settings not found");
             string mcVersion = _serverInfo.VersionMc1 ?? throw new InvalidOperationException("Minecraft version not specified");
             string forgeVersion = _serverInfo.ForgeV1 ?? throw new InvalidOperationException("Forge version not specified");
+
 
             try
             {
@@ -101,6 +103,7 @@ namespace UnderMine.Core
                 var VersionExpectedChecksum = _serverInfo.VersionExpectedChecksum;
                 var LibraryExpectedChecksum = _serverInfo.LibraryExpectedChecksum;
                 var AssetsExpectedChecksum = _serverInfo.AssetsExpectedChecksum;
+                var zipUrl = _serverInfo.ClientLink;
 
                 _progressManager.Report("Examination", 0.0, "Проверка файлов...");
 
@@ -110,7 +113,8 @@ namespace UnderMine.Core
                 string librariesFolder = Path.Combine(_gamePath, "libraries");
                 bool isLibOk = await CheckingFile.VerifyFolderIntegrityByZipHash(
                     librariesFolder,
-                    LibraryExpectedChecksum
+                    LibraryExpectedChecksum,
+                    _progress
                 );
 
                 _progressManager.Report("Examination", 0.5, "Проверка ресурсов...");
@@ -119,7 +123,8 @@ namespace UnderMine.Core
                 string AssetsFolder = Path.Combine(_gamePath, "assets");
                 bool isAssetsOk = await CheckingFile.VerifyFolderIntegrityByZipHash(
                     AssetsFolder,
-                    AssetsExpectedChecksum
+                    AssetsExpectedChecksum,
+                    _progress
                 );
 
                 _progressManager.Report("Examination", 0.6, "Проверка версий...");
@@ -128,13 +133,14 @@ namespace UnderMine.Core
                 string versionsFolder = Path.Combine(_gamePath, "versions");
                 bool isVersionsOk = await CheckingFile.VerifyFolderIntegrityByZipHash(
                     versionsFolder,
-                    VersionExpectedChecksum
+                    VersionExpectedChecksum,
+                    _progress
                 );
 
                 _progressManager.Report("Examination", 1.0, "Все файлы проверены.");
                 _progress.Log($"Все файлы проверены...");
 
-                if (!isLibOk || !isAssetsOk)
+                if (!isLibOk || !isAssetsOk || !isVersionsOk)
                 {
                     _progressManager.Report("Forge", 0.0, "Проверка установшика...");
                     _progress.Log($"Проверка установшика...");
@@ -148,20 +154,27 @@ namespace UnderMine.Core
                         _progressManager.Report("Forge", 0.2, "Установщик загружен");
                         _progress.Log($"Установщик загружен успешно");
                     }
- 
+
                     _progressManager.Report("Forge", 0.3, "Установка игры...");
-                    _progress.Log($"Установщик загружен. Начинаем установку...");
+                    _progress.Log($"Начинаем установку (это может занять несколько минут)...");
 
                     var forgeProgress = new Progress<int>(percent =>
                     {
-                        _progressManager.Report("Forge", percent / 100.0, $"Установка игры...");
+
+                        double normalizedProgress = percent / 100.0;
+                        _progressManager.Report("Forge", normalizedProgress, $"Установка игры...");
                     });
 
-                    bool isForgeOk = await _forgeInstaller.InstallAsync(installerPath, forgeProgress, ct);
+                    bool isForgeOk = await _forgeInstaller.InstallAsync(installerPath ,zipUrl ,forgeProgress ,ct ,_progressManager ,LibraryExpectedChecksum,AssetsExpectedChecksum,VersionExpectedChecksum);
                     if (!isForgeOk) throw new Exception("Установка завершилась ошибкой.");
 
                     _progressManager.Report("Forge", 1.0, "Игра установлена");
                     _progress.Log($"Игра установлена...");
+                }
+                else
+                {
+   
+                    _progressManager.Report("Forge", 1.0, "Игра установлена");
                 }
 
                 _progressManager.Report("Mods", 0.0, "Загрузка модов..."); 
@@ -195,14 +208,15 @@ namespace UnderMine.Core
                 _progress.Log($"Подготовка к запуску...");
 
 
-                _progressManager.Report("Launch", 0.7, "Запуск игры...");
-                _progress.Log($"Запуск игры...");
+                _progressManager.Report("Launch", 0.0, "Подготовка к запуску...");
+                _progress.Log($"Подготовка к запуску. Это может занимать от 5-10 минут.");
 
                 string fullVersionName = $"{mcVersion}-forge-{forgeVersion}";
                 var process = await _launcherService.BuildProcessAsync(fullVersionName, _serverInfo, settings.MemorySettings);
 
                 if (File.Exists(installerPath)) try { File.Delete(installerPath); } catch { }
-
+                _progressManager.Report("Launch", 0.5, "Запуск игры...");
+                _progress.Log($"Запуск игры...");
                 if (headless)
                 {
                     process.StartInfo.CreateNoWindow = true;

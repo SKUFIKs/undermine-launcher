@@ -2,26 +2,30 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json; 
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using UnderMine.Models;
 using UnderMine.Services;
+using UnderMine.Core.Services; 
 
-namespace UnderMine.Network.AuthService
+namespace UnderMine.Network
 {
     public class IdentityService
     {
         private readonly ContextData _contextData;
         private readonly HttpClient _httpClient;
+        private readonly ProgressReporter _reporter; 
 
-        public IdentityService(ContextData contextData) : this(contextData, new HttpClient { BaseAddress = new Uri(contextData.BaseUrl), Timeout = TimeSpan.FromSeconds(30) })
+        public IdentityService(ContextData contextData, ProgressReporter reporter)
+            : this(contextData, reporter, new HttpClient { BaseAddress = new Uri(contextData.BaseUrl), Timeout = TimeSpan.FromSeconds(30) })
         {
         }
 
-        public IdentityService(ContextData contextData, HttpClient httpClient)
+        public IdentityService(ContextData contextData, ProgressReporter reporter, HttpClient httpClient)
         {
             _contextData = contextData ?? throw new ArgumentNullException(nameof(contextData));
+            _reporter = reporter ?? throw new ArgumentNullException(nameof(reporter)); 
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
             if (_httpClient.BaseAddress == null)
@@ -34,6 +38,8 @@ namespace UnderMine.Network.AuthService
         {
             try
             {
+                _reporter.Log($"[Auth] Попытка входа пользователя: {username}...", "INFO");
+
                 string deviceId = SystemInformation.GetStableDeviceId();
                 var payload = new { Login = username, Password = password, DeviceId = deviceId };
 
@@ -44,16 +50,22 @@ namespace UnderMine.Network.AuthService
                     var tokenResponse = await response.Content.ReadFromJsonAsync<LoginResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
                     if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.Token))
                     {
-                        return new LoginResult { Success = false, ErrorMessage = $"Error: empty token. Code {(int)response.StatusCode}" };
+                        string msg = $"Error: empty token. Code {(int)response.StatusCode}";
+                        _reporter.Log($"[Auth] Успешный статус, но токен пуст. {msg}", "WARN");
+                        return new LoginResult { Success = false, ErrorMessage = msg };
                     }
+
+                    _reporter.Log($"[Auth] Вход выполнен успешно. Токен получен.", "INFO");
                     return new LoginResult { Success = true, Token = tokenResponse.Token };
                 }
 
                 string errorMsg = await GetErrorMessageAsync(response, cancellationToken);
+                _reporter.Log($"[Auth] Ошибка входа: {errorMsg}", "WARN");
                 return new LoginResult { Success = false, ErrorMessage = errorMsg };
             }
             catch (Exception ex)
             {
+                _reporter.Log($"[Auth] Критическая ошибка при входе: {ex.Message}", "ERROR");
                 return HandleException(ex);
             }
         }
@@ -62,6 +74,8 @@ namespace UnderMine.Network.AuthService
         {
             try
             {
+                _reporter.Log($"[Auth] Регистрация нового пользователя: {username}...", "INFO");
+
                 string deviceId = SystemInformation.GetStableDeviceId();
                 var payload = new { Login = username, Password = password, DeviceId = deviceId };
 
@@ -69,14 +83,17 @@ namespace UnderMine.Network.AuthService
 
                 if (response.IsSuccessStatusCode)
                 {
+                    _reporter.Log($"[Auth] Регистрация прошла успешно.", "INFO");
                     return new LoginResult { Success = true, ErrorMessage = string.Empty };
                 }
 
                 string errorMsg = await GetErrorMessageAsync(response, cancellationToken);
+                _reporter.Log($"[Auth] Ошибка регистрации: {errorMsg}", "WARN");
                 return new LoginResult { Success = false, ErrorMessage = errorMsg };
             }
             catch (Exception ex)
             {
+                _reporter.Log($"[Auth] Критическая ошибка при регистрации: {ex.Message}", "ERROR");
                 return HandleException(ex);
             }
         }
@@ -92,7 +109,7 @@ namespace UnderMine.Network.AuthService
 
                 if (!string.IsNullOrWhiteSpace(responseBody))
                 {
-                    using var doc = JsonDocument.Parse(responseBody);  
+                    using var doc = JsonDocument.Parse(responseBody);
                     if (doc.RootElement.TryGetProperty("message", out var msgProp))
                     {
                         serverMessage = msgProp.GetString();
@@ -129,7 +146,7 @@ namespace UnderMine.Network.AuthService
             System.Net.HttpStatusCode.Forbidden => "Доступ запрещён (403)",
             System.Net.HttpStatusCode.NotFound => "Сервис не найден (404)",
             System.Net.HttpStatusCode.Conflict => "Такой пользователь уже существует (409)",
-            System.Net.HttpStatusCode.Gone => "Аккаунт забанен или удален (410)", 
+            System.Net.HttpStatusCode.Gone => "Аккаунт забанен или удален (410)",
             System.Net.HttpStatusCode.TooManyRequests => "Слишком много попыток (429)",
             System.Net.HttpStatusCode.InternalServerError => "Ошибка сервера (500)",
             _ => $"Ошибка {(int)status}"

@@ -1,22 +1,17 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Microsoft.VisualStudio.Shell.Interop;
 using Avalonia.Threading;
 using System;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using UnderMine.Core.Services;
 using UnderMine.Models;
-using UnderMine.Network.AuthService;
-using UnderMine.Network.Services;
+using UnderMine.Network;
 using UnderMine.Services.SystemInfo.MemorySettings;
 using UnderMine.Services.Updater;
-using System.Reflection;
 
 namespace UnderMine.IU;
 
@@ -28,20 +23,25 @@ public partial class AuthWindow : Window
     private UserData? _userData;
     private readonly ContextData _contextData;
     private LoginResult _loginResult = null!;
-  
+    private readonly ProgressReporter _reporter;
+
 
     public AuthWindow()
     {
         InitializeComponent();
 
+        _reporter = new ProgressReporter();
         _contextData = new ContextData();
+
         var loginResult = new LoginResult();
-        _identityService = new IdentityService(_contextData);
-        _userApiService = new UserApiService(_contextData, loginResult);
+        _identityService = new IdentityService(_contextData, _reporter);
+
+        _userApiService = new UserApiService(_contextData, loginResult, _reporter);
         _update = new Updater();
         _ = LoadUserSettings();
         PassBox.PasswordChar = '•';
         SystemScan();
+      
         
     }
 
@@ -124,7 +124,7 @@ public partial class AuthWindow : Window
             return;
         }
         AuthButton.IsEnabled = true;
-        var secondWindow = new MenuWindow(_contextData, _loginResult);
+        var secondWindow = new MenuWindow(_contextData, _loginResult, _reporter);
         secondWindow.Show();
         this.Close();
     }
@@ -178,7 +178,7 @@ public partial class AuthWindow : Window
             return loginResult;
         }
 
-        _userApiService = new UserApiService(_contextData, loginResult);
+        _userApiService = new UserApiService(_contextData, loginResult, _reporter);
         var serverInfo = await _userApiService.GetServerInfo();
 
         if (!serverInfo.Success)

@@ -8,7 +8,7 @@ public class ContextData
     //public string BaseUrl { get; set; } = "http://localhost:8080";
     public string LogApiKey { get; set; } = "/api/auth/login";
     public string RegApiKey { get; set; } = "/api/auth/register";
-    public string EntranceApiKey { get; set; } = "/api/v0.1/server_info";
+    public string EntranceApiKey { get; set; } = "/api/v0.1/TechnoMagic";
     
 }
 
@@ -18,41 +18,38 @@ public class ServerInfo
     [JsonPropertyName("username")]
     public string Username { get; init; } = null!;
 
-    [JsonPropertyName("versionMC1")]
+    [JsonPropertyName("version")]
     public string VersionMc1 { get; init; } = null!;
 
-    [JsonPropertyName("forgeV1")]
+    [JsonPropertyName("forge")]
     public string ForgeV1 {get; init; } = null!;
 
-    [JsonPropertyName("manifestLink1")]
+    [JsonPropertyName("manifestLink")]
     public string ManifestLink1   { get; init; } = null!;
 
-    [JsonPropertyName("versionMC2")]
-    public string VersionMc2 {get; init;} = null!;
-
-    [JsonPropertyName("forgeV2")]
-    public string ForgeV2 {get; init;} = null!;
-
-    [JsonPropertyName("manifestLink2")]
-    public string ManifestLink2 { get; init;} = null!;
-    
-    [JsonPropertyName("ShadersLink")]
+    [JsonPropertyName("shadersLink")]
     public string ShadersLink { get; init;} = null!;
     
-    [JsonPropertyName("InstallerLink")]
+    [JsonPropertyName("installerLink")]
     public string InstallerLink  {get; init;} = null!;
-    [JsonPropertyName("KubejsLink")]
+    [JsonPropertyName("kubejsLink")]
     public string KubejsLink  {get; init;} = null!;
     
-    [JsonPropertyName("ConfLink")]
+    [JsonPropertyName("confLink")]
     public string ConfLink  {get; init;} = null!;
+    [JsonPropertyName("clientLink")]
+    public string ClientLink { get; init; } = null!;
 
-    [JsonPropertyName("LibraryExpectedChecksum")]
-    public string LibraryExpectedChecksum { get; init; } = "750358cbb093fcdbd129127b5df493800b9cb9d6";
-    [JsonPropertyName("VersionExpectedChecksum")]
-    public string VersionExpectedChecksum { get; init; } = "5be32f73845fc8ef6927c2d1decc72eccc161be2";
-    [JsonPropertyName("AssetsExpectedChecksum")]
-    public string AssetsExpectedChecksum { get; init; } = "empty";
+    [JsonPropertyName("libraryExpectedChecksum")]
+    public string LibraryExpectedChecksum { get; init; } = null!;
+    [JsonPropertyName("versionExpectedChecksum")]
+    public string VersionExpectedChecksum { get; init; } = null!;
+
+    [JsonPropertyName("assetsExpectedChecksum")]
+    public string AssetsExpectedChecksum { get; init; } = null!;
+
+    [JsonPropertyName("uiVersion")]
+    public string uiVersion { get; init; } = null!;
 
 
     public bool Success { get; set; }

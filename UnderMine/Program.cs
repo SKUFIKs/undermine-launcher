@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using System;
 using UnderMine.Models;
-using UnderMine.Network.AuthService;
+using UnderMine.Network;
 using UnderMine.Services;
 using UnderMine.Services.SystemInfo.MemorySettings;
 using Velopack;

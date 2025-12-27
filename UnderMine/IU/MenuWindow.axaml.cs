@@ -1,4 +1,4 @@
-﻿using Avalonia;
+﻿
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -7,14 +7,12 @@ using Avalonia.Threading;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Text.Json;
 using System.Threading.Tasks;
-using UnderMine.Core; // Важно: Пространство имен первого сервера
+using UnderMine.Core; 
 using UnderMine.Core.Services;
 using UnderMine.Fonts.Models;
 using UnderMine.Models;
-using UnderMine.Network.Services;
+using UnderMine.Network;
 using UnderMine.Services;
 using UnderMine.Services.Location;
 using UnderMine.Services.Logger;
@@ -27,7 +25,6 @@ public partial class MenuWindow : Window
 {
     private int ServerId { get; set; }
 
-    // Добавлено пропущенное поле для первого сервера
     private InstalGame1Server _instalGame1Server = null!;
 
     private readonly ContextData _contextData;
@@ -39,46 +36,51 @@ public partial class MenuWindow : Window
     private ServerInfo _serverInfo = null!;
     private string _logContent = "";
 
-    // Поле для хранения текущего инсталлера (если нужно для общей логики)
     private object _installer;
 
     private static readonly IBrush DefaultColor = Brushes.Orange;
     private static readonly IBrush CompleteColor = Brush.Parse("#3C6");
+    private readonly ProgressReporter _reporter;
 
-    public MenuWindow(ContextData contextData, LoginResult loginResult)
+    public MenuWindow(ContextData contextData, LoginResult loginResult, ProgressReporter reporter)
     {
         InitializeComponent();
         DataContext = new MenuWindowViewModel();
         _contextData = contextData;
         _loginResult = loginResult;
+        _reporter = reporter; 
+
+        _reporter.OnLog += UpdateConsoleLabel;
 
         _ = InitializeMemorySliderAsync();
         InitializeServersAsync();
         Load_Settings();
         Installation();
 
-        Console.SetOut(new Logger(UpdateConsoleLabel));
+        LogLabel.IsVisible = false;
+
 
         MemoryTextBox.Text = $"{MemorySlider.Value:F0} MB";
         MemorySlider.PropertyChanged += (_, e) =>
         {
             if (e.Property.Name == nameof(MemorySlider.Value))
-            {
                 MemoryTextBox.Text = $"{MemorySlider.Value:F0} MB";
-            }
         };
     }
 
     private void UpdateConsoleLabel(string text)
     {
-        string cleanText = text.Trim();
 
-        if (string.IsNullOrEmpty(cleanText)) return;
+        Dispatcher.UIThread.Post(() =>
+        {
+            string cleanText = text.Trim();
+            if (string.IsNullOrEmpty(cleanText)) return;
 
-        if (cleanText.Length > 120)
-            cleanText = cleanText.Substring(0, 117) + "...";
+            if (cleanText.Length > 120)
+                cleanText = cleanText.Substring(0, 117) + "...";
 
-        LogLabel.Content = cleanText;
+            LogLabel.Content = cleanText;
+        });
     }
 
     private void TitleBar_PointerPressed(object sender, Avalonia.Input.PointerPressedEventArgs e)
@@ -98,15 +100,6 @@ public partial class MenuWindow : Window
         });
     }
 
-    private void AddLogMessage(string message)
-    {
-        Dispatcher.UIThread.Post(() =>
-        {
-            _logContent = message;
-            LogBox.Content = _logContent;
-        });
-    }
-
     private void Installation()
     {
         string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -123,7 +116,6 @@ public partial class MenuWindow : Window
             _userData.MemorySettings = (int)e.NewValue;
         };
 
-        // Убедитесь, что ThisAssembly настроен в проекте, иначе закомментируйте
         string versionFromGitTag = ThisAssembly.Git.Tag;
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
@@ -154,94 +146,51 @@ public partial class MenuWindow : Window
     {
         try
         {
-            var api = new UserApiService(_contextData, _loginResult);
+            var api = new UserApiService(_contextData, _loginResult, _reporter);
             _serverInfo = await api.GetServerInfo();
 
             if (!_serverInfo.Success)
             {
-                AddLogMessage($"Ошибка {_serverInfo.ErrorMessage}");
-                ErrorPanel.IsVisible = true;
-                ErrorBox.Text = $"Ошибка: {_serverInfo.ErrorMessage}";
+                HandleException("Ошибка получения данных сервера", new Exception(_serverInfo.ErrorMessage));
                 return;
             }
 
-
-            // 2. Инициализация ProgressReporter
-            // ВАЖНО: Мы подписываемся на события репортера, так как сам InstalGame1Server не имеет событий
-            // 2. Инициализация ProgressReporter
-
-            // 2. Настройка центрального ProgressBar (Панель и текст внутри неё)
-            // Создаем менеджер, который будет управлять Loader (ProgressView) и LogBox (Label)
-            
-
             var pathService = new PathService();
-            // Получаем базовый путь один раз для всех
-            string rootPath = pathService.GetStorageDirectory().Value;
-            string baseGamePath = Path.Combine(rootPath, "versions", "TechnoMagic");
-
+            string baseGamePath = Path.Combine(pathService.GetStorageDirectory().Value, "versions", "TechnoMagic");
             if (!Directory.Exists(baseGamePath)) Directory.CreateDirectory(baseGamePath);
 
             _progressManager = new ProgressManager((val, msg) =>
             {
                 Dispatcher.UIThread.Post(() =>
                 {
-                    try
-                    {
-                        if (!ProgressBar.IsVisible) ProgressBar.IsVisible = true;
-
-                        double actualPercent = Math.Clamp(val, 0, 100);
-
-                        string newText = $"{Math.Round(actualPercent)}%";
-
-                        if (PercentText.Text != newText)
-                        {
-                            PercentText.Text = newText;
-
-                            PercentText.InvalidateVisual();
-                        }
-
-                        LogBox.Content = msg;
-                        Loader.Progress = actualPercent;
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Ошибка UI: {ex.Message}");
-                    }
+                    ProgressBar.IsVisible = true;
+                    Loader.Progress = Math.Clamp(val, 0, 100);
+                    PercentText.Text = $"{Math.Round(Loader.Progress)}%";
+                    LogBox.Content = msg;
                 });
             });
 
             var httpClient = new System.Net.Http.HttpClient();
-            var progressReporter = new ProgressReporter();
-            
 
-            // Передаем правильный путь в ConfigService
-            var configService = new ConfigService(httpClient, baseGamePath);
-
-            var downloader = new FileDownloader(httpClient);
-            var forgeInstallerService = new UnderMine.Core.Services.ForgeInstaller(baseGamePath);
-            var launcherService = new MinecraftLauncherService(baseGamePath);
-            var profileService = new ProfileService();
-            var modLoader = new ModLoaderService(httpClient, progressReporter, _progressManager);
-            var settingsService = new SettingsService(pathService);
+            var modLoader = new ModLoaderService(httpClient, _reporter, _progressManager);
+            var forgeInstaller = new UnderMine.Core.Services.ForgeInstaller(baseGamePath);
 
             _instalGame1Server = new InstalGame1Server(
                 _serverInfo,
-                downloader,
-                launcherService,
-                progressReporter,
-                profileService,
-                forgeInstallerService,
-                _progressManager, // Используем поле класса здесь тоже
+                new FileDownloader(httpClient),
+                new MinecraftLauncherService(baseGamePath),
+                _reporter, 
+                new ProfileService(),
+                forgeInstaller,
+                _progressManager,
                 modLoader,
-                configService,
-                settingsService,
+                new ConfigService(httpClient, baseGamePath),
+                new SettingsService(pathService),
                 pathService
             );
 
             _instalGame1Server.InitProgress();
-
             UsernameLabel.Content = _userData.Username;
-            _installer = _instalGame1Server;
         }
         catch (Exception ex)
         {
@@ -315,8 +264,7 @@ public partial class MenuWindow : Window
         PlayButton.IsEnabled = false;
         ProgressBar.IsVisible = true;
         PlayButton.Content = "Запуск";
-
-        // Блокируем кнопки
+        LogLabel.IsVisible = true;
         SettingsButton.IsEnabled = false;
         ProfileButton.IsEnabled = false;
         ServerSelectionButton.IsEnabled = false;
@@ -331,9 +279,6 @@ public partial class MenuWindow : Window
                     throw new InvalidOperationException("Сервер 1 не был инициализирован.");
                 }
 
-                // Здесь происходит установка и запуск.
-                // Ошибки перехватываются блоком catch ниже.
-                // Сообщения идут через ProgressReporter, настроенный в InitializeServersAsync.
                 await _instalGame1Server.InstallAndRunAsync();
             }
             else if (serverId == 2)
@@ -344,7 +289,6 @@ public partial class MenuWindow : Window
         }
         catch (Exception ex)
         {
-            // Перехват исключений от InstalGame1Server
             HandleException("Ошибка при запуске игры", ex);
         }
         finally
@@ -356,6 +300,7 @@ public partial class MenuWindow : Window
             ProfileButton.IsEnabled = true;
             ServerSelectionButton.IsEnabled = true;
             NewsButton.IsEnabled = true;
+            LogLabel.IsVisible = false;
         }
     }
 
@@ -398,8 +343,6 @@ public partial class MenuWindow : Window
 
         MemorySlider.Value = _userData.MemorySettings;
 
-        // Переподписываемся или просто обновляем значение
-        // (Обработчик ValueChanged уже должен работать)
     }
 
     private void OverviewSettings_OnClick(object? sender, RoutedEventArgs e)
@@ -407,7 +350,7 @@ public partial class MenuWindow : Window
         var pathService = new PathService();
         AppPath storage = pathService.GetStorageDirectory();
 
-        string directoryPath = storage.Value; // Убрал Path.Combine, если storage.Value уже путь
+        string directoryPath = storage.Value; 
 
         try
         {
