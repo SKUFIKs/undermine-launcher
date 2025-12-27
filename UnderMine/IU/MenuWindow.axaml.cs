@@ -116,7 +116,7 @@ public partial class MenuWindow : Window
             _userData.MemorySettings = (int)e.NewValue;
         };
 
-        string versionFromGitTag = ThisAssembly.Git.Tag;
+        string versionFromGitTag = ThisAssembly.Git.BaseTag;
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             Version.Content = $"{versionFromGitTag}   ";

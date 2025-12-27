@@ -53,7 +53,7 @@ public partial class AuthWindow : Window
         var info = await check.CheckOperatingSystemAsync();
 
         var updaterInstance = new Updater();
-        string versionFromGitTag = ThisAssembly.Git.Tag;
+        string versionFromGitTag = ThisAssembly.Git.BaseTag;
 
         // await updaterInstance.UpdateLauncher();
 
