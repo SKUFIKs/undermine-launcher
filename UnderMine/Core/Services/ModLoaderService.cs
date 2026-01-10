@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using UnderMine.Services.Logger;
 using UnderMine.Services.ProgressBar;
 
 namespace UnderMine.Core.Services
@@ -33,6 +34,10 @@ namespace UnderMine.Core.Services
 
         public async Task InstallOrUpdateModsAsync(string modsDirectory, string manifestUrl, CancellationToken ct)
         {
+            //debug
+
+            //manifestUrl = "https://www.dropbox.com/scl/fi/yegsaya731651z9htbnzm/manifest.json?rlkey=yfqf0lq8j2fsf8jhx7mr4u9eu&st=axipxsjg&dl=1";
+
             _progress.Log("Проверка модов...");
 
             try
@@ -50,6 +55,8 @@ namespace UnderMine.Core.Services
             var manifestJson = await _httpClient.GetStringAsync(manifestUrl, ct);
             var manifest = JObject.Parse(manifestJson);
             var modList = ParseManifest(manifest, modsDirectory);
+
+            CleanupObsoleteMods(modsDirectory, modList);
 
             int total = modList.Count;
             int completed = 0;
@@ -195,7 +202,40 @@ namespace UnderMine.Core.Services
             }
             finally { ArrayPool<byte>.Shared.Return(buffer); }
         }
+        private void CleanupObsoleteMods(string modsDirectory, List<ModInfo> manifestMods)
+        {
+            try
+            {
+                var allowedFiles = new HashSet<string>(
+                    manifestMods.Select(m => Path.GetFileName(m.FilePath)),
+                    StringComparer.OrdinalIgnoreCase
+                );
 
+                var existingFiles = Directory.GetFiles(modsDirectory);
+
+                foreach (var file in existingFiles)
+                {
+                    string fileName = Path.GetFileName(file);
+
+                    if (!allowedFiles.Contains(fileName) && !fileName.EndsWith(".tmp", StringComparison.OrdinalIgnoreCase))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                            _progress.Log($"Удален лишний мод: {fileName}");
+                        }
+                        catch (Exception ex)
+                        {
+                            _progress.Log($"Не удалось удалить {fileName}: {ex.Message}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _progress.Log($"Ошибка при очистке папки модов: {ex.Message}");
+            }
+        }
         private List<ModInfo> ParseManifest(JObject manifest, string modsPath)
         {
             return (manifest["Mods"] as JArray)?

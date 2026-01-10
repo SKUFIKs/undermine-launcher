@@ -1,6 +1,7 @@
 ﻿using CmlLib.Core;
 using CmlLib.Core.Auth;
 using CmlLib.Core.ProcessBuilder;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using UnderMine.Models;
@@ -9,22 +10,30 @@ namespace UnderMine.Core.Services
 {
     public class MinecraftLauncherService
     {
-        private readonly MinecraftLauncher _launcher;
 
-        public MinecraftLauncherService(string baseDirectory)
+        public MinecraftLauncherService(string dummyPath)
         {
-            _launcher = new MinecraftLauncher(new MinecraftPath(baseDirectory));
+            
         }
 
-        public async Task<Process> BuildProcessAsync(string version, ServerInfo info, int memorySettings)
+        public async Task<Process> BuildProcessAsync(string version, ServerInfo info, int memorySettings, string customPath)
         {
+            var path = new MinecraftPath(customPath);
+            var launcher = new MinecraftLauncher(path);
+
+            if (string.IsNullOrWhiteSpace(info.username))
+            {
+                throw new Exception("Критическая ошибка: Поле 'username' пустое.");
+            }
+
             var launchOption = new MLaunchOption
             {
                 MaximumRamMb = memorySettings,
-                Session = MSession.CreateOfflineSession(info.Username)
+                Session = MSession.CreateOfflineSession(info.username),
+
             };
 
-            return await _launcher.InstallAndBuildProcessAsync(version, launchOption);
+            return await launcher.InstallAndBuildProcessAsync(version, launchOption);
         }
     }
 }

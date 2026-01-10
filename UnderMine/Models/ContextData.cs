@@ -8,24 +8,30 @@ public class ContextData
     //public string BaseUrl { get; set; } = "http://localhost:8080";
     public string LogApiKey { get; set; } = "/api/auth/login";
     public string RegApiKey { get; set; } = "/api/auth/register";
-    public string EntranceApiKey { get; set; } = "/api/v0.1/TechnoMagic";
-    
+    //public string EntranceApiKey { get; set; } = "/api/v0.1/TechnoMagic";
+    public string ServersApiKey { get; set; } = "/api/v0.1/servers";
+
 }
+
 
 public class ServerInfo 
 {
-    
+    [JsonPropertyName("server")]
+    public string server { get; init; } = null!;
+
     [JsonPropertyName("username")]
-    public string Username { get; init; } = null!;
+    public string username { get; set; } = null!;
 
     [JsonPropertyName("version")]
-    public string VersionMc1 { get; init; } = null!;
+    public string version { get; init; } = null!;
+    [JsonPropertyName("bootloaderType")]
+    public string BootloaderType { get; init; } = null!;
 
-    [JsonPropertyName("forge")]
-    public string ForgeV1 {get; init; } = null!;
+    [JsonPropertyName("loader")]
+    public string loader { get; init; } = null!;
 
     [JsonPropertyName("manifestLink")]
-    public string ManifestLink1   { get; init; } = null!;
+    public string ManifestLink   { get; init; } = null!;
 
     [JsonPropertyName("shadersLink")]
     public string ShadersLink { get; init;} = null!;
@@ -50,7 +56,6 @@ public class ServerInfo
 
     [JsonPropertyName("uiVersion")]
     public string uiVersion { get; init; } = null!;
-
 
     public bool Success { get; set; }
     

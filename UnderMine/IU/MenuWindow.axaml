@@ -129,36 +129,17 @@
 					</Grid>
 
 					<Panel x:Name="NewsPanel" Classes="ContentPage" IsVisible="True">
-						<Border >
-							<ScrollViewer>
-								<TextBlock Classes="NewsTitle" Margin="20" TextWrapping="Wrap" Foreground="#FFFFFF">
-									<Run Text="Новости" Classes="BigTitle" FontWeight="Bold" FontSize="26" Foreground="AliceBlue" />
-									<LineBreak />
-									<LineBreak />
-									<Run Text="TechnoMagic | " FontWeight="Bold" Foreground="AliceBlue" />
-									<Run Text="Открытый бета-тест" FontWeight="Bold" Foreground="AliceBlue" />
-									<LineBreak />
-									<LineBreak />
-									<Run Text="Прошло немало времени с прошлого сезона, и за это время мы усердно трудились над новым проектом. Теперь рады сообщить — новый сезон открыт!" FontWeight="Bold" />
-									<LineBreak />
-									<LineBreak />
-									<Run Text="Это пока не финальная версия, а открытый тест, доступный всем игрокам. Мы не успели реализовать всё задуманное, но теперь будем продолжать развитие вместе с вами." FontWeight="Bold" />
-									<LineBreak />
-									<LineBreak />
-									<Run Text="Играть можно уже сейчас!" FontWeight="Bold" />
-									<LineBreak />
-									<Run Text="Если у вас появятся идеи по улучшению, или вы обнаружите баги, проблемы или зависания, обязательно сообщите нам через Telegram-бота: " FontWeight="Bold" />
-									<InlineUIContainer>
-										<TextBlock Text="@minecraft_urfu_underground_bot" FontWeight="Bold" Foreground="#747474"
-                                                   TextDecorations="Underline" PointerPressed="TelegramLink_PointerPressed" Cursor="Hand" />
-									</InlineUIContainer>
-									<LineBreak />
-									<LineBreak />
-									<Run Text="Хорошей игры! " FontWeight="Bold" />
-								</TextBlock>
-							</ScrollViewer>
-						</Border>
-					</Panel>
+    <Border>
+        <ScrollViewer>
+            <TextBlock x:Name="NewsTextBlock" 
+                       Classes="NewsTitle" 
+                       Margin="20" 
+                       TextWrapping="Wrap" 
+                       Foreground="#FFFFFF">
+                </TextBlock>
+        </ScrollViewer>
+    </Border>
+</Panel>
 
 					<Panel x:Name="SettingsPanel" Classes="ContentPage" IsVisible="False">
 						<Border >
@@ -267,21 +248,7 @@
 						<Border >
 							<Grid RowDefinitions="*, 120">
 								<ScrollViewer Grid.Row="0" Margin="20">
-									<TextBlock TextWrapping="Wrap" Classes="NewsTitle" Foreground="White">
-										<Run Text="Сервер TechnoMagic" FontWeight="Bold" FontSize="26" />
-										<LineBreak />
-										<LineBreak />
-										<Run Text="Сервер TechnoMagic основан на сборке Create Chronicles: Bosses and Beyond." FontWeight="Bold" />
-										<LineBreak />
-										<LineBreak />
-										<Run Text="Вас ждет проработанная система прогресса, состоящая из 10 глав. Она объединяет автоматизацию, исследование, магию и битвы с боссами. В вашем распоряжении более 800 квестов, которые постепенно помогут освоить развитие технологий и магических искусств." FontWeight="Bold" />
-										<LineBreak />
-										<LineBreak />
-										<Run Text="Изучайте мир с модом Create, стройте производственные линии и получайте доступ к новому контенту с каждой главой. Сражайтесь с боссами из L’EnderCataclysm, Mowzie’s Mobs и Bosses of Mass Destruction, развивая при этом собственное древо талантов. Посетите новые измерения – от Twilight Forest до The Aether и Blue Skies, исследуйте необычные пещеры из Alex’s Caves, приручайте драконов из Ice and Fire и отправляйтесь в космос с Ad Astra." FontWeight="Bold" />
-										<LineBreak />
-										<LineBreak />
-										<Run Text="Ждем вас на нашем сервере! :)" FontWeight="Bold" />
-									</TextBlock>
+									<TextBlock x:Name="ServerDescriptionText" TextWrapping="Wrap" Classes="NewsTitle" Foreground="White"> </TextBlock>
 								</ScrollViewer>
 
 								<Panel Grid.Row="1" Margin="25,30,0,0">

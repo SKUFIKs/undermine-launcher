@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnderMine.Models;
 using UnderMine.Services;
-using UnderMine.Core.Services; 
+using UnderMine.Services.Logger;
 
 namespace UnderMine.Network
 {

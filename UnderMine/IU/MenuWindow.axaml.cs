@@ -1,12 +1,15 @@
 ﻿
 using Avalonia.Controls;
+using Avalonia.Controls.Documents;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnderMine.Core; 
 using UnderMine.Core.Services;
@@ -34,9 +37,9 @@ public partial class MenuWindow : Window
     private ProgressManager _progressManager = null!;
     private UserData _userData = null!;
     private ServerInfo _serverInfo = null!;
-    private string _logContent = "";
 
-    private object _installer;
+    private readonly IGameInstallerFactory _installerFactory;
+    private readonly UserApiService _apiService;
 
     private static readonly IBrush DefaultColor = Brushes.Orange;
     private static readonly IBrush CompleteColor = Brush.Parse("#3C6");
@@ -45,10 +48,40 @@ public partial class MenuWindow : Window
     public MenuWindow(ContextData contextData, LoginResult loginResult, ProgressReporter reporter)
     {
         InitializeComponent();
-        DataContext = new MenuWindowViewModel();
+
+        var pathService = new PathService();
+        var httpClient = new System.Net.Http.HttpClient();
+
+        _progressManager = new ProgressManager((val, msg) =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                Loader.Progress = Math.Clamp(val, 0, 100);
+                PercentText.Text = $"{Math.Round(Loader.Progress)}%";
+                LogBox.Content = msg;
+            });
+        });
+
+        _installerFactory = new GameInstallerFactory(
+            new FileDownloader(httpClient),
+            new MinecraftLauncherService(Path.Combine(pathService.GetStorageDirectory().Value, "versions")),
+            reporter,
+            new ProfileService(),
+            new UnderMine.Core.Services.ForgeInstaller(Path.Combine(pathService.GetStorageDirectory().Value, "versions")),
+            _progressManager,
+            new ModLoaderService(httpClient, reporter, _progressManager),
+            new ConfigService(httpClient),
+            new SettingsService(pathService),
+            pathService
+        );
+
+        var apiService = new UserApiService(contextData, loginResult, reporter);
+        _apiService = apiService;
+        DataContext = new MenuWindowViewModel(_installerFactory, apiService);
+
         _contextData = contextData;
         _loginResult = loginResult;
-        _reporter = reporter; 
+        _reporter = reporter;
 
         _reporter.OnLog += UpdateConsoleLabel;
 
@@ -58,14 +91,14 @@ public partial class MenuWindow : Window
         Installation();
 
         LogLabel.IsVisible = false;
-
-
-        MemoryTextBox.Text = $"{MemorySlider.Value:F0} MB";
-        MemorySlider.PropertyChanged += (_, e) =>
-        {
-            if (e.Property.Name == nameof(MemorySlider.Value))
-                MemoryTextBox.Text = $"{MemorySlider.Value:F0} MB";
-        };
+    }
+    public class NewsPart
+    {
+        public string Type { get; set; } = "Run";
+        public string? Text { get; set; }
+        public bool IsBold { get; set; }
+        public string? Color { get; set; }
+        public int? FontSize { get; set; }
     }
 
     private void UpdateConsoleLabel(string text)
@@ -146,56 +179,57 @@ public partial class MenuWindow : Window
     {
         try
         {
-            var api = new UserApiService(_contextData, _loginResult, _reporter);
-            _serverInfo = await api.GetServerInfo();
+            var response = await _apiService.GetUserDataAsync();
+            if (response == null) return;
 
-            if (!_serverInfo.Success)
+            Dispatcher.UIThread.Post(() =>
             {
-                HandleException("Ошибка получения данных сервера", new Exception(_serverInfo.ErrorMessage));
-                return;
-            }
+                UsernameLabel.Content = response.Username;
 
-            var pathService = new PathService();
-            string baseGamePath = Path.Combine(pathService.GetStorageDirectory().Value, "versions", "TechnoMagic");
-            if (!Directory.Exists(baseGamePath)) Directory.CreateDirectory(baseGamePath);
-
-            _progressManager = new ProgressManager((val, msg) =>
-            {
-                Dispatcher.UIThread.Post(() =>
+                if (response.News != null)
                 {
-                    ProgressBar.IsVisible = true;
-                    Loader.Progress = Math.Clamp(val, 0, 100);
-                    PercentText.Text = $"{Math.Round(Loader.Progress)}%";
-                    LogBox.Content = msg;
-                });
+                    NewsTextBlock.Inlines.Clear(); 
+
+                    foreach (var part in response.News)
+                    {
+                        if (part.Type == "LineBreak")
+                        {
+                            NewsTextBlock.Inlines.Add(new LineBreak());
+                        }
+                        else if (part.Type == "Link")
+                        {
+                            var linkText = new TextBlock
+                            {
+                                Text = part.Text,
+                                Foreground = Brush.Parse(part.Color ?? "#747474"),
+                                FontWeight = FontWeight.Bold,
+                                TextDecorations = TextDecorations.Underline,
+                                Cursor = new Cursor(StandardCursorType.Hand)
+                            };
+                            linkText.PointerPressed += TelegramLink_PointerPressed;
+
+                            NewsTextBlock.Inlines.Add(new InlineUIContainer { Child = linkText });
+                        }
+                        else // Обычный Run
+                        {
+                            var run = new Run(part.Text)
+                            {
+                                FontWeight = part.IsBold ? FontWeight.Bold : FontWeight.Normal
+                            };
+
+                            if (!string.IsNullOrEmpty(part.Color))
+                                run.Foreground = Brush.Parse(part.Color);
+
+                            if (part.FontSize.HasValue)
+                                run.FontSize = part.FontSize.Value;
+
+                            NewsTextBlock.Inlines.Add(run);
+                        }
+                    }
+                }
             });
-
-            var httpClient = new System.Net.Http.HttpClient();
-
-            var modLoader = new ModLoaderService(httpClient, _reporter, _progressManager);
-            var forgeInstaller = new UnderMine.Core.Services.ForgeInstaller(baseGamePath);
-
-            _instalGame1Server = new InstalGame1Server(
-                _serverInfo,
-                new FileDownloader(httpClient),
-                new MinecraftLauncherService(baseGamePath),
-                _reporter, 
-                new ProfileService(),
-                forgeInstaller,
-                _progressManager,
-                modLoader,
-                new ConfigService(httpClient, baseGamePath),
-                new SettingsService(pathService),
-                pathService
-            );
-
-            _instalGame1Server.InitProgress();
-            UsernameLabel.Content = _userData.Username;
         }
-        catch (Exception ex)
-        {
-            HandleException("Ошибка инициализации компонентов", ex);
-        }
+        catch (Exception ex) { Debug.WriteLine(ex.Message); }
     }
 
     private void NewsButton_OnClick(object? sender, RoutedEventArgs e)
@@ -261,48 +295,48 @@ public partial class MenuWindow : Window
 
     private async void StartingTheGame(int serverId)
     {
+
         PlayButton.IsEnabled = false;
         ProgressBar.IsVisible = true;
-        PlayButton.Content = "Запуск";
+        PlayButton.Content = "Запуск...";
         LogLabel.IsVisible = true;
-        SettingsButton.IsEnabled = false;
-        ProfileButton.IsEnabled = false;
-        ServerSelectionButton.IsEnabled = false;
-        NewsButton.IsEnabled = false;
 
         try
         {
-            if (serverId == 1)
+            if (this.DataContext is MenuWindowViewModel vm && vm.SelectedServer != null)
             {
-                if (_instalGame1Server == null)
-                {
-                    throw new InvalidOperationException("Сервер 1 не был инициализирован.");
-                }
+                var selected = vm.SelectedServer;
 
-                await _instalGame1Server.InstallAndRunAsync();
-            }
-            else if (serverId == 2)
-            {
-                //if (_instalGame2Server != null)
-                  //  await _instalGame2Server.InstallAndRunAsync();
+                _reporter.Log($"[INFO] Подготовка к установке {selected.Name} (ID: {selected.Id})");
+
+                var config = selected.Config;
+                config.username = _userData?.Username ?? "Player";
+
+                var installer = _installerFactory.CreateInstaller(config, config);
+                await installer.InstallAndRunAsync();
             }
         }
         catch (Exception ex)
         {
-            HandleException("Ошибка при запуске игры", ex);
+            HandleException("Ошибка запуска", ex);
         }
         finally
         {
-            PlayButton.IsEnabled = true;
-            ProgressBar.IsVisible = false;
-            PlayButton.Content = "Играть";
-            SettingsButton.IsEnabled = true;
-            ProfileButton.IsEnabled = true;
-            ServerSelectionButton.IsEnabled = true;
-            NewsButton.IsEnabled = true;
-            LogLabel.IsVisible = false;
+            Dispatcher.UIThread.Post(() =>
+            {
+                PlayButton.IsEnabled = true;
+                ProgressBar.IsVisible = false;
+                PlayButton.Content = "Играть";
+                LogLabel.IsVisible = false;
+
+                SettingsButton.IsEnabled = true;
+                ProfileButton.IsEnabled = true;
+                ServerSelectionButton.IsEnabled = true;
+                NewsButton.IsEnabled = true;
+            });
         }
     }
+
 
     private void SelectButton_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -310,16 +344,17 @@ public partial class MenuWindow : Window
         {
             if (vm.SelectedServer != null)
             {
-                var serverId = vm.SelectedServer.Id;
-                if (serverId == 1 || serverId == 2)
-                {
-                    SelectServer.IsVisible = false;
-                    WaitingСhoice.IsVisible = false;
-                    PlayServer.IsVisible = true;
-                    ServerId = serverId;
+                var selected = vm.SelectedServer;
 
-                    if (serverId == 2) Console.WriteLine(serverId);
-                }
+                // Переключаем панели
+                SelectServer.IsVisible = false;
+                WaitingСhoice.IsVisible = false;
+                PlayServer.IsVisible = true;
+
+                ServerId = selected.Id;
+
+                // ОБНОВЛЯЕМ ТЕКСТ ОПИСАНИЯ
+                UpdateServerDescription(selected.Description);
             }
         }
     }
@@ -344,7 +379,34 @@ public partial class MenuWindow : Window
         MemorySlider.Value = _userData.MemorySettings;
 
     }
+    private void UpdateServerDescription(List<NewsPart>? description)
+    {
+        ServerDescriptionText.Inlines.Clear();
+        if (description == null) return;
 
+        foreach (var part in description)
+        {
+            if (part.Type == "LineBreak")
+            {
+                ServerDescriptionText.Inlines.Add(new LineBreak());
+            }
+            else
+            {
+                var run = new Run(part.Text)
+                {
+                    FontWeight = part.IsBold ? FontWeight.Bold : FontWeight.Normal
+                };
+
+                if (!string.IsNullOrEmpty(part.Color))
+                    run.Foreground = Brush.Parse(part.Color);
+
+                if (part.FontSize.HasValue)
+                    run.FontSize = part.FontSize.Value;
+
+                ServerDescriptionText.Inlines.Add(run);
+            }
+        }
+    }
     private void OverviewSettings_OnClick(object? sender, RoutedEventArgs e)
     {
         var pathService = new PathService();

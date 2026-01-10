@@ -19,27 +19,23 @@ namespace UnderMine.Core.Services
         public async Task LoadDefaultSettingsAsync(string _gamePath)
         {
             if (string.IsNullOrWhiteSpace(_gamePath))
-                throw new ArgumentException("Путь к игре не может быть пустым", nameof(_gamePath));
-
+                throw new ArgumentException("Путь к игре не может быть пустым");
 
             _gamePath = _gamePath.Trim().Trim('\"');
 
-            
-            string filePath = Path.Combine(_gamePath, "options.txt");
+            string serverDirectory = Path.Combine(_gamePath);
+            string filePath = Path.Combine(serverDirectory, "options.txt");
 
             if (File.Exists(filePath)) return;
 
             try
             {
-
-                string directoryPath = Path.GetDirectoryName(filePath);
-                if (!string.IsNullOrEmpty(directoryPath))
+                if (!Directory.Exists(serverDirectory))
                 {
-                    Directory.CreateDirectory(directoryPath);
+                    Directory.CreateDirectory(serverDirectory);
                 }
 
                 var options = GetDefaultOptions();
-
                 var encoding = new System.Text.UTF8Encoding(false);
 
                 using (var writer = new StreamWriter(filePath, false, encoding))
@@ -53,7 +49,7 @@ namespace UnderMine.Core.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Ошибка при создании файла: {filePath}. Причина: {ex.Message}", ex);
+                throw new Exception($"Ошибка при создании настроек для сервера: {ex.Message}", ex);
             }
         }
 
@@ -334,7 +330,7 @@ namespace UnderMine.Core.Services
                 ["key_artifacts.key.universal_attractor.toggle"] = "key.keyboard.unknown",
                 ["key_key.ftbchunks.map"] = "key.keyboard.m",
                 ["key_key.ftbchunks.toggle_minimap"] = "key.keyboard.unknown",
-                ["key_key.ftbchunks.claim_manager"] = "key.keyboard.e",
+                ["key_key.ftbchunks.claim_manager"] = "key.keyboard.i",
                 ["key_key.ftbchunks.minimap.zoomIn"] = "key.keyboard.equal",
                 ["key_key.ftbchunks.minimap.zoomOut"] = "key.keyboard.minus",
                 ["key_key.ftbchunks.add_waypoint"] = "key.keyboard.unknown",

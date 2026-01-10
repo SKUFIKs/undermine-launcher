@@ -7,11 +7,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using UnderMine.Core.Services;
 using UnderMine.Models;
 using UnderMine.Network;
+using UnderMine.Services.Logger;
 using UnderMine.Services.SystemInfo.MemorySettings;
-using UnderMine.Services.Updater;
+
 
 namespace UnderMine.IU;
 
@@ -19,7 +19,7 @@ public partial class AuthWindow : Window
 {
     private readonly IdentityService _identityService;
     private UserApiService _userApiService;
-    private readonly Updater _update;
+
     private UserData? _userData;
     private readonly ContextData _contextData;
     private LoginResult _loginResult = null!;
@@ -37,7 +37,7 @@ public partial class AuthWindow : Window
         _identityService = new IdentityService(_contextData, _reporter);
 
         _userApiService = new UserApiService(_contextData, loginResult, _reporter);
-        _update = new Updater();
+
         _ = LoadUserSettings();
         PassBox.PasswordChar = '•';
         SystemScan();
@@ -52,10 +52,7 @@ public partial class AuthWindow : Window
 
         var info = await check.CheckOperatingSystemAsync();
 
-        var updaterInstance = new Updater();
         string versionFromGitTag = ThisAssembly.Git.BaseTag;
-
-        // await updaterInstance.UpdateLauncher();
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
@@ -131,33 +128,20 @@ public partial class AuthWindow : Window
 
     private async Task<LoginResult> Login(string username, string password)
     {
+
         if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
         {
-            return new LoginResult
-            {
-                Success = false,
-                ErrorMessage = "Пустое имя пользователя или пароль."
-            };
+            return new LoginResult { Success = false, ErrorMessage = "Пустое имя пользователя или пароль." };
         }
 
         if (password.Length < 6 || username.Length < 3)
         {
-            return new LoginResult
-            {
-                Success = false,
-                ErrorMessage = "Никнейм или пароль слишком короткий."
-            };
+            return new LoginResult { Success = false, ErrorMessage = "Никнейм или пароль слишком короткий." };
         }
 
-        if (!Regex.IsMatch(username, @"^[a-zA-Z0-9]+$") ||
-            !Regex.IsMatch(password, @"^[a-zA-Z0-9]+$"))
+        if (!Regex.IsMatch(username, @"^[a-zA-Z0-9]+$") || !Regex.IsMatch(password, @"^[a-zA-Z0-9]+$"))
         {
-            return new LoginResult
-            {
-                Success = false,
-                ErrorMessage =
-                    "Вы используете недопустимые символы. Для логина и пароля можно использовать только латинские буквы и цифры."
-            };
+            return new LoginResult { Success = false, ErrorMessage = "Вы используете недопустимые символы..." };
         }
 
         if (SaveUserBox.IsChecked == true)
@@ -165,7 +149,7 @@ public partial class AuthWindow : Window
             if (_userData != null)
             {
                 _userData.Username = username;
-                _userData.Password = password;
+                _userData.Password = password; 
                 _userData.SaveUser = true;
                 await _userData.Save();
             }
@@ -179,22 +163,13 @@ public partial class AuthWindow : Window
         }
 
         _userApiService = new UserApiService(_contextData, loginResult, _reporter);
-        var serverInfo = await _userApiService.GetServerInfo();
-
-        if (!serverInfo.Success)
-        {
-            return new LoginResult
-            {
-                Success = false,
-                ErrorMessage = serverInfo.ErrorMessage
-            };
-        }
 
         return new LoginResult
         {
             Success = true,
             Token = loginResult.Token
         };
+
     }
 
     private void LogBox_OnTextInput(object? sender, TextInputEventArgs e)

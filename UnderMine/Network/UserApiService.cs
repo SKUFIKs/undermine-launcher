@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using UnderMine.Fonts.Models;
 using UnderMine.Models;
-using UnderMine.Core.Services; 
+using UnderMine.Services.Logger;
+using static UnderMine.IU.MenuWindow;
 
 namespace UnderMine.Network
 {
@@ -15,7 +19,13 @@ namespace UnderMine.Network
         private readonly ContextData _contextData;
         private readonly LoginResult _loginResult;
         private readonly HttpClient _httpClient;
-        private readonly ProgressReporter _reporter; 
+        private readonly ProgressReporter _reporter;
+
+        public class UserDataResponse
+        {
+            public string Username { get; set; }
+            public List<NewsPart> News { get; set; }
+        }
 
         public UserApiService(ContextData contextData, LoginResult loginResult, ProgressReporter reporter)
             : this(contextData, loginResult, reporter, new HttpClient { BaseAddress = new Uri(contextData.BaseUrl), Timeout = TimeSpan.FromSeconds(30) })
@@ -26,96 +36,104 @@ namespace UnderMine.Network
         {
             _contextData = contextData ?? throw new ArgumentNullException(nameof(contextData));
             _loginResult = loginResult ?? throw new ArgumentNullException(nameof(loginResult));
-            _reporter = reporter ?? throw new ArgumentNullException(nameof(reporter)); 
+            _reporter = reporter ?? throw new ArgumentNullException(nameof(reporter));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
             if (_httpClient.BaseAddress == null)
                 _httpClient.BaseAddress = new Uri(_contextData.BaseUrl);
 
-            if (!_httpClient.DefaultRequestHeaders.Accept.Contains(new MediaTypeWithQualityHeaderValue("application/json")))
-            {
-                _httpClient.DefaultRequestHeaders.Accept.Clear();
-                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            }
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<ServerInfo> GetServerInfo(CancellationToken cancellationToken = default)
+        public async Task<List<Server>> GetServersAsync(CancellationToken ct = default)
         {
             if (string.IsNullOrEmpty(_loginResult.Token))
             {
-                _reporter.Log("[API] Токен авторизации отсутствует. Запрос информации о сервере невозможен.", "WARN");
-                return new ServerInfo
-                {
-                    Success = false,
-                    ErrorMessage = "Неизвестная ошибка."
-                };
+                _reporter.Log("[API] Ошибка: отсутствует токен для получения списка серверов.", "WARN");
+                return new List<Server>();
             }
 
             try
             {
-                _reporter.Log("[API] Запрос информации о сервере...", "INFO"); 
+                _reporter.Log("[API] Загрузка списка серверов...", "INFO");
 
-                var request = new HttpRequestMessage(HttpMethod.Get, _contextData.EntranceApiKey);
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/v0.1/servers");
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _loginResult.Token);
 
-                using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                using var response = await _httpClient.SendAsync(request, ct).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    string errorMsg = response.StatusCode switch
-                    {
-                        System.Net.HttpStatusCode.BadRequest => "Не верный запрос (400)",
-                        System.Net.HttpStatusCode.Unauthorized => "Неправильный логин или пароль (401)",
-                        System.Net.HttpStatusCode.Forbidden => "Доступ запрещён (403)",
-                        System.Net.HttpStatusCode.NotFound => "Ресурс не найден (404)",
-                        System.Net.HttpStatusCode.InternalServerError => "Ошибка сервера (500)",
-                        _ => $"Unknown error: {(int)response.StatusCode}"
-                    };
-
-                    _reporter.Log($"[API] Ошибка получения инфо сервера: {errorMsg}", "WARN");
-
-                    return new ServerInfo
-                    {
-                        Success = false,
-                        ErrorMessage = errorMsg
-                    };
+                    _reporter.Log($"[API] Не удалось загрузить сервера. Статус: {response.StatusCode}", "WARN");
+                    return new List<Server>();
                 }
 
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var servers = await response.Content.ReadFromJsonAsync<List<Server>>(options, ct);
 
-                var serverInfo = await response.Content.ReadFromJsonAsync<ServerInfo>(options, cancellationToken).ConfigureAwait(false);
-
-                if (serverInfo == null)
+                if (servers != null)
                 {
-                    _reporter.Log("[API] Сервер вернул пустой ответ (null).", "WARN");
-                    return new ServerInfo
+                    foreach (var s in servers)
                     {
-                        Success = false,
-                        ErrorMessage = "Сервер вернул пустой ответ"
-                    };
+                        _reporter.Log($"[DEBUG] API Server: {s.Name}, User: {s.username ?? "NULL"}", "INFO");
+                    }
                 }
 
-                serverInfo.Success = true;
-                _reporter.Log("[API] Информация о сервере успешно получена.", "INFO"); 
-                return serverInfo;
-            }
-            catch (HttpRequestException ex)
-            {
-                _reporter.Log($"[API] Сетевая ошибка при запросе сервера: {ex.Message}", "ERROR");
-                return new ServerInfo { Success = false, ErrorMessage = $"Ошибка сети: {ex.Message}" };
-            }
-            catch (TaskCanceledException)
-            {
-                _reporter.Log("[API] Тайм-аут запроса к серверу.", "WARN");
-                return new ServerInfo { Success = false, ErrorMessage = "Превышено время ожидания" };
+                _reporter.Log($"[API] Список серверов успешно обновлен ({servers?.Count ?? 0} шт.)", "INFO");
+                return servers ?? new List<Server>();
             }
             catch (Exception ex)
             {
-                _reporter.Log($"[API] Неизвестная ошибка: {ex.Message}", "ERROR");
-                return new ServerInfo { Success = false, ErrorMessage = $"Неизвестная ошибка: {ex.Message}" };
+                _reporter.Log($"[API] Ошибка при получении списка серверов: {ex.Message}", "ERROR");
+                return new List<Server>();
+            }
+        }
+
+        public async Task<ServerInfo> GetServerInfo(string serverName, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var servers = await GetServersAsync(cancellationToken);
+
+                if (servers == null || servers.Count == 0)
+                    return new ServerInfo { Success = false, ErrorMessage = "Сервера не найдены" };
+
+                var targetServer = servers.FirstOrDefault(s => s.Name == serverName) ?? servers.First();
+
+                var info = targetServer.Config;
+                info.Success = true;
+                info.username = targetServer.username; 
+
+                return info;
+            }
+            catch (Exception ex)
+            {
+                return new ServerInfo { Success = false, ErrorMessage = ex.Message };
+            }
+        }
+        public async Task<UserDataResponse?> GetUserDataAsync(CancellationToken ct = default)
+        {
+            if (string.IsNullOrEmpty(_loginResult.Token)) return null;
+
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/v0.1/get_userdata");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _loginResult.Token);
+
+                using var response = await _httpClient.SendAsync(request, ct).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    return await response.Content.ReadFromJsonAsync<UserDataResponse>(options, ct);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _reporter.Log($"[API] Ошибка получения данных пользователя: {ex.Message}", "ERROR");
+                return null;
             }
         }
     }

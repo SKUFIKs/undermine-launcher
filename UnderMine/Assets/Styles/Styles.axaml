@@ -234,7 +234,7 @@
                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                         RecognizesAccessKey="True"
-                        TextBlock.Foreground="{TemplateBinding Foreground}" />
+                        Foreground="{TemplateBinding Foreground}" />
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -272,7 +272,7 @@
 						HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 						VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 						RecognizesAccessKey="True"
-						TextBlock.Foreground="{TemplateBinding Foreground}" />
+						Foreground="{TemplateBinding Foreground}" />
 				</Border>
 			</ControlTemplate>
 		</Setter>

@@ -12,7 +12,6 @@ namespace UnderMine.Core.Services
     public class ForgeInstaller
     {
         private readonly string _baseDirectory;
-
         private static readonly HttpClient _httpClient = new HttpClient();
 
         public ForgeInstaller(string baseDirectory)
@@ -20,15 +19,22 @@ namespace UnderMine.Core.Services
             _baseDirectory = baseDirectory;
         }
 
-        public async Task<bool> InstallAsync(string installerPath, string clientArchiveUrl, IProgress<int> progress, CancellationToken ct, dynamic progressManager, string libHash, string assetsHash, string versionsHash)
+        public async Task<bool> InstallAsync(string serverPath, string installerPath, string clientArchiveUrl, IProgress<int> progress, CancellationToken ct, dynamic progressManager, string libHash, string assetsHash, string versionsHash)
         {
+            string targetPath = string.IsNullOrWhiteSpace(serverPath) ? _baseDirectory : serverPath;
+
+            if (string.IsNullOrWhiteSpace(targetPath))
+            {
+                Console.WriteLine("[Forge Error] Не указан путь для установки (targetPath is empty).");
+                return false;
+            }
+
             try
             {
-
                 var psi = new ProcessStartInfo
                 {
                     FileName = "java",
-                    WorkingDirectory = _baseDirectory,
+                    WorkingDirectory = targetPath,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -44,7 +50,6 @@ namespace UnderMine.Core.Services
                 process.OutputDataReceived += (s, e) =>
                 {
                     if (string.IsNullOrWhiteSpace(e.Data)) return;
-
                     Console.WriteLine($"[Forge] {e.Data}");
 
                     int currentPercent = 0;
@@ -65,122 +70,84 @@ namespace UnderMine.Core.Services
                         Console.WriteLine($"[Forge Error] {e.Data}");
                 };
 
-                Console.WriteLine($"[Forge] Запуск Java: java -jar \"{installerPath}\" --installClient");
+                Console.WriteLine($"[Forge] Запуск Java в директории: {targetPath}");
 
                 if (!process.Start())
                 {
                     Console.WriteLine("[Forge] Не удалось запустить процесс Java.");
-                    return false;
+                    return await InstallFallbackAsync(targetPath, clientArchiveUrl, progress, ct, progressManager, libHash, assetsHash, versionsHash);
                 }
 
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
 
-                var timeoutTask = Task.Delay(TimeSpan.FromMinutes(5), ct);
+                var timeoutTask = Task.Delay(TimeSpan.FromMinutes(7), ct);
                 var waitTask = process.WaitForExitAsync(ct);
 
                 var completedTask = await Task.WhenAny(waitTask, timeoutTask);
 
                 if (completedTask == timeoutTask)
                 {
-                    Console.WriteLine("[Forge] Превышено время ожидания. Пробуем второй метод...");
-                    try
-                    {
-                        process.Kill(true); 
-                    }
-                    catch { /* Игнорируем ошибки при убийстве процесса */ }
-
-                    Console.WriteLine("[Forge] Запуск загрузки архива и ручной установки...");
-                    return await InstallFallbackAsync(clientArchiveUrl, progress, ct, progressManager, libHash, assetsHash, versionsHash);
+                    Console.WriteLine("[Forge] Превышено время ожидания. Убиваем процесс и пробуем Fallback...");
+                    try { process.Kill(true); } catch { }
+                    return await InstallFallbackAsync(targetPath, clientArchiveUrl, progress, ct, progressManager, libHash, assetsHash, versionsHash);
                 }
 
                 if (process.ExitCode != 0)
                 {
-                    Console.WriteLine($"[Forge] Процесс завершился с кодом ошибки: {process.ExitCode}");
-                    return await InstallFallbackAsync(clientArchiveUrl, progress, ct, progressManager, libHash, assetsHash, versionsHash);
+                    Console.WriteLine($"[Forge] Код ошибки: {process.ExitCode}. Запускаем Fallback...");
+                    return await InstallFallbackAsync(targetPath, clientArchiveUrl, progress, ct, progressManager, libHash, assetsHash, versionsHash);
                 }
 
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Forge Critical Error] {ex}");
-                return await InstallFallbackAsync(clientArchiveUrl, progress, ct, progressManager, libHash, assetsHash, versionsHash);
+                Console.WriteLine($"[Forge Critical Error] {ex.Message}");
+                return await InstallFallbackAsync(targetPath, clientArchiveUrl, progress, ct, progressManager, libHash, assetsHash, versionsHash);
             }
         }
 
 
-        private async Task<bool> InstallFallbackAsync(string zipUrl, IProgress<int> progress, CancellationToken ct, dynamic progressManager, string libHash, string assetsHash, string versionsHash)
+        private async Task<bool> InstallFallbackAsync(string targetPath, string zipUrl, IProgress<int> progress, CancellationToken ct, dynamic progressManager, string libHash, string assetsHash, string versionsHash)
         {
+            if (string.IsNullOrWhiteSpace(targetPath)) return false;
+
             string tempDir = Path.Combine(Path.GetTempPath(), "ForgeFallback_" + Guid.NewGuid());
             string tempZipPath = Path.Combine(tempDir, "client.zip");
 
             try
             {
                 Directory.CreateDirectory(tempDir);
-
-                Console.WriteLine($"[Fallback] Загрузка клиента...");
-                progress?.Report(5);
+                Console.WriteLine($"[Fallback] Загрузка клиента в {tempZipPath}...");
 
                 bool downloadSuccess = await DownloadFileAsync(zipUrl, tempZipPath, progress, ct);
                 if (!downloadSuccess) return false;
 
-                Console.WriteLine("[Fallback] Распаковка архива...");
-                progress?.Report(50);
-
+                Console.WriteLine("[Fallback] Распаковка...");
                 await Task.Run(() => ZipFile.ExtractToDirectory(tempZipPath, tempDir), ct);
-                try { File.Delete(tempZipPath); } catch { }
 
-                Console.WriteLine($"[Fallback] Копирование файлов в: {_baseDirectory}");
-                progress?.Report(80);
+                Console.WriteLine($"[Fallback] Копирование файлов в целевую папку: {targetPath}");
+                await Task.Run(() => CopyDirectorySafe(tempDir, targetPath), ct);
 
-                await Task.Run(() => CopyDirectorySafe(tempDir, _baseDirectory), ct);
-
+                // Проверка целостности после Fallback
                 try
                 {
-                    progressManager.Report("Forge", 0.6, "Проверка библиотек...");
-                    string librariesFolder = Path.Combine(_baseDirectory, "libraries");
-                    bool isLibOk = await CheckingFile.VerifyFolderIntegrityByZipHash(librariesFolder, libHash);
-
-                    progressManager.Report("Forge", 0.7, "Проверка ресурсов...");
-                    string assetsFolder = Path.Combine(_baseDirectory, "assets");
-                    bool isAssetsOk = await CheckingFile.VerifyFolderIntegrityByZipHash(assetsFolder, assetsHash);
-
-                    progressManager.Report("Forge", 0.8, "Проверка версий...");
-                    string versionsFolder = Path.Combine(_baseDirectory, "versions");
-                    bool isVersionsOk = await CheckingFile.VerifyFolderIntegrityByZipHash(versionsFolder, versionsHash);
-
-                    if (!isAssetsOk || !isLibOk || !isVersionsOk)
-                    {
-                        progressManager.Report("Forge", 1.0, "Ошибка установки игры.");
-                        Console.WriteLine("Ошибка проверки целостности файлов после установки.");
-                        return false;
-                    }
+                    progressManager.Report("Forge", 0.9, "Проверка файлов...");
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[Fallback Warning] Ошибка при проверке хэшей: {ex.Message}");
-                }
+                catch (Exception ex) { Console.WriteLine($"[Fallback Check Error] {ex.Message}"); }
 
-                progress?.Report(100);
-                Console.WriteLine("[Fallback] Установка полностью завершена.");
+                Console.WriteLine("[Fallback] Готово.");
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Error] Критическая ошибка: {ex}");
+                Console.WriteLine($"[Fallback Error] {ex}");
                 return false;
             }
             finally
             {
-                try
-                {
-                    if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
-                }
-                catch (Exception cleanupEx)
-                {
-                    Console.WriteLine($"[Fallback Warning] Не удалось очистить temp: {cleanupEx.Message}");
-                }
+                try { if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true); } catch { }
             }
         }
 
@@ -228,6 +195,9 @@ namespace UnderMine.Core.Services
 
         private void CopyDirectorySafe(string sourceDir, string destinationDir)
         {
+            if (string.IsNullOrWhiteSpace(destinationDir))
+                throw new ArgumentException("Destination directory path is empty or null.");
+
             var dir = new DirectoryInfo(sourceDir);
             if (!dir.Exists) throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
 

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnderMine.Services.Location;
 
-namespace UnderMine.Core.Services
+namespace UnderMine.Services.Logger
 {
     public class ProgressReporter
     {
@@ -85,21 +85,27 @@ namespace UnderMine.Core.Services
                 _fileWriter?.Flush();
             }
         }
-        private void WriteDetailedSystemInfo()
+        private async void WriteDetailedSystemInfo() // Добавили async
         {
             try
             {
+                var userData = await UnderMine.Models.UserData.Load();
+                
+                string allocatedRamGb = userData != null
+                    ? Math.Round(userData.MemorySettings / 1024.0, 2).ToString()
+                    : "Unknown";
+
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine("============================================");
-                sb.AppendLine("      DETAILED SYSTEM INFORMATION           ");
+                sb.AppendLine("             SYSTEM INFORMATION             ");
                 sb.AppendLine("============================================");
                 sb.AppendLine($"Timestamp:      {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 sb.AppendLine($"OS:             {RuntimeInformation.OSDescription} ({RuntimeInformation.OSArchitecture})");
                 sb.AppendLine($"CPU:            {GetCpuName()}");
-                sb.AppendLine($"RAM:            {GetTotalMemoryGb()} GB");
+                sb.AppendLine($"RAM (Total):    {GetTotalMemoryGb()} GB"); 
+                sb.AppendLine($"RAM allocated:  {allocatedRamGb} GB");    
                 sb.AppendLine($"GPU:            {GetGpuName()}");
                 sb.AppendLine("============================================");
-
 
                 lock (_lockObj)
                 {

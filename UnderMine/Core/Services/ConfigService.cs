@@ -6,89 +6,99 @@ using System.Threading.Tasks;
 using UnderMine.Models;
 using System.Text.Json;
 
-namespace UnderMine.Core.Services
+namespace UnderMine.Core.Services;
+
+public class ExaminationData
 {
-    public class ConfigService
+    public string Version { get; set; } = "0.0";
+}
+
+public class ConfigService
+{
+    private readonly HttpClient _httpClient;
+
+    public ConfigService(HttpClient httpClient)
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _baseGamePath;
-        public class ExaminationData
+        _httpClient = httpClient;
+    }
+
+    public async Task InstallAllConfigsAsync(ServerInfo info, string gamePath)
+    {
+        
+        string targetVersion = !string.IsNullOrEmpty(info.uiVersion) ? info.uiVersion : (info.version ?? "1.0");
+
+        Console.WriteLine($"[ConfigService] Начало установки конфигов в: {gamePath}");
+
+        await InstallComponent(info.ConfLink, "config", targetVersion, gamePath);
+        await InstallComponent(info.ShadersLink, "shaderpacks", targetVersion, gamePath);
+        await InstallComponent(info.KubejsLink, "kubejs", targetVersion, gamePath);
+    }
+
+    private async Task InstallComponent(string? url, string folderName, string targetVersion, string gamePath)
+    {
+        if (string.IsNullOrWhiteSpace(url))
         {
-            public string Version { get; set; } = "0.0";
+            Console.WriteLine($"[ConfigService] Пропуск {folderName} (ссылка пуста)");
+            return;
         }
-        public ConfigService(HttpClient httpClient, string baseGamePath)
+
+        string targetPath = Path.Combine(gamePath, folderName);
+        string examinationFile = Path.Combine(targetPath, "examination.json");
+
+        // Проверка версии
+        if (File.Exists(examinationFile))
         {
-            _httpClient = httpClient;
-            _baseGamePath = baseGamePath;
-        }
-
-        public async Task InstallAllConfigsAsync(ServerInfo info)
-        {
-            string targetVersion =  info.uiVersion;
-
-            await InstallComponent(info.ConfLink, "config", targetVersion);
-            await InstallComponent(info.ShadersLink, "shaderpacks", targetVersion);
-            await InstallComponent(info.KubejsLink, "kubejs", targetVersion);
-        }
-
-        private async Task InstallComponent(string? url, string folderName, string targetVersion)
-        {
-            if (string.IsNullOrEmpty(url)) return;
-
-            string targetPath = Path.Combine(_baseGamePath, folderName);
-            string examinationFile = Path.Combine(targetPath, "examination.json");
-
-            if (File.Exists(examinationFile))
-            {
-                try
-                {
-                    string json = await File.ReadAllTextAsync(examinationFile);
-                    var data = JsonSerializer.Deserialize<ExaminationData>(json);
-
-                    if (data?.Version == targetVersion)
-                    {
-                        return;
-                    }
-                }
-                catch
-                {
-                    // Если файл поврежден, считаем, что версии не совпадают
-                }
-                DeleteDirectoryContent(targetPath);
-            }
-
-            Directory.CreateDirectory(targetPath);
-            string zipPath = Path.Combine(targetPath, "temp.zip");
-
             try
             {
-                var response = await _httpClient.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-
-                await using (var fs = new FileStream(zipPath, FileMode.Create))
+                var json = await File.ReadAllTextAsync(examinationFile);
+                var data = JsonSerializer.Deserialize<ExaminationData>(json);
+                if (data?.Version == targetVersion)
                 {
-                    await response.Content.CopyToAsync(fs);
+                    Console.WriteLine($"[ConfigService] {folderName} уже актуален (v{targetVersion})");
+                    return;
                 }
-
-                ZipFile.ExtractToDirectory(zipPath, targetPath, true);
-
-                var newData = new ExaminationData { Version = targetVersion };
-                string newJson = JsonSerializer.Serialize(newData, new JsonSerializerOptions { WriteIndented = true });
-                await File.WriteAllTextAsync(examinationFile, newJson);
             }
-            finally
-            {
-                if (File.Exists(zipPath)) File.Delete(zipPath);
-            }
+            catch { }
+
+            Console.WriteLine($"[ConfigService] Обновление {folderName}...");
+            DeleteDirectoryContent(targetPath);
         }
-        private void DeleteDirectoryContent(string path)
+
+        if (!Directory.Exists(targetPath)) Directory.CreateDirectory(targetPath);
+        string zipPath = Path.Combine(targetPath, "download.zip");
+
+        try
         {
-            if (!Directory.Exists(path)) return;
+            Console.WriteLine($"[ConfigService] Загрузка {folderName}...");
+            using var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
 
-            DirectoryInfo di = new DirectoryInfo(path);
+            await using (var fs = new FileStream(zipPath, FileMode.Create))
+            {
+                await response.Content.CopyToAsync(fs);
+            }
 
-            foreach (FileInfo file in di.GetFiles()) file.Delete();
-            foreach (DirectoryInfo dir in di.GetDirectories()) dir.Delete(true);
+            Console.WriteLine($"[ConfigService] Распаковка {folderName}...");
+            ZipFile.ExtractToDirectory(zipPath, targetPath, true);
+
+            var newData = new ExaminationData { Version = targetVersion };
+            await File.WriteAllTextAsync(examinationFile, JsonSerializer.Serialize(newData));
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR ConfigService] Ошибка в {folderName}: {ex.Message}");
+        }
+        finally
+        {
+            if (File.Exists(zipPath)) File.Delete(zipPath);
+        }
+    }
+
+    private void DeleteDirectoryContent(string path)
+    {
+        if (!Directory.Exists(path)) return;
+        DirectoryInfo di = new DirectoryInfo(path);
+        foreach (FileInfo file in di.GetFiles()) try { file.Delete(); } catch { }
+        foreach (DirectoryInfo dir in di.GetDirectories()) try { dir.Delete(true); } catch { }
     }
 }

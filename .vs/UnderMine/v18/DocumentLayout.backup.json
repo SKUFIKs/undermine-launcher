@@ -3,43 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\iu\\menuwindow.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\iu\\menuwindow.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\iu\\authwindow.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\iu\\authwindow.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\interfaces\\forgeinstaller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\interfaces\\forgeinstaller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\models\\contextdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\models\\contextdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\AppData\\Local\\Temp\\.vsdbgsrc\\3b25f7b54368705cfa2773b3ecf6db685543560dbf4642b30e1d51e5bbed5622\\StandardAssetLoader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\progressreporter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\services\\progressreporter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\profileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\services\\profileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\modloaderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\services\\modloaderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\minecraftlauncherservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\services\\minecraftlauncherservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\filedowloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\services\\filedowloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\configservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\services\\configservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\progressbar\\progressmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\progressbar\\progressmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\checkingfile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -50,96 +23,80 @@
       "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\interfaces\\settingsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\interfaces\\gamelauncher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\interfaces\\gamelauncher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\interfaces\\forgeinstaller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\interfaces\\forgeinstaller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\installgame1server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\installgame1server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\interfaces\\fabricinstaller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\interfaces\\fabricinstaller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\settingsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\services\\settingsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\launchandinstallgame.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\launchandinstallgame.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\models\\contextdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\models\\contextdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\configservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\services\\configservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\iu\\authwindow.axaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\iu\\authwindow.axaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\gameinstallerfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\gameinstallerfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\iu\\menuwindow.axaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\iu\\menuwindow.axaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\models\\menuwindowviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\models\\menuwindowviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\logger\\progressreporter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\logger\\progressreporter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\models\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\models\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\network\\userapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\network\\userapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\progressbar\\smoothprogressupdater.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\progressbar\\smoothprogressupdater.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\progressbar\\progressview.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\progressbar\\progressview.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\progressbar\\progressmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\progressbar\\progressmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\progressbar\\progressview.axaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\progressbar\\progressview.axaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\interfaces\\fileloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\interfaces\\fileloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\logger\\logger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\logger\\logger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\systeminfo\\memorysettings\\memorysliderconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\systeminfo\\memorysettings\\memorysliderconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\systeminfo\\memorysettings\\checkequipment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\systeminfo\\memorysettings\\checkequipment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\updater\\updater.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\updater\\updater.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\location\\gettingpath.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\location\\gettingpath.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\checkjava\\javavalidation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\checkjava\\javavalidation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\iu\\menuwindow.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\iu\\menuwindow.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\services\\systeminfo\\system\\systeminformation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\services\\systeminfo\\system\\systeminformation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\iu\\menuwindow.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\iu\\menuwindow.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\undermine.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\undermine.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\network\\userapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\network\\userapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\undermine.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
-      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\undermine.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\network\\identityservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\network\\identityservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\iu\\authwindow.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\iu\\authwindow.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\modloaderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\services\\modloaderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\minecraftlauncherservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\services\\minecraftlauncherservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\settingsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\services\\settingsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|c:\\users\\\u0434\u043C\u0438\u0442\u0440\u0438\u0439\\documents\\github\\launcher_undermine_rider\\undermine\\core\\services\\profileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64B5A250-31BC-4B01-976F-F2F6B3E15469}|UnderMine\\UnderMine.csproj|solutionrelative:undermine\\core\\services\\profileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -149,7 +106,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 11,
           "Children": [
             {
               "$type": "Bookmark",
@@ -161,147 +118,126 @@
             },
             {
               "$type": "Bookmark",
+              "Name": "ST:0:0:{73068c07-fba1-453f-99ae-6edf972119b2}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ModLoaderService.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ModLoaderService.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\ModLoaderService.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ModLoaderService.cs",
-              "RelativeToolTip": "UnderMine\\Core\\Services\\ModLoaderService.cs",
-              "ViewState": "AgIAAEMAAAAAAAAAAAAQwB4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-21T17:27:26.875Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ProfileService.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ProfileService.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\ProfileService.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ProfileService.cs",
-              "RelativeToolTip": "UnderMine\\Core\\Services\\ProfileService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-21T17:27:55.342Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ForgeInstaller.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Interfaces\\ForgeInstaller.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Core\\Interfaces\\ForgeInstaller.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Interfaces\\ForgeInstaller.cs",
-              "RelativeToolTip": "UnderMine\\Core\\Interfaces\\ForgeInstaller.cs",
-              "ViewState": "AgIAAEIAAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
+              "Title": "ProgressManager.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\ProgressBar\\ProgressManager.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Services\\ProgressBar\\ProgressManager.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\ProgressBar\\ProgressManager.cs",
+              "RelativeToolTip": "UnderMine\\Services\\ProgressBar\\ProgressManager.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-21T17:16:19.16Z",
+              "WhenOpened": "2026-01-10T16:28:21.519Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "FileDowloader.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\FileDowloader.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\FileDowloader.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\FileDowloader.cs",
-              "RelativeToolTip": "UnderMine\\Core\\Services\\FileDowloader.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAgwCcAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-21T17:17:18.17Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ProgressReporter.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ProgressReporter.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\ProgressReporter.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ProgressReporter.cs",
-              "RelativeToolTip": "UnderMine\\Core\\Services\\ProgressReporter.cs",
-              "ViewState": "AgIAAPUAAAAAAAAAAAAqwAEBAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-21T17:18:17.946Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ConfigService.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ConfigService.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\ConfigService.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ConfigService.cs",
-              "RelativeToolTip": "UnderMine\\Core\\Services\\ConfigService.cs",
-              "ViewState": "AgIAADoAAAAAAAAAAAAowBoAAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-21T17:26:55.674Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 3,
               "Title": "CheckingFile.cs",
               "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\CheckingFile.cs",
               "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\CheckingFile.cs",
               "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\CheckingFile.cs",
               "RelativeToolTip": "UnderMine\\Core\\Services\\CheckingFile.cs",
-              "ViewState": "AgIAAEAAAAAAAAAAAAAmwFMAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T15:06:05.404Z"
+              "WhenOpened": "2026-01-09T16:46:24.528Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MenuWindow.axaml.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\MenuWindow.axaml.cs",
-              "RelativeDocumentMoniker": "UnderMine\\IU\\MenuWindow.axaml.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\MenuWindow.axaml.cs",
-              "RelativeToolTip": "UnderMine\\IU\\MenuWindow.axaml.cs",
-              "ViewState": "AgIAAFsAAAAAAAAAAAAQwHcAAAAzAAAAAAAAAA==",
+              "DocumentIndex": 8,
+              "Title": "ConfigService.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ConfigService.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\ConfigService.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ConfigService.cs",
+              "RelativeToolTip": "UnderMine\\Core\\Services\\ConfigService.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABoAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-12T16:52:48.906Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-09T11:59:38.899Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "LaunchAndInstallGame.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\LaunchAndInstallGame.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Core\\LaunchAndInstallGame.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\LaunchAndInstallGame.cs",
+              "RelativeToolTip": "UnderMine\\Core\\LaunchAndInstallGame.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T11:38:14.864Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "FabricInstaller.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Interfaces\\FabricInstaller.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Core\\Interfaces\\FabricInstaller.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Interfaces\\FabricInstaller.cs",
+              "RelativeToolTip": "UnderMine\\Core\\Interfaces\\FabricInstaller.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T12:43:27.784Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "ContextData.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Models\\ContextData.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Models\\ContextData.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Models\\ContextData.cs",
+              "RelativeToolTip": "UnderMine\\Models\\ContextData.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABAAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T11:37:00.856Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "MenuWindowViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Models\\MenuWindowViewModel.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Models\\MenuWindowViewModel.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Models\\MenuWindowViewModel.cs",
+              "RelativeToolTip": "UnderMine\\Models\\MenuWindowViewModel.cs",
+              "ViewState": "AgIAAFIAAAAAAAAAAAAAAHEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T12:11:46.914Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "AuthWindow.axaml.cs",
               "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\AuthWindow.axaml.cs",
               "RelativeDocumentMoniker": "UnderMine\\IU\\AuthWindow.axaml.cs",
               "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\AuthWindow.axaml.cs",
               "RelativeToolTip": "UnderMine\\IU\\AuthWindow.axaml.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAAAQwDcAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAACAAAAAAAAAAAAAWwDUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-12T16:41:43.646Z",
+              "WhenOpened": "2026-01-09T12:06:07.495Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "MinecraftLauncherService.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\MinecraftLauncherService.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\MinecraftLauncherService.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\MinecraftLauncherService.cs",
-              "RelativeToolTip": "UnderMine\\Core\\Services\\MinecraftLauncherService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAABAAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "ForgeInstaller.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Interfaces\\ForgeInstaller.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Core\\Interfaces\\ForgeInstaller.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Interfaces\\ForgeInstaller.cs",
+              "RelativeToolTip": "UnderMine\\Core\\Interfaces\\ForgeInstaller.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-21T17:17:55.846Z"
+              "WhenOpened": "2026-01-09T10:03:45.439Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "StandardAssetLoader.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\AppData\\Local\\Temp\\.vsdbgsrc\\3b25f7b54368705cfa2773b3ecf6db685543560dbf4642b30e1d51e5bbed5622\\StandardAssetLoader.cs",
-              "RelativeDocumentMoniker": "..\\..\\..\\AppData\\Local\\Temp\\.vsdbgsrc\\3b25f7b54368705cfa2773b3ecf6db685543560dbf4642b30e1d51e5bbed5622\\StandardAssetLoader.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\AppData\\Local\\Temp\\.vsdbgsrc\\3b25f7b54368705cfa2773b3ecf6db685543560dbf4642b30e1d51e5bbed5622\\StandardAssetLoader.cs [\u0422\u043E\u043B\u044C\u043A\u043E \u0447\u0442\u0435\u043D\u0438\u0435]",
-              "RelativeToolTip": "..\\..\\..\\AppData\\Local\\Temp\\.vsdbgsrc\\3b25f7b54368705cfa2773b3ecf6db685543560dbf4642b30e1d51e5bbed5622\\StandardAssetLoader.cs [\u0422\u043E\u043B\u044C\u043A\u043E \u0447\u0442\u0435\u043D\u0438\u0435]",
-              "ViewState": "AgIAACYAAAAAAAAAAADwvzsAAABNAAAAAQAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-27T09:05:08.636Z",
-              "EditorCaption": " [\u0422\u043E\u043B\u044C\u043A\u043E \u0447\u0442\u0435\u043D\u0438\u0435]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 4,
               "Title": "SettingsService.cs",
               "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Interfaces\\SettingsService.cs",
               "RelativeDocumentMoniker": "UnderMine\\Core\\Interfaces\\SettingsService.cs",
@@ -309,282 +245,173 @@
               "RelativeToolTip": "UnderMine\\Core\\Interfaces\\SettingsService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-21T17:39:57.911Z"
+              "WhenOpened": "2026-01-09T10:06:04.143Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "GameLauncher.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Interfaces\\GameLauncher.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Core\\Interfaces\\GameLauncher.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Interfaces\\GameLauncher.cs",
-              "RelativeToolTip": "UnderMine\\Core\\Interfaces\\GameLauncher.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 9,
+              "Title": "GameInstallerFactory.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\GameInstallerFactory.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Core\\GameInstallerFactory.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\GameInstallerFactory.cs",
+              "RelativeToolTip": "UnderMine\\Core\\GameInstallerFactory.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAAAEsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T20:03:14.772Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "InstallGame1Server.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\InstallGame1Server.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Core\\InstallGame1Server.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\InstallGame1Server.cs",
-              "RelativeToolTip": "UnderMine\\Core\\InstallGame1Server.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAnwLAAAABOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-21T17:18:38.826Z"
+              "WhenOpened": "2026-01-09T11:36:12.312Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 14,
-              "Title": "SettingsService.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\SettingsService.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\SettingsService.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\SettingsService.cs",
-              "RelativeToolTip": "UnderMine\\Core\\Services\\SettingsService.cs",
-              "ViewState": "AgIAAGAAAAAAAAAAAADwv8cBAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-21T17:36:05.863Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "ContextData.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Models\\ContextData.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Models\\ContextData.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Models\\ContextData.cs",
-              "RelativeToolTip": "UnderMine\\Models\\ContextData.cs",
-              "ViewState": "AgIAACwAAAAAAAAAAAAqwAkAAAA/AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-24T06:27:12.015Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "MenuWindow.axaml",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\MenuWindow.axaml",
-              "RelativeDocumentMoniker": "UnderMine\\IU\\MenuWindow.axaml",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\MenuWindow.axaml",
-              "RelativeToolTip": "UnderMine\\IU\\MenuWindow.axaml",
-              "ViewState": "AgIAAMwAAAAAAAAAAAAqwCYBAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-12-12T16:35:27.504Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "AuthWindow.axaml",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\AuthWindow.axaml",
-              "RelativeDocumentMoniker": "UnderMine\\IU\\AuthWindow.axaml",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\AuthWindow.axaml",
-              "RelativeToolTip": "UnderMine\\IU\\AuthWindow.axaml",
-              "ViewState": "AgIAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-12-26T14:31:58.076Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "UserData.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Models\\UserData.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Models\\UserData.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Models\\UserData.cs",
-              "RelativeToolTip": "UnderMine\\Models\\UserData.cs",
-              "ViewState": "AgIAAFIAAAAAAAAAAAAYwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-24T07:03:29.296Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "UserApiService.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Network\\UserApiService.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Network\\UserApiService.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Network\\UserApiService.cs",
-              "RelativeToolTip": "UnderMine\\Network\\UserApiService.cs",
-              "ViewState": "AgIAAEEAAAAAAAAAAAAwwAgAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-25T17:29:32.272Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Program.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Program.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Program.cs",
-              "RelativeToolTip": "UnderMine\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T20:02:22.919Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "ProgressView.axaml",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\ProgressBar\\ProgressView.axaml",
-              "RelativeDocumentMoniker": "UnderMine\\Services\\ProgressBar\\ProgressView.axaml",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\ProgressBar\\ProgressView.axaml",
-              "RelativeToolTip": "UnderMine\\Services\\ProgressBar\\ProgressView.axaml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-12-12T16:56:40.824Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "SmoothProgressUpdater.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\ProgressBar\\SmoothProgressUpdater.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Services\\ProgressBar\\SmoothProgressUpdater.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\ProgressBar\\SmoothProgressUpdater.cs",
-              "RelativeToolTip": "UnderMine\\Services\\ProgressBar\\SmoothProgressUpdater.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAAAiwEcAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-12T17:38:59.854Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "ProgressManager.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\ProgressBar\\ProgressManager.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Services\\ProgressBar\\ProgressManager.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\ProgressBar\\ProgressManager.cs",
-              "RelativeToolTip": "UnderMine\\Services\\ProgressBar\\ProgressManager.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAYwB8AAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-19T18:57:30.42Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "ProgressView.axaml.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\ProgressBar\\ProgressView.axaml.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Services\\ProgressBar\\ProgressView.axaml.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\ProgressBar\\ProgressView.axaml.cs",
-              "RelativeToolTip": "UnderMine\\Services\\ProgressBar\\ProgressView.axaml.cs",
-              "ViewState": "AgIAADwAAAAAAAAAAAAUwCEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-12T16:56:59.498Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 26,
-              "Title": "Logger.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\Logger\\Logger.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Services\\Logger\\Logger.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\Logger\\Logger.cs",
-              "RelativeToolTip": "UnderMine\\Services\\Logger\\Logger.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-12T17:57:23.352Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 28,
-              "Title": "CheckEquipment.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\SystemInfo\\MemorySettings\\CheckEquipment.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Services\\SystemInfo\\MemorySettings\\CheckEquipment.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\SystemInfo\\MemorySettings\\CheckEquipment.cs",
-              "RelativeToolTip": "UnderMine\\Services\\SystemInfo\\MemorySettings\\CheckEquipment.cs",
-              "ViewState": "AgIAAE8AAAAAAAAAAAAMwCAAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-14T09:20:27.122Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 27,
-              "Title": "MemorySliderConfiguration.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\SystemInfo\\MemorySettings\\MemorySliderConfiguration.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Services\\SystemInfo\\MemorySettings\\MemorySliderConfiguration.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\SystemInfo\\MemorySettings\\MemorySliderConfiguration.cs",
-              "RelativeToolTip": "UnderMine\\Services\\SystemInfo\\MemorySettings\\MemorySliderConfiguration.cs",
-              "ViewState": "AgIAACMAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-14T09:23:58.307Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "FileLoader.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Interfaces\\FileLoader.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Core\\Interfaces\\FileLoader.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Interfaces\\FileLoader.cs",
-              "RelativeToolTip": "UnderMine\\Core\\Interfaces\\FileLoader.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T20:03:11.927Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 29,
-              "Title": "Updater.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\Updater\\Updater.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Services\\Updater\\Updater.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\Updater\\Updater.cs",
-              "RelativeToolTip": "UnderMine\\Services\\Updater\\Updater.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAA5AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-14T09:21:21.243Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 30,
               "Title": "GettingPath.cs",
               "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\Location\\GettingPath.cs",
               "RelativeDocumentMoniker": "UnderMine\\Services\\Location\\GettingPath.cs",
               "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\Location\\GettingPath.cs",
               "RelativeToolTip": "UnderMine\\Services\\Location\\GettingPath.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAowCsAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-19T13:42:06.239Z"
+              "WhenOpened": "2026-01-09T12:04:30.529Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
-              "Title": "JavaValidation.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\CheckJava\\JavaValidation.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Services\\CheckJava\\JavaValidation.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\CheckJava\\JavaValidation.cs",
-              "RelativeToolTip": "UnderMine\\Services\\CheckJava\\JavaValidation.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAxwCcAAAARAAAAAAAAAA==",
+              "DocumentIndex": 12,
+              "Title": "UserData.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Models\\UserData.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Models\\UserData.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Models\\UserData.cs",
+              "RelativeToolTip": "UnderMine\\Models\\UserData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-21T17:06:24.073Z"
+              "WhenOpened": "2026-01-09T12:11:28.998Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
-              "Title": "SystemInformation.cs",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\SystemInfo\\System\\SystemInformation.cs",
-              "RelativeDocumentMoniker": "UnderMine\\Services\\SystemInfo\\System\\SystemInformation.cs",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\SystemInfo\\System\\SystemInformation.cs",
-              "RelativeToolTip": "UnderMine\\Services\\SystemInfo\\System\\SystemInformation.cs",
-              "ViewState": "AgIAACYAAAAAAAAAAAAwwEQAAAAFAAAAAAAAAA==",
+              "DocumentIndex": 13,
+              "Title": "Logger.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\Logger\\Logger.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Services\\Logger\\Logger.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\Logger\\Logger.cs",
+              "RelativeToolTip": "UnderMine\\Services\\Logger\\Logger.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-14T09:21:14.957Z"
+              "WhenOpened": "2026-01-10T12:26:31.417Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
-              "Title": "UnderMine.csproj",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\UnderMine.csproj",
-              "RelativeDocumentMoniker": "UnderMine\\UnderMine.csproj",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\UnderMine.csproj",
-              "RelativeToolTip": "UnderMine\\UnderMine.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-12-12T16:48:53.503Z"
+              "DocumentIndex": 15,
+              "Title": "MenuWindow.axaml.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\MenuWindow.axaml.cs",
+              "RelativeDocumentMoniker": "UnderMine\\IU\\MenuWindow.axaml.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\MenuWindow.axaml.cs",
+              "RelativeToolTip": "UnderMine\\IU\\MenuWindow.axaml.cs",
+              "ViewState": "AgIAAHwBAAAAAAAAAAAYwHUBAABPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T12:01:09.818Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
-              "Title": "UnderMine",
-              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\UnderMine.csproj",
-              "RelativeDocumentMoniker": "UnderMine\\UnderMine.csproj",
-              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\UnderMine.csproj",
-              "RelativeToolTip": "UnderMine\\UnderMine.csproj",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-12-14T08:47:17.097Z"
+              "DocumentIndex": 11,
+              "Title": "ProgressReporter.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\Logger\\ProgressReporter.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Services\\Logger\\ProgressReporter.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Services\\Logger\\ProgressReporter.cs",
+              "RelativeToolTip": "UnderMine\\Services\\Logger\\ProgressReporter.cs",
+              "ViewState": "AgIAAIMAAAAAAAAAAAAcwKEAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T12:04:39.656Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "AuthWindow.axaml",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\AuthWindow.axaml",
+              "RelativeDocumentMoniker": "UnderMine\\IU\\AuthWindow.axaml",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\AuthWindow.axaml",
+              "RelativeToolTip": "UnderMine\\IU\\AuthWindow.axaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-10T08:30:52.69Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "UserApiService.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Network\\UserApiService.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Network\\UserApiService.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Network\\UserApiService.cs",
+              "RelativeToolTip": "UnderMine\\Network\\UserApiService.cs",
+              "ViewState": "AgIAAHMAAAAAAAAAAAAAAIsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T10:09:56.112Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "IdentityService.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Network\\IdentityService.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Network\\IdentityService.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Network\\IdentityService.cs",
+              "RelativeToolTip": "UnderMine\\Network\\IdentityService.cs",
+              "ViewState": "AgIAAGoAAAAAAAAAAAAcwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T10:09:55.405Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "MenuWindow.axaml",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\MenuWindow.axaml",
+              "RelativeDocumentMoniker": "UnderMine\\IU\\MenuWindow.axaml",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\IU\\MenuWindow.axaml",
+              "RelativeToolTip": "UnderMine\\IU\\MenuWindow.axaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-10T11:53:20.998Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "ModLoaderService.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ModLoaderService.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\ModLoaderService.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ModLoaderService.cs",
+              "RelativeToolTip": "UnderMine\\Core\\Services\\ModLoaderService.cs",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAowCMAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T12:31:14.2Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "SettingsService.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\SettingsService.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\SettingsService.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\SettingsService.cs",
+              "RelativeToolTip": "UnderMine\\Core\\Services\\SettingsService.cs",
+              "ViewState": "AgIAACcAAAAAAAAAAAAowBwAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T11:55:13.369Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "MinecraftLauncherService.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\MinecraftLauncherService.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\MinecraftLauncherService.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\MinecraftLauncherService.cs",
+              "RelativeToolTip": "UnderMine\\Core\\Services\\MinecraftLauncherService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T10:11:42.597Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "ProfileService.cs",
+              "DocumentMoniker": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ProfileService.cs",
+              "RelativeDocumentMoniker": "UnderMine\\Core\\Services\\ProfileService.cs",
+              "ToolTip": "C:\\Users\\\u0414\u043C\u0438\u0442\u0440\u0438\u0439\\Documents\\GitHub\\Launcher_UnderMine_Rider\\UnderMine\\Core\\Services\\ProfileService.cs",
+              "RelativeToolTip": "UnderMine\\Core\\Services\\ProfileService.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T12:11:20.697Z"
             }
           ]
         }

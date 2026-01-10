@@ -4,61 +4,51 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using UnderMine.Services.Logger;
 
 namespace UnderMine.Core.Services
 {
     public class CheckingFile
     {
-        // Добавлен аргумент reporter
         public static async Task<bool> VerifyFolderIntegrityByZipHash(string folderPath, string expectedHash, ProgressReporter? reporter = null)
         {
+            if (string.IsNullOrWhiteSpace(expectedHash)) return true;
+
             return await Task.Run(() =>
             {
                 try
                 {
-                    reporter?.Log($"[Integrity] Starting verification for: {Path.GetFileName(folderPath)}");
+                    reporter?.Log($"[Integrity] Проверка папки: {Path.GetFileName(folderPath)}");
 
                     if (!Directory.Exists(folderPath))
                     {
-                        reporter?.Log($"[Integrity] Folder not found: {folderPath}", "WARN");
+                        reporter?.Log($"[Integrity] Папка не найдена: {folderPath}", "WARN");
                         return false;
                     }
 
                     string actualHash = GetFolderChecksum(folderPath, reporter);
 
-                    bool isMatch = actualHash.Equals(expectedHash, StringComparison.OrdinalIgnoreCase);
+                    string cleanExpected = expectedHash.Trim().Replace("\r", "").Replace("\n", "").ToLower();
+                    string cleanActual = actualHash.Trim().ToLower();
+
+                    bool isMatch = cleanActual == cleanExpected;
 
                     if (isMatch)
                     {
-                        reporter?.Log($"[Integrity] Hash verified successfully: {actualHash}");
+                        reporter?.Log($"[Integrity] Успешно: {cleanActual}");
                     }
                     else
                     {
-                        reporter?.Log($"[Integrity] Hash MISMATCH! Expected: {expectedHash}, Actual: {actualHash}", "WARN");
+                        reporter?.Log($"[Integrity] MISMATCH! Ожидалось: {cleanExpected}, Получено: {cleanActual}", "WARN");
                     }
 
-                    try
-                    {
-                        string reportPath = Path.Combine(Directory.GetParent(folderPath)?.FullName ?? folderPath, $"DEBUG_{Path.GetFileName(folderPath)}_hash.json");
-                        string json = "{\n" +
-                                      $"  \"folder\": \"{Path.GetFileName(folderPath)}\",\n" +
-                                      $"  \"expected\": \"{expectedHash}\",\n" +
-                                      $"  \"actual\": \"{actualHash}\",\n" +
-                                      $"  \"match\": {isMatch.ToString().ToLower()}\n" +
-                                      "}";
-                        File.WriteAllText(reportPath, json);
-                        reporter?.Log($"[Integrity] Debug report saved to: {Path.GetFileName(reportPath)}");
-                    }
-                    catch (Exception reportEx)
-                    {
-                        reporter?.Log($"[Integrity] Failed to write debug report: {reportEx.Message}", "WARN");
-                    }
+                    WriteDebugReport(folderPath, cleanExpected, cleanActual, isMatch, reporter);
 
                     return isMatch;
                 }
                 catch (Exception ex)
                 {
-                    reporter?.Log($"[Integrity] Error during verification: {ex.Message}", "ERROR");
+                    reporter?.Log($"[Integrity] Ошибка: {ex.Message}", "ERROR");
                     return false;
                 }
             });
@@ -70,8 +60,6 @@ namespace UnderMine.Core.Services
                 .OrderBy(p => p, StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
-            reporter?.Log($"[Integrity] Found {files.Count} .jar files in {Path.GetFileName(folderPath)}");
-
             if (files.Count == 0) return "empty";
 
             using (var sha1 = SHA1.Create())
@@ -82,13 +70,8 @@ namespace UnderMine.Core.Services
                 {
                     var file = files[i];
 
-                    if (i % 50 == 0 && i > 0)
-                    {
-                        reporter?.Log($"[Integrity] Hashed {i}/{files.Count} files...");
-                    }
-
-                    string relativePath = Path.GetRelativePath(folderPath, file).Replace("\\", "/");
-                    byte[] pathBytes = Encoding.UTF8.GetBytes(relativePath.ToLower());
+                    string relativePath = Path.GetRelativePath(folderPath, file).Replace("\\", "/").ToLower();
+                    byte[] pathBytes = Encoding.UTF8.GetBytes(relativePath);
                     sha1.TransformBlock(pathBytes, 0, pathBytes.Length, null, 0);
 
                     using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -104,6 +87,17 @@ namespace UnderMine.Core.Services
                 sha1.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
                 return BitConverter.ToString(sha1.Hash).Replace("-", "").ToLower();
             }
+        }
+
+        private static void WriteDebugReport(string folderPath, string exp, string act, bool match, ProgressReporter? reporter)
+        {
+            try
+            {
+                string reportPath = Path.Combine(Directory.GetParent(folderPath)?.FullName ?? folderPath, $"DEBUG_{Path.GetFileName(folderPath)}_hash.json");
+                string json = $"{{\n  \"folder\": \"{Path.GetFileName(folderPath)}\",\n  \"expected\": \"{exp}\",\n  \"actual\": \"{act}\",\n  \"match\": {match.ToString().ToLower()}\n}}";
+                File.WriteAllText(reportPath, json);
+            }
+            catch { /* Игнорируем ошибки записи лога */ }
         }
     }
 }
