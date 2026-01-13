@@ -83,7 +83,7 @@ namespace UnderMine.Core
         public async Task InstallAndRunAsync(CancellationToken ct = default, bool headless = false)
         {
             var settings = await UserData.Load() ?? throw new InvalidOperationException("User settings not found");
-            string? customJava = settings.JavaPath;
+
 
             string mcVersion = _serverInfo.version ?? throw new InvalidOperationException("Minecraft version not specified");
             string loaderVersion = _serverInfo.loader ?? throw new InvalidOperationException("Loader version not specified");
@@ -140,7 +140,7 @@ namespace UnderMine.Core
                     {
                         _progressManager.Report(stageName, 0.5, "Запуск установки...");
                         _progress.Log($"Запуск установки...");
-                        installResult = await _fabricInstaller.InstallAsync(_gamePath, mcVersion, loaderVersion, installerPath, ct, customJava);
+                        installResult = await _fabricInstaller.InstallAsync(_gamePath, mcVersion, loaderVersion, installerPath, ct);
                     }
                     else
                     {
@@ -154,7 +154,7 @@ namespace UnderMine.Core
                             _progressManager,
                             _serverInfo.LibraryExpectedChecksum,
                             _serverInfo.AssetsExpectedChecksum,
-                            _serverInfo.VersionExpectedChecksum, customJava);
+                            _serverInfo.VersionExpectedChecksum);
                     }
 
                     if (!installResult) throw new Exception($"Критическая ошибка при установке {stageName}.");
@@ -186,7 +186,7 @@ namespace UnderMine.Core
                     ? $"fabric-loader-{loaderVersion}-{mcVersion}"
                     : $"{mcVersion}-forge-{loaderVersion}";
 
-                var process = await _launcherService.BuildProcessAsync(fullVersionName, _serverInfo, settings.MemorySettings, _gamePath, customJava);
+                var process = await _launcherService.BuildProcessAsync(fullVersionName, _serverInfo, settings.MemorySettings, _gamePath);
 
                 if (headless)
                 {

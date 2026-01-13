@@ -144,7 +144,7 @@ public partial class MenuWindow : Window
     {
         _userData = await UserData.Load() ?? throw new InvalidOperationException();
         MemorySlider.Value = _userData.MemorySettings;
-        JavaPathTextBox.Text = _userData.JavaPath;
+        
 
         MemorySlider.ValueChanged += (s, e) =>
         {
@@ -446,26 +446,5 @@ public partial class MenuWindow : Window
         });
     }
 
-    private async void JavaPathBrowseButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel == null) return;
-
-        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            Title = "Выберите исполняемый файл Java (javaw.exe)",
-            AllowMultiple = false,
-            FileTypeFilter = new[]
-            {
-            new FilePickerFileType("Java Executable") { Patterns = new[] { "javaw.exe", "java.exe", "java" } }
-        }
-        });
-
-        if (files.Count > 0)
-        {
-            string selectedPath = files[0].Path.LocalPath;
-            JavaPathTextBox.Text = selectedPath;
-            _userData.JavaPath = selectedPath; 
-        }
-    }
+    
 }

@@ -8,13 +8,13 @@ namespace UnderMine.Core.Services
 {
     public class FabricInstaller
     {
-        public async Task<bool> InstallAsync(string gamePath, string mcVersion, string loaderVersion, string installerPath, CancellationToken ct, string? customJavaPath = null)
+        public async Task<bool> InstallAsync(string gamePath, string mcVersion, string loaderVersion, string installerPath, CancellationToken ct)
         {
             try
             {
                 var psi = new ProcessStartInfo
                 {
-                    FileName = !string.IsNullOrWhiteSpace(customJavaPath) ? customJavaPath : "java",
+                    FileName = "java",
                     Arguments = $"-jar \"{installerPath}\" client -mcversion {mcVersion} -loader {loaderVersion} -dir \"{gamePath}\" -noprofile",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,

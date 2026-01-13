@@ -19,7 +19,7 @@ namespace UnderMine.Core.Services
             _baseDirectory = baseDirectory;
         }
 
-        public async Task<bool> InstallAsync(string serverPath, string installerPath, string clientArchiveUrl, IProgress<int> progress, CancellationToken ct, dynamic progressManager, string libHash, string assetsHash, string versionsHash, string? customJavaPath = null)
+        public async Task<bool> InstallAsync(string serverPath, string installerPath, string clientArchiveUrl, IProgress<int> progress, CancellationToken ct, dynamic progressManager, string libHash, string assetsHash, string versionsHash)
         {
             string targetPath = string.IsNullOrWhiteSpace(serverPath) ? _baseDirectory : serverPath;
 
@@ -33,7 +33,7 @@ namespace UnderMine.Core.Services
             {
                 var psi = new ProcessStartInfo
                 {
-                    FileName = !string.IsNullOrWhiteSpace(customJavaPath) ? customJavaPath : "java",
+                    FileName = "java",
                     WorkingDirectory = targetPath,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
