@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -262,6 +263,29 @@ namespace UnderMine.Services.Logger
                 _fileWriter?.Dispose();
             }
             Console.SetOut(_originalConsoleOut); 
+        }
+        public static string GetHttpStatusMessage(System.Net.HttpStatusCode status) => status switch
+        {
+            System.Net.HttpStatusCode.BadRequest => "Неверный запрос (400)",
+            System.Net.HttpStatusCode.Unauthorized => "Ошибка авторизации (401)",
+            System.Net.HttpStatusCode.Forbidden => "Доступ запрещён (403)",
+            System.Net.HttpStatusCode.NotFound => "Сервис не найден (404)",
+            System.Net.HttpStatusCode.Conflict => "Такой пользователь уже существует (409)",
+            System.Net.HttpStatusCode.Gone => "Аккаунт забанен или удален (410)",
+            System.Net.HttpStatusCode.TooManyRequests => "Слишком много попыток (429)",
+            System.Net.HttpStatusCode.InternalServerError => "Ошибка сервера (500)",
+            _ => $"Ошибка {(int)status}"
+        };
+
+        public void LogException(Exception ex, string context)
+        {
+            string message = ex switch
+            {
+                HttpRequestException => $"Ошибка сети: {ex.Message}",
+                TaskCanceledException => "Превышено время ожидания операции",
+                _ => $"Критическая ошибка: {ex.Message}"
+            };
+            Log($"[{context}] {message}", "ERROR");
         }
     }
 

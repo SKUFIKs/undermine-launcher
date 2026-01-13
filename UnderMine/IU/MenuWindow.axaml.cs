@@ -4,6 +4,7 @@ using Avalonia.Controls.Documents;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using UnderMine.Core; 
+using UnderMine.Core;
 using UnderMine.Core.Services;
 using UnderMine.Fonts.Models;
 using UnderMine.Models;
@@ -143,6 +144,7 @@ public partial class MenuWindow : Window
     {
         _userData = await UserData.Load() ?? throw new InvalidOperationException();
         MemorySlider.Value = _userData.MemorySettings;
+        JavaPathTextBox.Text = _userData.JavaPath;
 
         MemorySlider.ValueChanged += (s, e) =>
         {
@@ -188,7 +190,7 @@ public partial class MenuWindow : Window
 
                 if (response.News != null)
                 {
-                    NewsTextBlock.Inlines.Clear(); 
+                    NewsTextBlock.Inlines.Clear();
 
                     foreach (var part in response.News)
                     {
@@ -412,7 +414,7 @@ public partial class MenuWindow : Window
         var pathService = new PathService();
         AppPath storage = pathService.GetStorageDirectory();
 
-        string directoryPath = storage.Value; 
+        string directoryPath = storage.Value;
 
         try
         {
@@ -442,5 +444,28 @@ public partial class MenuWindow : Window
             ErrorPanel.IsVisible = true;
             ErrorBox.Text = $"{userMessage}: {ex.Message}";
         });
+    }
+
+    private async void JavaPathBrowseButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null) return;
+
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Выберите исполняемый файл Java (javaw.exe)",
+            AllowMultiple = false,
+            FileTypeFilter = new[]
+            {
+            new FilePickerFileType("Java Executable") { Patterns = new[] { "javaw.exe", "java.exe", "java" } }
+        }
+        });
+
+        if (files.Count > 0)
+        {
+            string selectedPath = files[0].Path.LocalPath;
+            JavaPathTextBox.Text = selectedPath;
+            _userData.JavaPath = selectedPath; 
+        }
     }
 }

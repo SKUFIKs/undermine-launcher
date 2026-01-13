@@ -15,6 +15,7 @@ namespace UnderMine.Models
         public string? Username { get; set; }
         public string? Password { get; set; }
         public int MemorySettings { get; set; }
+        public string? JavaPath { get; set; }
         public string GraphicSettings { get; set; } = "Average";
 
         private const string AppName = "UnderMine";
@@ -78,7 +79,8 @@ namespace UnderMine.Models
                     {
                         SaveUser = false,
                         MemorySettings = 6144,
-                        GraphicSettings = "Average"
+                        GraphicSettings = "Average",
+                        JavaPath = null
                     };
                     await defaultSettings.Save();
                     return defaultSettings;

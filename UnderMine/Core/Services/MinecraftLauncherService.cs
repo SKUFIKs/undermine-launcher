@@ -10,13 +10,11 @@ namespace UnderMine.Core.Services
 {
     public class MinecraftLauncherService
     {
-
         public MinecraftLauncherService(string dummyPath)
         {
-            
         }
 
-        public async Task<Process> BuildProcessAsync(string version, ServerInfo info, int memorySettings, string customPath)
+        public async Task<Process> BuildProcessAsync(string version, ServerInfo info, int memorySettings, string customPath, string? customJavaPath = null)
         {
             var path = new MinecraftPath(customPath);
             var launcher = new MinecraftLauncher(path);
@@ -31,9 +29,10 @@ namespace UnderMine.Core.Services
                 MaximumRamMb = memorySettings,
                 Session = MSession.CreateOfflineSession(info.username),
 
+                JavaPath = !string.IsNullOrWhiteSpace(customJavaPath) ? customJavaPath : null
             };
 
-            return await launcher.InstallAndBuildProcessAsync(version, launchOption);
+            return await launcher.BuildProcessAsync(version, launchOption);
         }
     }
 }

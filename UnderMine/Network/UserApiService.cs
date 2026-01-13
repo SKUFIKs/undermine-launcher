@@ -90,25 +90,26 @@ namespace UnderMine.Network
             }
         }
 
-        public async Task<ServerInfo> GetServerInfo(string serverName, CancellationToken cancellationToken = default)
+        public async Task<ServerInfo> GetServerInfo(string serverName, CancellationToken ct = default)
         {
             try
             {
-                var servers = await GetServersAsync(cancellationToken);
+                var servers = await GetServersAsync(ct);
+                var targetServer = servers?.FirstOrDefault(s => s.Name == serverName)
+                                   ?? servers?.FirstOrDefault();
 
-                if (servers == null || servers.Count == 0)
+                if (targetServer == null)
                     return new ServerInfo { Success = false, ErrorMessage = "Сервера не найдены" };
 
-                var targetServer = servers.FirstOrDefault(s => s.Name == serverName) ?? servers.First();
-
-                var info = targetServer.Config;
+                var info = targetServer.Config ?? new ServerInfo();
                 info.Success = true;
-                info.username = targetServer.username; 
+                info.username = targetServer.username;
 
                 return info;
             }
             catch (Exception ex)
             {
+                _reporter.LogException(ex, "API-ServerInfo");
                 return new ServerInfo { Success = false, ErrorMessage = ex.Message };
             }
         }

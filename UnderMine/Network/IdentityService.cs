@@ -6,7 +6,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using UnderMine.Models;
-using UnderMine.Services;
 using UnderMine.Services.Logger;
 
 namespace UnderMine.Network
@@ -15,18 +14,19 @@ namespace UnderMine.Network
     {
         private readonly ContextData _contextData;
         private readonly HttpClient _httpClient;
-        private readonly ProgressReporter _reporter; 
+        private readonly ProgressReporter _reporter;
 
-        public IdentityService(ContextData contextData, ProgressReporter reporter)
-            : this(contextData, reporter, new HttpClient { BaseAddress = new Uri(contextData.BaseUrl), Timeout = TimeSpan.FromSeconds(30) })
-        {
-        }
-
-        public IdentityService(ContextData contextData, ProgressReporter reporter, HttpClient httpClient)
+        public IdentityService(ContextData contextData, ProgressReporter reporter, HttpClient? httpClient = null)
         {
             _contextData = contextData ?? throw new ArgumentNullException(nameof(contextData));
-            _reporter = reporter ?? throw new ArgumentNullException(nameof(reporter)); 
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _reporter = reporter ?? throw new ArgumentNullException(nameof(reporter));
+
+            // Если клиент не передан, создаем новый с базовыми настройками
+            _httpClient = httpClient ?? new HttpClient
+            {
+                BaseAddress = new Uri(contextData.BaseUrl),
+                Timeout = TimeSpan.FromSeconds(30)
+            };
 
             if (_httpClient.BaseAddress == null)
                 _httpClient.BaseAddress = new Uri(_contextData.BaseUrl);
@@ -34,122 +34,78 @@ namespace UnderMine.Network
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<LoginResult> Login(string username, string password, CancellationToken cancellationToken = default)
+        public async Task<LoginResult> Login(string username, string password, CancellationToken ct = default)
         {
-            try
-            {
-                _reporter.Log($"[Auth] Попытка входа пользователя: {username}...", "INFO");
-
-                string deviceId = SystemInformation.GetStableDeviceId();
-                var payload = new { Login = username, Password = password, DeviceId = deviceId };
-
-                using var response = await _httpClient.PostAsJsonAsync(_contextData.LogApiKey, payload, cancellationToken).ConfigureAwait(false);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var tokenResponse = await response.Content.ReadFromJsonAsync<LoginResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
-                    if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.Token))
-                    {
-                        string msg = $"Error: empty token. Code {(int)response.StatusCode}";
-                        _reporter.Log($"[Auth] Успешный статус, но токен пуст. {msg}", "WARN");
-                        return new LoginResult { Success = false, ErrorMessage = msg };
-                    }
-
-                    _reporter.Log($"[Auth] Вход выполнен успешно. Токен получен.", "INFO");
-                    return new LoginResult { Success = true, Token = tokenResponse.Token };
-                }
-
-                string errorMsg = await GetErrorMessageAsync(response, cancellationToken);
-                _reporter.Log($"[Auth] Ошибка входа: {errorMsg}", "WARN");
-                return new LoginResult { Success = false, ErrorMessage = errorMsg };
-            }
-            catch (Exception ex)
-            {
-                _reporter.Log($"[Auth] Критическая ошибка при входе: {ex.Message}", "ERROR");
-                return HandleException(ex);
-            }
+            return await ExecuteAuthRequest(_contextData.LogApiKey, username, password, "Login", ct);
         }
 
-        public async Task<LoginResult> Register(string username, string password, CancellationToken cancellationToken = default)
+        public async Task<LoginResult> Register(string username, string password, CancellationToken ct = default)
+        {
+            return await ExecuteAuthRequest(_contextData.RegApiKey, username, password, "Register", ct);
+        }
+
+        /// <summary>
+        /// Общий метод для Login и Register, чтобы не дублировать код
+        /// </summary>
+        private async Task<LoginResult> ExecuteAuthRequest(string endpoint, string username, string password, string context, CancellationToken ct)
         {
             try
             {
-                _reporter.Log($"[Auth] Регистрация нового пользователя: {username}...", "INFO");
+                _reporter.Log($"[Auth] {context}: попытка для пользователя {username}...");
 
-                string deviceId = SystemInformation.GetStableDeviceId();
-                var payload = new { Login = username, Password = password, DeviceId = deviceId };
+                var payload = new
+                {
+                    Login = username,
+                    Password = password,
+                    DeviceId = UnderMine.Services.SystemInformation.GetStableDeviceId()
+                };
 
-                using var response = await _httpClient.PostAsJsonAsync(_contextData.RegApiKey, payload, cancellationToken).ConfigureAwait(false);
+                using var response = await _httpClient.PostAsJsonAsync(endpoint, payload, ct).ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    _reporter.Log($"[Auth] Регистрация прошла успешно.", "INFO");
-                    return new LoginResult { Success = true, ErrorMessage = string.Empty };
+                    // Для регистрации сервер может не возвращать токен сразу, проверяем это
+                    var result = await response.Content.ReadFromJsonAsync<LoginResult>(cancellationToken: ct).ConfigureAwait(false);
+
+                    if (context == "Login" && string.IsNullOrEmpty(result?.Token))
+                    {
+                        _reporter.Log($"[Auth] {context}: Сервер вернул успех, но токен пуст", "WARN");
+                        return new LoginResult { Success = false, ErrorMessage = "Ошибка: пустой токен от сервера." };
+                    }
+
+                    _reporter.Log($"[Auth] {context}: Успешно.");
+                    return result ?? new LoginResult { Success = true };
                 }
 
-                string errorMsg = await GetErrorMessageAsync(response, cancellationToken);
-                _reporter.Log($"[Auth] Ошибка регистрации: {errorMsg}", "WARN");
+                string errorMsg = await GetErrorMessageAsync(response, ct);
+                _reporter.Log($"[Auth] {context} отклонен: {errorMsg}", "WARN");
                 return new LoginResult { Success = false, ErrorMessage = errorMsg };
             }
             catch (Exception ex)
             {
-                _reporter.Log($"[Auth] Критическая ошибка при регистрации: {ex.Message}", "ERROR");
-                return HandleException(ex);
+                _reporter.LogException(ex, $"Auth-{context}");
+                return new LoginResult { Success = false, ErrorMessage = ex.Message };
             }
         }
 
         private async Task<string> GetErrorMessageAsync(HttpResponseMessage response, CancellationToken ct)
         {
-            string defaultMessage = MapStatusToMessage(response.StatusCode);
-            string? serverMessage = null;
-
             try
             {
-                string responseBody = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
-
+                
+                var responseBody = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
                 if (!string.IsNullOrWhiteSpace(responseBody))
                 {
                     using var doc = JsonDocument.Parse(responseBody);
                     if (doc.RootElement.TryGetProperty("message", out var msgProp))
                     {
-                        serverMessage = msgProp.GetString();
+                        return $"{msgProp.GetString()} ({(int)response.StatusCode})";
                     }
                 }
             }
-            catch
-            {
-                // Если JSON не парсится, просто игнорируем тело и возвращаем статус
-            }
-
-            if (!string.IsNullOrEmpty(serverMessage))
-            {
-                return $"{serverMessage} (Код: {(int)response.StatusCode})";
-            }
-
-            return defaultMessage;
+            catch { /* Игнорируем ошибки парсинга, используем стандартное сообщение */ }
+  
+            return ProgressReporter.GetHttpStatusMessage(response.StatusCode);
         }
-
-        private LoginResult HandleException(Exception ex)
-        {
-            if (ex is HttpRequestException)
-                return new LoginResult { Success = false, ErrorMessage = $"Ошибка сети: {ex.Message}" };
-            if (ex is TaskCanceledException)
-                return new LoginResult { Success = false, ErrorMessage = "Превышено время ожидания" };
-
-            return new LoginResult { Success = false, ErrorMessage = $"Ошибка: {ex.Message}" };
-        }
-
-        private static string MapStatusToMessage(System.Net.HttpStatusCode status) => status switch
-        {
-            System.Net.HttpStatusCode.BadRequest => "Неверный запрос (400)",
-            System.Net.HttpStatusCode.Unauthorized => "Ошибка авторизации (401)",
-            System.Net.HttpStatusCode.Forbidden => "Доступ запрещён (403)",
-            System.Net.HttpStatusCode.NotFound => "Сервис не найден (404)",
-            System.Net.HttpStatusCode.Conflict => "Такой пользователь уже существует (409)",
-            System.Net.HttpStatusCode.Gone => "Аккаунт забанен или удален (410)",
-            System.Net.HttpStatusCode.TooManyRequests => "Слишком много попыток (429)",
-            System.Net.HttpStatusCode.InternalServerError => "Ошибка сервера (500)",
-            _ => $"Ошибка {(int)status}"
-        };
     }
 }
