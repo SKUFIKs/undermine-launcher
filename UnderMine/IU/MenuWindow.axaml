@@ -191,6 +191,7 @@
 											</Grid>
 										</StackPanel>
 
+
 										<TextBox Grid.Column="1"
 												 x:Name="MemoryTextBox"
 												 Width="95" Height="35"
@@ -219,6 +220,23 @@
 												Content="Обзор" Width="90" Background="SlateGray"/>
 									</Grid>
 								</StackPanel>
+								<StackPanel Grid.Row="3" Margin="0,20,0,0" Spacing="5" Width="600" HorizontalAlignment="Left">
+    <Label Classes="LiteTitle" Content="Путь к исполняемому файлу Java:" FontSize="15"/>
+    <Grid ColumnDefinitions="*, Auto" Margin="20,5,0,0">
+        <TextBox Grid.Column="0" 
+                 x:Name="JavaPathTextBox" 
+                 Watermark="Напр: C:\Program Files\Java\bin\javaw.exe"
+                 Margin="0,0,20,0"/>
+        <Button Grid.Column="1" 
+                x:Name="JavaPathBrowseButton" 
+                Click="JavaPathBrowseButton_OnClick"
+                Content="Обзор" 
+                HorizontalContentAlignment="Center" 
+                VerticalContentAlignment="Center" 
+                Width="90" 
+                Background="SlateGray"/>
+    </Grid>
+</StackPanel>
 								
 
 								<StackPanel Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Bottom" Spacing="20" Margin="10,0,0,10">

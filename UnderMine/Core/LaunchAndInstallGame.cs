@@ -2,6 +2,7 @@
 using CmlLib.Core.Installer.Forge;
 using CmlLib.Core.ProcessBuilder;
 using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.TextManager.Interop;
 using System;
 using System.IO;
 using System.Threading;
@@ -89,6 +90,7 @@ namespace UnderMine.Core
             string loaderVersion = _serverInfo.loader ?? throw new InvalidOperationException("Loader version not specified");
             string serverName = _serverInfo.server ?? throw new InvalidOperationException("Server name identifier not specified");
             string bootloader = _serverInfo.BootloaderType?.ToLower() ?? "forge";
+            
 
             try
             {
@@ -140,7 +142,7 @@ namespace UnderMine.Core
                     {
                         _progressManager.Report(stageName, 0.5, "Запуск установки...");
                         _progress.Log($"Запуск установки...");
-                        installResult = await _fabricInstaller.InstallAsync(_gamePath, mcVersion, loaderVersion, installerPath, ct);
+                        installResult = await _fabricInstaller.InstallAsync(_gamePath, mcVersion, loaderVersion, installerPath, ct, settings.JavaPath);
                     }
                     else
                     {
@@ -154,7 +156,7 @@ namespace UnderMine.Core
                             _progressManager,
                             _serverInfo.LibraryExpectedChecksum,
                             _serverInfo.AssetsExpectedChecksum,
-                            _serverInfo.VersionExpectedChecksum);
+                            _serverInfo.VersionExpectedChecksum, settings.JavaPath);
                     }
 
                     if (!installResult) throw new Exception($"Критическая ошибка при установке {stageName}.");

@@ -8,14 +8,14 @@ namespace UnderMine.Core.Services
 {
     public class FabricInstaller
     {
-        public async Task<bool> InstallAsync(string gamePath, string mcVersion, string loaderVersion, string installerPath, CancellationToken ct)
+        public async Task<bool> InstallAsync(string gamePath, string mcVersion, string loaderVersion, string installerPath, CancellationToken ct, string? JavaPath = null)
         {
             try
             {
                 var psi = new ProcessStartInfo
                 {
-                    FileName = "java",
-                    Arguments = $"-jar \"{installerPath}\" client -mcversion {mcVersion} -loader {loaderVersion} -dir \"{gamePath}\" -noprofile",
+                    FileName = !string.IsNullOrWhiteSpace(JavaPath) ? JavaPath : "java",
+                    Arguments = $"-jar \"{installerPath}\" client -mcversion {mcVersion} -loader {loaderVersion} -dir \"{gamePath}\" -snapshot -noprofile",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,

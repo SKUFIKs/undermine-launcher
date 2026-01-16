@@ -144,7 +144,7 @@ public partial class MenuWindow : Window
     {
         _userData = await UserData.Load() ?? throw new InvalidOperationException();
         MemorySlider.Value = _userData.MemorySettings;
-        
+        JavaPathTextBox.Text = _userData.JavaPath;
 
         MemorySlider.ValueChanged += (s, e) =>
         {
@@ -294,7 +294,25 @@ public partial class MenuWindow : Window
         WaitingСhoice.IsVisible = false;
         PlayServer.IsVisible = false;
     }
+    private async void JavaPathBrowseButton_OnClick(object? sender, RoutedEventArgs e)
+    {
 
+        var storage = TopLevel.GetTopLevel(this)?.StorageProvider;
+        if (storage != null)
+        {
+            var result = await storage.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Выберите исполняемый файл Java",
+                AllowMultiple = false,
+                FileTypeFilter = new[] { new FilePickerFileType("Java Executable") { Patterns = new[] { "java.exe", "javaw.exe" } } }
+            });
+
+            if (result.Count > 0)
+            {
+                JavaPathTextBox.Text = result[0].Path.LocalPath;
+            }
+        }
+    }
     private async void StartingTheGame(int serverId)
     {
 
@@ -446,5 +464,4 @@ public partial class MenuWindow : Window
         });
     }
 
-    
 }
