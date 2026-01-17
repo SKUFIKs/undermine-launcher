@@ -25,6 +25,8 @@ namespace UnderMine.Network
         {
             public string Username { get; set; }
             public List<NewsPart> News { get; set; }
+            public List<NewsPart> ProfileData { get; set; }
+
         }
 
         public UserApiService(ContextData contextData, LoginResult loginResult, ProgressReporter reporter)

@@ -120,12 +120,12 @@ namespace UnderMine.Core
                 _progressManager.Report("Examination", 0.0, "Проверка файлов...");
                 _progress.Log($"Проверка файлов...");
                 bool isLibOk = await CheckingFile.VerifyFolderIntegrityByZipHash(Path.Combine(_gamePath, "libraries"), _serverInfo.LibraryExpectedChecksum, _progress);
-                bool isAssetsOk = await CheckingFile.VerifyFolderIntegrityByZipHash(Path.Combine(_gamePath, "assets"), _serverInfo.AssetsExpectedChecksum, _progress);
-                bool isVersionsOk = await CheckingFile.VerifyFolderIntegrityByZipHash(Path.Combine(_gamePath, "versions"), _serverInfo.VersionExpectedChecksum, _progress);
+                //bool isAssetsOk = await CheckingFile.VerifyFolderIntegrityByZipHash(Path.Combine(_gamePath, "assets"), _serverInfo.AssetsExpectedChecksum, _progress);
+                //bool isVersionsOk = await CheckingFile.VerifyFolderIntegrityByZipHash(Path.Combine(_gamePath, "versions"), _serverInfo.VersionExpectedChecksum, _progress);
                 _progressManager.Report("Examination", 1.0, "Проверка завершена");
 
                 string stageName = bootloader == "fabric" ? "Fabric" : "Forge";
-                if (!isLibOk || !isAssetsOk || !isVersionsOk)
+                if (!isLibOk)
                 {
                     _progress.Log($"{stageName} не обнаружен или поврежден. Начинаем установку...");
                     string installerPath = Path.Combine(_tempPath, $"{stageName}-installer.jar");

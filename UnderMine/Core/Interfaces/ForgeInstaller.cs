@@ -130,10 +130,10 @@ namespace UnderMine.Core.Services
                 Console.WriteLine($"[Fallback] Копирование файлов в целевую папку: {targetPath}");
                 await Task.Run(() => CopyDirectorySafe(tempDir, targetPath), ct);
 
-                // Проверка целостности после Fallback
                 try
                 {
                     progressManager.Report("Forge", 0.9, "Проверка файлов...");
+
                 }
                 catch (Exception ex) { Console.WriteLine($"[Fallback Check Error] {ex.Message}"); }
 

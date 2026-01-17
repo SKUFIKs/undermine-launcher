@@ -188,52 +188,57 @@ public partial class MenuWindow : Window
             {
                 UsernameLabel.Content = response.Username;
 
+                // Вывод новостей
                 if (response.News != null)
-                {
-                    NewsTextBlock.Inlines.Clear();
+                    RenderNewsParts(NewsTextBlock, response.News);
 
-                    foreach (var part in response.News)
-                    {
-                        if (part.Type == "LineBreak")
-                        {
-                            NewsTextBlock.Inlines.Add(new LineBreak());
-                        }
-                        else if (part.Type == "Link")
-                        {
-                            var linkText = new TextBlock
-                            {
-                                Text = part.Text,
-                                Foreground = Brush.Parse(part.Color ?? "#747474"),
-                                FontWeight = FontWeight.Bold,
-                                TextDecorations = TextDecorations.Underline,
-                                Cursor = new Cursor(StandardCursorType.Hand)
-                            };
-                            linkText.PointerPressed += TelegramLink_PointerPressed;
-
-                            NewsTextBlock.Inlines.Add(new InlineUIContainer { Child = linkText });
-                        }
-                        else // Обычный Run
-                        {
-                            var run = new Run(part.Text)
-                            {
-                                FontWeight = part.IsBold ? FontWeight.Bold : FontWeight.Normal
-                            };
-
-                            if (!string.IsNullOrEmpty(part.Color))
-                                run.Foreground = Brush.Parse(part.Color);
-
-                            if (part.FontSize.HasValue)
-                                run.FontSize = part.FontSize.Value;
-
-                            NewsTextBlock.Inlines.Add(run);
-                        }
-                    }
-                }
+                // Вывод профиля
+                if (response.ProfileData != null)
+                    RenderNewsParts(ProfileTextBlock, response.ProfileData);
             });
         }
         catch (Exception ex) { Debug.WriteLine(ex.Message); }
     }
+    private void RenderNewsParts(TextBlock targetBlock, List<NewsPart> parts)
+{
+    targetBlock.Inlines.Clear();
 
+    foreach (var part in parts)
+    {
+        if (part.Type == "LineBreak")
+        {
+            targetBlock.Inlines.Add(new LineBreak());
+        }
+        else if (part.Type == "Link")
+        {
+            var linkText = new TextBlock
+            {
+                Text = part.Text,
+                Foreground = Brush.Parse(part.Color ?? "#747474"),
+                FontWeight = FontWeight.Bold,
+                TextDecorations = TextDecorations.Underline,
+                Cursor = new Cursor(StandardCursorType.Hand)
+            };
+            linkText.PointerPressed += TelegramLink_PointerPressed;
+            targetBlock.Inlines.Add(new InlineUIContainer { Child = linkText });
+        }
+        else
+        {
+            var run = new Run(part.Text)
+            {
+                FontWeight = part.IsBold ? FontWeight.Bold : FontWeight.Normal
+            };
+
+            if (!string.IsNullOrEmpty(part.Color))
+                run.Foreground = Brush.Parse(part.Color);
+
+            if (part.FontSize.HasValue)
+                run.FontSize = part.FontSize.Value;
+
+            targetBlock.Inlines.Add(run);
+        }
+    }
+}
     private void NewsButton_OnClick(object? sender, RoutedEventArgs e)
     {
         NewsPanel.IsVisible = true;
