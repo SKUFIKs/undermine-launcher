@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace UnderMine.Models;
 
@@ -8,11 +10,27 @@ public class ContextData
     //public string BaseUrl { get; set; } = "http://localhost:8080";
     public string LogApiKey { get; set; } = "/api/auth/login";
     public string RegApiKey { get; set; } = "/api/auth/register";
-    //public string EntranceApiKey { get; set; } = "/api/v0.1/TechnoMagic";
     public string ServersApiKey { get; set; } = "/api/v0.1/servers";
 
 }
 
+public class JreData
+{
+    [JsonProperty("version")]
+    public string Version { get; set; }
+
+    [JsonProperty("download_url")] 
+    public Dictionary<string, Dictionary<string, JrePlatform>> DownloadUrl { get; set; }
+}
+
+public class JrePlatform
+{
+    [JsonProperty("url")]
+    public string Url { get; set; }
+
+    [JsonProperty("sha256")]
+    public string Sha256 { get; set; }
+}
 
 public class ServerInfo 
 {

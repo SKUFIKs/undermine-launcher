@@ -7,14 +7,10 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using UnderMine.Core.Interfaces;
-using UnderMine.Core.Services;
 using UnderMine.IU;
 using UnderMine.Models;
-using UnderMine.Services.Location;
-using UnderMine.Services.Logger;
-using UnderMine.Services.ProgressBar;
-using ForgeInstaller = UnderMine.Core.Services.ForgeInstaller;
+using UnderMine.Services;
+using ForgeInstaller = UnderMine.Core.ForgeInstaller;
 
 namespace UnderMine.Core
 {

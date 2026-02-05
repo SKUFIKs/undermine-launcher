@@ -1,18 +1,17 @@
 ﻿using System;
-using UnderMine.Core.Interfaces;
-using UnderMine.Core.Services;
+using System.Threading;
+using System.Threading.Tasks;
 using UnderMine.Models;
-using UnderMine.Services.Location;
-using UnderMine.Services.Logger;
-using UnderMine.Services.ProgressBar;
-using ForgeInstaller = UnderMine.Core.Services.ForgeInstaller;
-using MyFabricInstaller = UnderMine.Core.Services.FabricInstaller;
+using UnderMine.Services;
+using ForgeInstaller = UnderMine.Core.ForgeInstaller;
+using MyFabricInstaller = UnderMine.Core.FabricInstaller;
 
 namespace UnderMine.Core
 {
     public interface IGameInstallerFactory
     {
-        InstalGame1Server CreateInstaller(ServerInfo serverInfo, ServerInfo playerInfo);
+ 
+        Task InstallAndRunAsync(ServerInfo serverConfig, CancellationToken ct = default);
     }
 
     public class GameInstallerFactory : IGameInstallerFactory
@@ -28,6 +27,7 @@ namespace UnderMine.Core
         private readonly ISettingsService _settingsService;
         private readonly PathService _pathService;
         private readonly MyFabricInstaller _fabricInstaller;
+        private readonly HytaleLauncherService _hytaleService;
 
         public GameInstallerFactory(
         FileDownloader downloader,
@@ -39,7 +39,8 @@ namespace UnderMine.Core
         ModLoaderService modLoader,
         ConfigService configService,
         ISettingsService settingsService,
-        PathService pathService)
+        PathService pathService,
+        HytaleLauncherService hytaleService)
         {
             _downloader = downloader;
             _launcherService = launcherService;
@@ -52,8 +53,24 @@ namespace UnderMine.Core
             _configService = configService;
             _settingsService = settingsService;
             _pathService = pathService;
+            _hytaleService = hytaleService;
         }
 
+        public async Task InstallAndRunAsync(ServerInfo serverConfig, CancellationToken ct = default)
+        {
+            string bootloader = serverConfig.BootloaderType?.ToLower() ?? "forge";
+
+            if (bootloader == "hytale")
+            {
+                // Исправлено: заменено InstallAndLaunchAsync на InstallAndRunAsync
+                await _hytaleService.InstallAndRunAsync(serverConfig, ct);
+            }
+            else
+            {
+                var mcInstaller = CreateInstaller(serverConfig, serverConfig);
+                await mcInstaller.InstallAndRunAsync(ct);
+            }
+        }
         public InstalGame1Server CreateInstaller(ServerInfo serverConfig, ServerInfo playerInfo)
         {
             var finalSettings = new ServerInfo
@@ -83,7 +100,7 @@ namespace UnderMine.Core
                 _forgeInstaller,
                 _fabricInstaller,
                 _progressManager,
-                _modLoader, 
+                _modLoader,
                 _configService,
                 _settingsService,
                 _pathService

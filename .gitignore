@@ -4,3 +4,7 @@ obj/
 publish/
 publish-linux/
 Releases/
+.vs/
+*.user
+*.suo
+packages/
