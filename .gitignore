@@ -1,10 +1,14 @@
-﻿/UnderMine/UnderMine.csproj
+﻿# Игнорируем папки сборки и кэши IDE
 bin/
 obj/
+.vs/
+/UnderMine.sln.DotSettings.user
+
+# Игнорируем персональные настройки
+*.user
+*.suo
+
+# Игнорируем папки публикации
 publish/
 publish-linux/
 Releases/
-.vs/
-*.user
-*.suo
-packages/
