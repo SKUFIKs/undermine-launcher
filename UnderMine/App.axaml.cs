@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
+using System.Net.Http;
 using UnderMine.IU;
 using Velopack;
 
@@ -11,6 +12,7 @@ namespace UnderMine;
 
 public partial class App : Application
 {
+    private static readonly HttpClient SharedClient = new HttpClient();
     public override void Initialize()
     {
         VelopackApp.Build().Run();

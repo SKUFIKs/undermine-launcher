@@ -12,14 +12,15 @@ using UnderMine.Models;
 using UnderMine.Services;
 using static UnderMine.IU.MenuWindow;
 
-namespace UnderMine.Network
+namespace UnderMine.Core.Network
 {
-    public class UserApiService
+    public class UserClient
     {
+        // Этот класс отвечает за взаимодействие с API сервера, предоставляя методы для получения информации о серверах, данных пользователя и другой информации, необходимой для работы приложения. Он использует HttpClient для отправки запросов к API и обрабатывает ответы, обеспечивая удобный интерфейс для других частей приложения.
         private readonly ContextData _contextData;
         private readonly LoginResult _loginResult;
         private readonly HttpClient _httpClient;
-        private readonly ProgressReporter _reporter;
+        private readonly ProgressService _reporter;
 
         public class UserDataResponse
         {
@@ -29,12 +30,12 @@ namespace UnderMine.Network
 
         }
 
-        public UserApiService(ContextData contextData, LoginResult loginResult, ProgressReporter reporter)
+        public UserClient(ContextData contextData, LoginResult loginResult, ProgressService reporter)
             : this(contextData, loginResult, reporter, new HttpClient { BaseAddress = new Uri(contextData.BaseUrl), Timeout = TimeSpan.FromSeconds(30) })
         {
         }
 
-        public UserApiService(ContextData contextData, LoginResult loginResult, ProgressReporter reporter, HttpClient httpClient)
+        public UserClient(ContextData contextData, LoginResult loginResult, ProgressService reporter, HttpClient httpClient)
         {
             _contextData = contextData ?? throw new ArgumentNullException(nameof(contextData));
             _loginResult = loginResult ?? throw new ArgumentNullException(nameof(loginResult));
@@ -47,6 +48,8 @@ namespace UnderMine.Network
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
+
+        /*
 
         public async Task<List<Server>> GetServersAsync(CancellationToken ct = default)
         {
@@ -91,7 +94,7 @@ namespace UnderMine.Network
                 return new List<Server>();
             }
         }
-
+        
         public async Task<ServerInfo> GetServerInfo(string serverName, CancellationToken ct = default)
         {
             try
@@ -115,6 +118,7 @@ namespace UnderMine.Network
                 return new ServerInfo { Success = false, ErrorMessage = ex.Message };
             }
         }
+        */
         public async Task<UserDataResponse?> GetUserDataAsync(CancellationToken ct = default)
         {
             if (string.IsNullOrEmpty(_loginResult.Token)) return null;

@@ -9,93 +9,61 @@ using Avalonia.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+using System.Globalization;
 using System.Threading.Tasks;
-using UnderMine.Core;
+using UnderMine.Core.Network;
 using UnderMine.Fonts.Models;
 using UnderMine.Models;
-using UnderMine.Network;
 using UnderMine.Services;
 
 namespace UnderMine.IU;
 
 public partial class MenuWindow : Window
 {
+    private static readonly System.Net.Http.HttpClient _sharedHttpClient = new();
+
     private int ServerId { get; set; }
-
-    private InstalGame1Server _instalGame1Server = null!;
-
     private readonly ContextData _contextData;
     private readonly LoginResult _loginResult;
+    private readonly ProgressService _reporter;
+    private readonly UserClient _apiService;
+    private ProfileManager _userData = null!;
+    private SystemService _memoryConfig = null!;
     private SliderValues _sliderValues = null!;
-    private MemorySliderConfiguration _memoryConfig = null!;
-    private ProgressManager _progressManager = null!;
-    private UserData _userData = null!;
-    private ServerInfo _serverInfo = null!;
 
-    private readonly IGameInstallerFactory _installerFactory;
-    private readonly UserApiService _apiService;
-
-    private static readonly IBrush DefaultColor = Brushes.Orange;
-    private static readonly IBrush CompleteColor = Brush.Parse("#3C6");
-    private readonly ProgressReporter _reporter;
-
-    public MenuWindow(ContextData contextData, LoginResult loginResult, ProgressReporter reporter)
+    public MenuWindow(ContextData contextData, LoginResult loginResult, ProgressService reporter)
     {
         InitializeComponent();
 
-        var pathService = new PathService();
-        var httpClient = new System.Net.Http.HttpClient();
-        var fileDownloader = new FileDownloader(httpClient);
-
-        _progressManager = new ProgressManager((val, msg) =>
-        {
-            Dispatcher.UIThread.Post(() =>
-            {
-                Loader.Progress = Math.Clamp(val, 0, 100);
-                PercentText.Text = $"{Math.Round(Loader.Progress)}%";
-                LogBox.Content = msg;
-            });
-        });
-        var hytaleService = new HytaleLauncherService(
-        fileDownloader,
-        _progressManager,
-        reporter,
-        pathService
-    );
-
-        _installerFactory = new GameInstallerFactory(
-            new FileDownloader(httpClient),
-            new MinecraftLauncherService(Path.Combine(pathService.GetStorageDirectory().Value, "versions")),
-            reporter,
-            new ProfileService(),
-            new UnderMine.Core.ForgeInstaller(Path.Combine(pathService.GetStorageDirectory().Value, "versions")),
-            _progressManager,
-            new ModLoaderService(httpClient, reporter, _progressManager),
-            new ConfigService(httpClient),
-            new SettingsService(pathService),
-            pathService,
-        hytaleService
-        );
-
-        var apiService = new UserApiService(contextData, loginResult, reporter);
-        _apiService = apiService;
-        DataContext = new ServerSelectionService(_installerFactory, apiService);
-
+        //InitializeMemorySliderAsync();
         _contextData = contextData;
         _loginResult = loginResult;
         _reporter = reporter;
 
+        // 1. Инициализируем сервисы, используя общий HttpClient
+        var pathService = new SystemService();
+        
+
+
+        _apiService = new UserClient(contextData, loginResult, reporter);
+
+        // Устанавливаем DataContext для биндинга списка серверов
+        // DataContext = new ServerSelectionService(_installerFactory, _apiService);
+
+        // 2. Подписки и начальная загрузка
         _reporter.OnLog += UpdateConsoleLabel;
 
-        _ = InitializeMemorySliderAsync();
-        InitializeServersAsync();
-        Load_Settings();
-        Installation();
+        _ = InitWindowAsync();
 
         LogLabel.IsVisible = false;
     }
 
+    private async Task InitWindowAsync()
+    {
+        Installation(); // Показываем путь
+        await LoadSettingsAsync(); // Грузим настройки юзера
+        await InitializeServersAsync(); // Грузим список серверов
+    }
     /// <summary>
     ///  перенести в models
     /// <summary>
@@ -154,45 +122,45 @@ public partial class MenuWindow : Window
         InstallationPath.Text = baseDirectory;
     }
 
-   
-    private async void Load_Settings()
+
+    private async Task LoadSettingsAsync()
     {
-        _userData = await UserData.Load() ?? throw new InvalidOperationException();
+        _userData = await ProfileManager.Load() ?? new ProfileManager();
+
         MemorySlider.Value = _userData.MemorySettings;
         JavaPathTextBox.Text = _userData.JavaPath;
 
-        MemorySlider.ValueChanged += (s, e) =>
-        {
-            _userData.MemorySettings = (int)e.NewValue;
-        };
+        // Подписываемся на изменения
+        MemorySlider.ValueChanged += (s, e) => _userData.MemorySettings = (int)e.NewValue;
 
-        string versionFromGitTag = ThisAssembly.Git.BaseTag;
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Version.Content = $"{versionFromGitTag}   ";
-        });
+        Version.Content = $"{ThisAssembly.Git.BaseTag}";
     }
-
+    /*
     private async Task InitializeMemorySliderAsync()
     {
-        var check = new CheckEquipment(new SystemInfo());
-        var systemInfo = await check.CheckOperatingSystemAsync();
+        // 1. Используем уже существующий репортер или создаем сканер напрямую
+        // Предполагаем, что SystemScanner доступен
+        var scanner = new SystemService();
 
-        _memoryConfig = new MemorySliderConfiguration(systemInfo);
+        _memoryConfig = new MemorySliderConfiguration(scanner);
         _sliderValues = await _memoryConfig.InitializeMemorySliderAsync();
 
-        MemorySlider.Minimum = int.Parse(_sliderValues.FirstValue);
+        // 2. Настройка ползунка (Slider в Avalonia)
+        // Используем инвариантную культуру для парсинга, чтобы не упасть на запятых
+        MemorySlider.Minimum = double.Parse(_sliderValues.FirstValue, CultureInfo.InvariantCulture);
+        MemorySlider.Maximum = double.Parse(_sliderValues.FifthValue, CultureInfo.InvariantCulture);
         MemorySlider.TickFrequency = _sliderValues.Step;
-        MemorySlider.Maximum = int.Parse(_sliderValues.FifthValue);
+        MemorySlider.IsSnapToTickEnabled = true; // Чтобы ползунок прилипал к делениям
 
+        // 3. Обновление текстовых меток под ползунком
         FirstValue.Content = _sliderValues.FirstValue;
         SecondValue.Content = _sliderValues.SecondValue;
         ThirdValue.Content = _sliderValues.ThirdValue;
         FourthValue.Content = _sliderValues.FourthValue;
         FifthValue.Content = _sliderValues.FifthValue;
     }
-
-    private async void InitializeServersAsync()
+    */
+    private async Task InitializeServersAsync()
     {
         try
         {
@@ -214,7 +182,7 @@ public partial class MenuWindow : Window
     }
     private void RenderNewsParts(TextBlock targetBlock, List<NewsPart> parts)
 {
-    targetBlock.Inlines.Clear();
+        targetBlock.Inlines.Clear();
 
     foreach (var part in parts)
     {
@@ -331,52 +299,12 @@ public partial class MenuWindow : Window
             }
         }
     }
-    private async void StartingTheGame(int serverId)
-    {
-
-        PlayButton.IsEnabled = false;
-        ProgressBar.IsVisible = true;
-        PlayButton.Content = "Запуск...";
-        LogLabel.IsVisible = true;
-
-        try
-        {
-            if (this.DataContext is ServerSelectionService vm && vm.SelectedServer != null)
-            {
-                var selected = vm.SelectedServer;
-                _reporter.Log($"[INFO] Подготовка к установке {selected.Name}");
-
-                var config = selected.Config;
-                config.username = _userData?.Username ?? "Player";
-
-                // ВАЖНО: Вызываем метод ИНТЕРФЕЙСА, а не создаем инсталлер вручную
-                await _installerFactory.InstallAndRunAsync(config);
-            }
-        }
-        catch (Exception ex)
-        {
-            HandleException("Ошибка запуска", ex);
-        }
-        finally
-        {
-            Dispatcher.UIThread.Post(() =>
-            {
-                PlayButton.IsEnabled = true;
-                ProgressBar.IsVisible = false;
-                PlayButton.Content = "Играть";
-                LogLabel.IsVisible = false;
-
-                SettingsButton.IsEnabled = true;
-                ProfileButton.IsEnabled = true;
-                ServerSelectionButton.IsEnabled = true;
-                NewsButton.IsEnabled = true;
-            });
-        }
-    }
+    
 
 
     private void SelectButton_OnClick(object? sender, RoutedEventArgs e)
     {
+        /*
         if (DataContext is ServerSelectionService vm)
         {
             if (vm.SelectedServer != null)
@@ -392,16 +320,56 @@ public partial class MenuWindow : Window
                 UpdateServerDescription(selected.Description);
             }
         }
+        */
     }
     /// <summary>
     ///  объединить со starting game
     /// <summary>
-    private void PlayButton_OnClick(object? sender, RoutedEventArgs e)
+    private async void PlayButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        var serverId = ServerId;
-        StartingTheGame(serverId);
-    }
+        // Блокируем UI
+        SetGlobalUIEnabled(false);
+        PlayButton.Content = "Запуск...";
+        ProgressBar.IsVisible = true;
+        LogLabel.IsVisible = true;
+        /*
+        try
+        {
+            if (DataContext is ServerSelectionService vm && vm.SelectedServer != null)
+            {
+                var selected = vm.SelectedServer;
+                _reporter.Log($"[INFO] Запуск {selected.Name}...");
 
+                var config = selected.Config;
+                config.username = _userData?.Username ?? "Player";
+
+                // Запускаем через фабрику
+                await _installerFactory.InstallAndRunAsync(config);
+            }
+        }
+        catch (Exception ex)
+        {
+            HandleException("Ошибка при запуске игры", ex);
+        }
+        finally
+        {
+            // Возвращаем UI в исходное состояние
+            PlayButton.IsEnabled = true;
+            PlayButton.Content = "Играть";
+            ProgressBar.IsVisible = false;
+            LogLabel.IsVisible = false;
+            SetGlobalUIEnabled(true);
+        }
+        */
+    }
+    private void SetGlobalUIEnabled(bool enabled)
+    {
+        SettingsButton.IsEnabled = enabled;
+        ProfileButton.IsEnabled = enabled;
+        ServerSelectionButton.IsEnabled = enabled;
+        NewsButton.IsEnabled = enabled;
+        PlayButton.IsEnabled = enabled;
+    }
     private async void SaveButton_OnClick(object? sender, RoutedEventArgs e)
     {
         if (_userData != null)
@@ -448,7 +416,7 @@ public partial class MenuWindow : Window
     }
     private void OverviewSettings_OnClick(object? sender, RoutedEventArgs e)
     {
-        var pathService = new PathService();
+        var pathService = new SystemService();
         AppPath storage = pathService.GetStorageDirectory();
 
         string directoryPath = storage.Value;

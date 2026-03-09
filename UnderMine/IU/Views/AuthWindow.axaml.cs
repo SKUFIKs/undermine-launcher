@@ -1,182 +1,122 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using UnderMine.Core.Network;
 using UnderMine.Models;
-using UnderMine.Network;
 using UnderMine.Services;
-using UnderMine.Services.SystemInfo.MemorySettings;
 
 
 namespace UnderMine.IU;
 
 public partial class AuthWindow : Window
 {
-    private readonly IdentityService _identityService;
-    private UserApiService _userApiService;
-
-    private UserData? _userData;
+    private readonly AuthService _authService;
+    private readonly ProgressService _reporter;
     private readonly ContextData _contextData;
-    private LoginResult _loginResult = null!;
-    private readonly ProgressReporter _reporter;
+    private ProfileManager _userData = null!;
 
 
     public AuthWindow()
     {
         InitializeComponent();
 
-        _reporter = new ProgressReporter();
+        _reporter = new ProgressService();
         _contextData = new ContextData();
 
-        var loginResult = new LoginResult();
-        _identityService = new IdentityService(_contextData, _reporter);
+        _authService = new AuthService(new System.Net.Http.HttpClient(), _contextData, _reporter);
 
-        _userApiService = new UserApiService(_contextData, loginResult, _reporter);
+        _ = InitAsync();
 
-        _ = LoadUserSettings();
         PassBox.PasswordChar = '•';
-        SystemScan();
-      
-        
     }
-    /// <summary>
-    ///  создать отдельный класс, кторый при старте будет собирать всю информайцию о системе пользователя
-    /// <summary>
-    private async void SystemScan()
+ 
+    private async Task InitAsync()
     {
-        var systemInfo = new SystemInfo();
-        var check = new CheckEquipment(systemInfo);
-
-        var info = await check.CheckOperatingSystemAsync();
-
-        string versionFromGitTag = ThisAssembly.Git.BaseTag;
-
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Version.Content = $"{versionFromGitTag}    ";
-        });
+        await LoadUserSettings();
+        ShowVersion();
+    }
+    private void ShowVersion()
+    {
+        Version.Content = $"{ThisAssembly.Git.BaseTag}";
     }
 
-    /// <summary>
-    ///  перенести в сохранение настроек профиля и вызывать при ините
-    /// <summary>
     private async Task LoadUserSettings()
     {
-        _userData = await UserData.Load();
-        var saveUser = _userData != null && _userData.SaveUser;
-        SaveUserBox.IsChecked = saveUser;
-
-        if (saveUser)
+        _userData = await ProfileManager.Load();
+        if (_userData.SaveUser)
         {
-            if (_userData != null)
-            {
-                var username = _userData.Username;
-                var password = _userData.Password;
-
-                if (password == null || username == null)
-                {
-                }
-                else
-                {
-                    LogBox.Text = username;
-                    PassBox.Text = password;
-                }
-            }
+            SaveUserBox.IsChecked = true;
+            LogBox.Text = _userData.Username;
+            PassBox.Text = _userData.Password; 
         }
     }
 
     private async void AuthButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        AuthButton.IsEnabled = false;
-        
+        SetUIEnabled(false);
+
         var username = LogBox.Text;
         var password = PassBox.Text;
 
-
-        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+        var validation = ValidateInput(username, password);
+        if (!validation.Success)
         {
-            ErrorPanel.IsVisible = true;
-            ErrorBox.Text = "Проверьте правильность введённых данных. Все поля должны быть заполнены.";
-            AuthButton.IsEnabled = true;
+            ShowError(validation.ErrorMessage);
+            SetUIEnabled(true);
             return;
         }
 
-        var result = await Login(username, password);
+        var result = await _authService.Login(username, password);
 
-        if (!result.Success)
+        if (result.Success)
         {
-            ErrorPanel.IsVisible = true;
-            ErrorBox.Text = result.ErrorMessage;
-            AuthButton.IsEnabled = true;
-            return;
-        }
-
-        _loginResult = await Login(username, password);
-
-        if (!_loginResult.Success)
-        {
-            ErrorPanel.IsVisible = true;
-            ErrorBox.Text = _loginResult.ErrorMessage;
-            AuthButton.IsEnabled = true;
-            return;
-        }
-        AuthButton.IsEnabled = true;
-        var secondWindow = new MenuWindow(_contextData, _loginResult, _reporter);
-        secondWindow.Show();
-        this.Close();
-    }
-
-    private async Task<LoginResult> Login(string username, string password)
-    {
-
-        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-        {
-            return new LoginResult { Success = false, ErrorMessage = "Пустое имя пользователя или пароль." };
-        }
-
-        if (password.Length < 6 || username.Length < 3)
-        {
-            return new LoginResult { Success = false, ErrorMessage = "Никнейм или пароль слишком короткий." };
-        }
-
-        if (!Regex.IsMatch(username, @"^[a-zA-Z0-9]+$") || !Regex.IsMatch(password, @"^[a-zA-Z0-9]+$"))
-        {
-            return new LoginResult { Success = false, ErrorMessage = "Вы используете недопустимые символы..." };
-        }
-
-        if (SaveUserBox.IsChecked == true)
-        {
-            if (_userData != null)
+            if (SaveUserBox.IsChecked == true && _userData != null)
             {
                 _userData.Username = username;
-                _userData.Password = password; 
+                _userData.Password = password;
                 _userData.SaveUser = true;
                 await _userData.Save();
             }
+
+            var secondWindow = new MenuWindow(_contextData, result, _reporter);
+            secondWindow.Show();
+            this.Close();
         }
-
-        var loginResult = await _identityService.Login(username, password);
-
-        if (!loginResult.Success)
+        else
         {
-            return loginResult;
+            ShowError(result.ErrorMessage);
+            SetUIEnabled(true);
         }
-
-        _userApiService = new UserApiService(_contextData, loginResult, _reporter);
-
-        return new LoginResult
-        {
-            Success = true,
-            Token = loginResult.Token
-        };
-
     }
 
+    private LoginResult ValidateInput(string? user, string? pass)
+    {
+        if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(pass))
+            return new LoginResult { ErrorMessage = "Заполните все поля" };
+
+        if (user.Length < 3 || pass.Length < 6)
+            return new LoginResult { ErrorMessage = "Данные слишком короткие" };
+
+        if (!Regex.IsMatch(user, @"^[a-zA-Z0-9]+$"))
+            return new LoginResult { ErrorMessage = "Используйте только латиницу и цифры" };
+
+        return new LoginResult { Success = true };
+    }
+    private void ShowError(string? msg)
+    {
+        ErrorPanel.IsVisible = true;
+        ErrorBox.Text = msg ?? "Неизвестная ошибка";
+    }
+    private void SetUIEnabled(bool enabled)
+    {
+        AuthButton.IsEnabled = enabled;
+        RegButton.IsEnabled = enabled; 
+    }
     private void LogBox_OnTextInput(object? sender, TextInputEventArgs e)
     {
     }
@@ -257,7 +197,7 @@ public partial class AuthWindow : Window
             };
         }
 
-        var result = await _identityService.Register(username, password);
+        var result = await _authService.Register(username, password);
 
         if (!result.Success)
         {
@@ -360,7 +300,7 @@ public partial class AuthWindow : Window
         {
             if (AgreementCheckBox.IsChecked == true)
             {
-                var userData = await UserData.Load();
+                var userData = await ProfileManager.Load();
                 if (userData != null)
                 {
                     NavigateToMainWindow();
@@ -374,7 +314,7 @@ public partial class AuthWindow : Window
 
         private async void RefusalButton_OnClick(object? sender, RoutedEventArgs e)
         {
-            var userData = await UserData.Load();
+            var userData = await ProfileManager.Load();
             if (userData != null)
             {
             }

@@ -17,7 +17,7 @@ public class ContextData
 public class JreData
 {
     [JsonProperty("version")]
-    public string Version { get; set; }
+    public required string Version { get; set; }
 
     [JsonProperty("download_url")] 
     public Dictionary<string, Dictionary<string, JrePlatform>> DownloadUrl { get; set; }
@@ -92,7 +92,3 @@ public class LoginResult
     public string ErrorMessage { get; init; } = string.Empty;
 }
 
-public class SystemInfo
-{
-    public double TotalMemory { get; set; }
-}

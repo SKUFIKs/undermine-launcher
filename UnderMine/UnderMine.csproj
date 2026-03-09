@@ -57,6 +57,9 @@
 		<AvaloniaResource Include="Network\**" />
 	</ItemGroup>
 	<ItemGroup>
+	  <AvaloniaResource Remove="Models\SystemMetadata.cs" />
+	</ItemGroup>
+	<ItemGroup>
 	  <Compile Remove="C:\Users\Дмитрий\.nuget\packages\microsoft.visualstudio.diagnosticshub.benchmarkdotnetdiagnosers\18.3.36714.1\contentFiles\cs\any\BenchmarkProfilerAgentConfig.g.cs" />
 	</ItemGroup>
 	<ItemGroup>
@@ -85,12 +88,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="publish\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Resource Include="app.manifest">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </Resource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Core\Game\" />
 	</ItemGroup>
 </Project>

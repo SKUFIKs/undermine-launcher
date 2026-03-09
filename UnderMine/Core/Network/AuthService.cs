@@ -8,29 +8,24 @@ using System.Threading.Tasks;
 using UnderMine.Models;
 using UnderMine.Services;
 
-namespace UnderMine.Network
+namespace UnderMine.Core.Network
 {
-    public class IdentityService
+    public class AuthService
     {
         private readonly ContextData _contextData;
         private readonly HttpClient _httpClient;
-        private readonly ProgressReporter _reporter;
+        private readonly ProgressService _reporter;
 
-        public IdentityService(ContextData contextData, ProgressReporter reporter, HttpClient? httpClient = null)
+        public AuthService(HttpClient httpClient, ContextData contextData, ProgressService reporter)
         {
-            _contextData = contextData ?? throw new ArgumentNullException(nameof(contextData));
-            _reporter = reporter ?? throw new ArgumentNullException(nameof(reporter));
-
-            _httpClient = httpClient ?? new HttpClient
-            {
-                BaseAddress = new Uri(contextData.BaseUrl),
-                Timeout = TimeSpan.FromSeconds(30)
-            };
+            _httpClient = httpClient;
+            _reporter = reporter;
 
             if (_httpClient.BaseAddress == null)
-                _httpClient.BaseAddress = new Uri(_contextData.BaseUrl);
-
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            {
+                _httpClient.BaseAddress = new Uri(contextData.BaseUrl);
+                _httpClient.Timeout = TimeSpan.FromSeconds(30);
+            }
         }
 
         public async Task<LoginResult> Login(string username, string password, CancellationToken ct = default)
@@ -44,7 +39,7 @@ namespace UnderMine.Network
         }
 
         /// <summary>
-        /// Общий метод для Login и Register, чтобы не дублировать код
+        /// Общий метод для Login и Register
         /// </summary>
         private async Task<LoginResult> ExecuteAuthRequest(string endpoint, string username, string password, string context, CancellationToken ct)
         {
@@ -52,18 +47,18 @@ namespace UnderMine.Network
             {
                 _reporter.Log($"[Auth] {context}: попытка для пользователя {username}...");
 
+                var scanner = new SystemService();
                 var payload = new
                 {
                     Login = username,
                     Password = password,
-                    DeviceId = UnderMine.Services.SystemInformation.GetStableDeviceId()
+                    DeviceId = scanner.Scan().deviceId 
                 };
 
                 using var response = await _httpClient.PostAsJsonAsync(endpoint, payload, ct).ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    // Для регистрации сервер может не возвращать токен сразу, проверяем это
                     var result = await response.Content.ReadFromJsonAsync<LoginResult>(cancellationToken: ct).ConfigureAwait(false);
 
                     if (context == "Login" && string.IsNullOrEmpty(result?.Token))
@@ -104,7 +99,7 @@ namespace UnderMine.Network
             }
             catch { /* Игнорируем ошибки парсинга, используем стандартное сообщение */ }
   
-            return ProgressReporter.GetHttpStatusMessage(response.StatusCode);
+            return ProgressService.GetHttpStatusMessage(response.StatusCode);
         }
     }
 }
