@@ -1,0 +1,306 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" Width="1177" Height="662"
+        x:Class="UnderMine.IU.AuthWindow"
+        CanResize="False"
+        RenderOptions.EdgeMode="Unspecified"
+        RenderOptions.BitmapInterpolationMode="HighQuality"
+        UseLayoutRounding="True"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+        Background="Transparent"
+        Title="UnderMine">
+    <Border CornerRadius="30" BorderThickness="0" PointerPressed="TitleBar_PointerPressed">
+		
+        <Border.Background>
+            <ImageBrush Source="avares://UnderMine/Assets/Images/background.jpg"
+                        Stretch="UniformToFill" />
+        </Border.Background>
+		
+        <Panel>
+			<Grid Margin="0,0,10,0"  Height="20" Width="200" VerticalAlignment="Bottom" HorizontalAlignment="Right" >
+				<Label x:Name="Version" Classes="LiteLabel" Margin="0,0,0,0"  Height="40" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize ="12" HorizontalContentAlignment="Right" />
+			</Grid>
+            <Grid x:Name="LogPanel" Height="423" Width="423" Margin="0,0,0,0" IsVisible="True">
+                <Border CornerRadius="22" Background="#171717">
+                    <Panel>
+                        <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+                               HorizontalAlignment="Center" />
+                        <Label Content="Авторизация" Classes="LiteTitle" Margin="0,60,0,0" VerticalAlignment="Top"
+                               HorizontalAlignment="Center" />
+
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,85,0,0" Width="386"
+                              Height="72">
+                            <Label Content="Введите логин" Classes="LiteLabel" Margin="5,0,0,0" VerticalAlignment="Top"
+                                   HorizontalAlignment="Left" />
+                            <TextBox Classes="custom-textbox" Margin="0,0,0,0" TextInput="LogBox_OnTextInput"
+                                     x:Name="LogBox" VerticalAlignment="Bottom"
+                                     Width="386" Height="45" HorizontalAlignment="Center">
+                            </TextBox>
+                        </Grid>
+
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,155,0,0" Width="386"
+                              Height="72">
+                            <Label Content="Введите пароль" Classes="LiteLabel" Margin="5,0,0,0"
+                                   VerticalAlignment="Top" HorizontalAlignment="Left" />
+                            <TextBox Classes="custom-textbox" Margin="0,0,0,0" x:Name="PassBox"
+                                     VerticalAlignment="Bottom"
+                                     Width="386" Height="45" HorizontalAlignment="Center">
+                            </TextBox>
+                        </Grid>
+
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,235,0,0" Width="386"
+                              Height="72">
+                            <Label Content="Запомнить меня" Classes="LiteLabel" Margin="35,0,0,0"
+                                   VerticalAlignment="Top" HorizontalAlignment="Left" />
+                            <CheckBox x:Name="SaveUserBox" Checked="SaveUserBox_OnChecked"
+                                      Unchecked="SaveUserBox_OnChecked" HorizontalAlignment="Left"
+                                      VerticalAlignment="Top" Margin="15,3,0,0">
+                            </CheckBox>
+
+                            <Label Content="Показать пароль" Classes="LiteLabel" Margin="35,30,0,0"
+                                   VerticalAlignment="Top" HorizontalAlignment="Left" />
+                            <CheckBox x:Name="ShowPassBox" Checked="ShowPassBox_OnChecked"
+                                      Unchecked="ShowPassBox_OnChecked" HorizontalAlignment="Left"
+                                      VerticalAlignment="Top" Margin="15,33,0,0">
+                            </CheckBox>
+                        </Grid>
+                        <Grid Margin="0,25,0,0">
+                            <Button x:Name="Registration" Content="Нет аккаунта? Зарегистрироваться"
+                                    Classes="LiteLabel" Margin="20,280,0,0" VerticalAlignment="Top"
+                                    HorizontalAlignment="Left" Click="Registration_OnClick" />
+                            <Button x:Name="AuthButton" Content="Авторизоваться" Margin="0,298,0,0"
+                                    VerticalAlignment="Center" HorizontalAlignment="Center" Classes="custom-Auth"
+                                    Click="AuthButton_OnClick" />
+                        </Grid>
+                    </Panel>
+                </Border>
+            </Grid>
+            <Grid x:Name="RegPanel" Height="423" Width="423" Margin="0,0,0,0" IsVisible="False">
+                <Border CornerRadius="22" Background="#171717">
+                    <Panel>
+                        <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+                               HorizontalAlignment="Center" />
+                        <Label Content="Регистрация" Classes="LiteTitle" Margin="0,60,0,0" VerticalAlignment="Top"
+                               HorizontalAlignment="Center" />
+
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,85,0,0" Width="386"
+                              Height="72">
+                            <Label Content="Введите логин" Classes="LiteLabel" Margin="5,0,0,0" VerticalAlignment="Top"
+                                   HorizontalAlignment="Left" />
+                            <TextBox Classes="custom-textbox" Margin="0,0,0,0" TextInput="LogBox_OnTextInput"
+                                     x:Name="RegLogBox" VerticalAlignment="Bottom"
+                                     Width="386" Height="45" HorizontalAlignment="Center">
+                            </TextBox>
+                        </Grid>
+
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,155,0,0" Width="386"
+                              Height="72">
+                            <Label Content="Введите пароль" Classes="LiteLabel" Margin="5,0,0,0"
+                                   VerticalAlignment="Top" HorizontalAlignment="Left" />
+                            <TextBox Classes="custom-textbox" Margin="0,0,0,0" x:Name="RegPassBox"
+                                     VerticalAlignment="Bottom"
+                                     Width="386" Height="45" HorizontalAlignment="Center">
+                            </TextBox>
+                        </Grid>
+
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,225,0,0" Width="386"
+                              Height="72">
+                            <Label Content="Подтвердите пароль" Classes="LiteLabel" Margin="5,0,0,0"
+                                   VerticalAlignment="Top" HorizontalAlignment="Left" />
+                            <TextBox Classes="custom-textbox" Margin="0,0,0,0" x:Name="ConfPassBox"
+                                     VerticalAlignment="Bottom"
+                                     Width="386" Height="45" HorizontalAlignment="Center">
+
+                            </TextBox>
+                        </Grid>
+                        <Button x:Name="LoginButton"
+                                Content="Есть аккаунт? Авторизоваться"
+                                Classes="LiteLabel"
+                                Margin="20,305,0,0"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Left"
+                                Click="LoginButton_OnClick" />
+
+                        <Button x:Name="RegButton"
+                                Content="Зарегистрироваться"
+                                Classes="custom-Auth"
+                                Margin="0,327,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Click="RegButton_OnClick" />
+                    </Panel>
+                </Border>
+            </Grid>
+            <Grid x:Name="ErrorPanel" Height="423" Width="423" IsVisible="False">
+                <Panel>
+                    <Border CornerRadius="22" Background="#171717">
+                    </Border>
+                </Panel>
+                <Panel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,80,0,0" Height="117" Width="117">
+                    <Border>
+                        <Border.Background>
+                            <ImageBrush Source="avares://UnderMine/Assets/Images/ErrorIcon.jpg" Stretch="Fill"></ImageBrush>
+                        </Border.Background>
+                    </Border>
+                </Panel>
+                <Panel>
+                    <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+                           HorizontalAlignment="Center" />
+                    <Label Content="Кажется что-то пошло не так..." FontSize="16" Classes="LiteTitle" Margin="0,60,0,0"
+                           VerticalAlignment="Top" HorizontalAlignment="Center" />
+                </Panel>
+                <Panel>
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,170,0,0" Width="386"
+                          Height="72">
+                        <Label Content="Код ошибки:" Classes="LiteLabel" Margin="5,0,0,0" VerticalAlignment="Top"
+                               HorizontalAlignment="Left" />
+                        <TextBox Classes="custom-paneltextbox" Margin="0,175,0,0" VerticalContentAlignment="Top"
+                                 TextWrapping="Wrap" IsReadOnly="True" AcceptsReturn="True"
+                                 HorizontalContentAlignment="Left" Padding="5,5" x:Name="ErrorBox"
+                                 IsHitTestVisible="False"
+                                 VerticalAlignment="Bottom"
+                                 Width="386" Height="145" HorizontalAlignment="Center">
+                        </TextBox>
+                        <Button x:Name="CloseErrorButton"
+                                Content="Закрыть"
+                                Classes="custom-Auth"
+                                Margin="0,242,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Click="CloseErrorButton_OnClick" />
+                    </Grid>
+                </Panel>
+            </Grid>
+            <Grid x:Name="InfoPanel" Height="442" Width="423" IsVisible="False">
+                <Panel>
+                    <Border CornerRadius="22" Background="#171717">
+
+                    </Border>
+                </Panel>
+                <Panel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,90,0,0" Height="100" Width="100">
+                    <Border>
+                        <Border.Background>
+                            <ImageBrush Source="avares://UnderMine/Assets/Images/SuccessIcon.jpg" Stretch="Fill"></ImageBrush>
+                        </Border.Background>
+                    </Border>
+                </Panel>
+                <Panel>
+                    <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+                           HorizontalAlignment="Center" />
+                    <Label Content="Регистрация пройдена." FontSize="16" Classes="LiteTitle" Margin="0,60,0,0"
+                           VerticalAlignment="Top" HorizontalAlignment="Center" />
+                </Panel>
+                <Panel>
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,170,0,0" Width="300"
+                          Height="72">
+                        <TextBox Classes="custom-paneltextbox" Margin="0,175,0,0" VerticalContentAlignment="Top"
+                                 TextWrapping="Wrap" IsReadOnly="True" AcceptsReturn="True"
+                                 HorizontalContentAlignment="Left" Padding="5,5" x:Name="InfoBox"
+                                 IsHitTestVisible="False"
+                                 VerticalAlignment="Bottom"
+                                 Width="386" Height="145" HorizontalAlignment="Center">
+                        </TextBox>
+
+                    </Grid>
+                    <Button x:Name="CloseButton"
+                            Content="Закрыть"
+                            Classes="custom-Auth"
+                            Margin="0,0,0,20"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Click="CloseButton_OnClick" />
+                </Panel>
+            </Grid>
+            <Grid x:Name="CheckUpdatePanel" Height="442" Width="423" IsVisible="False">
+                <Panel>
+                    <Border CornerRadius="22" Background="#171717" />
+                </Panel>
+
+                <Panel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,85,0,0" Height="117" Width="117">
+                    <Border>
+                        <Border.Background>
+                            <ImageBrush Source="avares://UnderMine/Assets/Images/SuccessIcon.jpg" Stretch="Fill" />
+                        </Border.Background>
+                    </Border>
+                </Panel>
+
+                <Panel>
+                    <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0"
+                           VerticalAlignment="Top" HorizontalAlignment="Center" />
+                    <Label Content="Доступно новое обновление" FontSize="16" Classes="LiteTitle" Margin="0,60,0,0"
+                           VerticalAlignment="Top" HorizontalAlignment="Center" />
+                </Panel>
+
+                <Panel>
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,200,80,0" Width="300"
+                          Height="72">
+                        <Label Content="Текущая версия:" Classes="LiteLabel" Margin="5,0,0,0"
+                               VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Label x:Name="CurrentVersionText" Content="1.1.1.1" Classes="LiteLabel" Margin="120,0,0,0"
+                               VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Label Content="Новая версия:" Classes="LiteLabel" Margin="5,30,0,0"
+                               VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Label x:Name="NewVersionText" Content="1.1.1.1" Classes="LiteLabel" Margin="120,30,0,0"
+                               VerticalAlignment="Top" HorizontalAlignment="Left" />
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                                Margin="0,0,0,30" Spacing="10">
+						<Button x:Name="UpdateButton" 
+                                Content="Обновить"
+                                Classes="custom-Auth"
+                                Padding="15,5" />
+                    </StackPanel>
+
+                    <TextBlock x:Name="UpdateStatusText" TextWrapping="Wrap" HorizontalAlignment="Center"
+                               VerticalAlignment="Bottom" Margin="0,0,0,70" Text="Подготовка к обновлению..."
+                               Foreground="LightGray" />
+                </Panel>
+            </Grid>
+
+            <Panel x:Name="AgreementPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Width="1058"
+                   Height="605" IsVisible="False">
+                <Border VerticalAlignment="Center" HorizontalAlignment="Center" Width="1058" Height="605"
+                        Margin="0,0,0,0"
+                        Background="#222222" CornerRadius="15">
+                    <Panel>
+                        <Label Content="UnderMine" Classes="BigTitle" Margin="0,10,0,0" VerticalAlignment="Top"
+                               HorizontalAlignment="Center" />
+                        <Label Content="Пользовательское соглашение" FontSize="16" Classes="LiteTitle"
+                               Margin="0,70,0,0"
+                               VerticalAlignment="Top" HorizontalAlignment="Center" />
+                        <Border VerticalAlignment="Center" HorizontalAlignment="Center" Width="975" Height="385"
+                                Margin="0,0,0,15"
+                                Background="#3B3B3B" CornerRadius="10">
+                        </Border>
+                        <Label Content="Я прочитал и соглашаюсь с пользовательским соглашением" Classes="LiteLabel"
+                               Margin="85,0,0,78"
+                               VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+                        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="60,0,0,80"
+                                  x:Name="AgreementCheckBox">
+                        </CheckBox>
+                        <Panel Height="45" Width="338" Margin="40,0,0,30" VerticalAlignment="Bottom"
+                               HorizontalAlignment="Left">
+                            <RadioButton HorizontalAlignment="Left" x:Name="AcceptButton" Click="AcceptButton_OnClick"
+                                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                         Height="45"
+                                         Width="158" GroupName="Group" Classes="menu-btn" IsChecked="True">
+                                <TextBlock Text="Продолжить" />
+                            </RadioButton>
+                            <RadioButton HorizontalAlignment="Right" x:Name="RefusalButton"
+                                         Click="RefusalButton_OnClick"
+                                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                         Height="45"
+                                         Width="158" GroupName="Group" Classes="menu-btn">
+                                <TextBlock Text="Выход" />
+                            </RadioButton>
+                        </Panel>
+                    </Panel>
+                </Border>
+            </Panel>
+        </Panel>
+    </Border>
+</Window>

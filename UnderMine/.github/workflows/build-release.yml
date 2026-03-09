@@ -1,0 +1,59 @@
+﻿name: Build All Installers (dmg, pkg, AppImage, msi) - NO CODE SIGNING
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+' # Запуск при создании тега версии
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest] 
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js (for Electron Builder)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: ⚙️ Setup .NET SDK (for Avalonia)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x' 
+
+      - name: 📦 Install dependencies
+        run: npm install
+        
+      # =========================================================================
+      # ПЛАТФОРМО-ЗАВИСИМАЯ СБОРКА .NET 
+      # =========================================================================
+      - name: 🔨 Avalonia .NET Publish (Windows Target)
+        if: matrix.os == 'windows-latest'
+        run: dotnet publish -c Release -r win-x64 --self-contained true -o app/AvaloniaBinaries
+        
+      - name: 🔨 Avalonia .NET Publish (macOS Target)
+        if: matrix.os == 'macos-latest'
+        run: dotnet publish -c Release -r osx-x64 --self-contained true -o app/AvaloniaBinaries
+        
+      - name: 🔨 Avalonia .NET Publish (Linux Target)
+        if: matrix.os == 'ubuntu-latest'
+        run: dotnet publish -c Release -r linux-x64 --self-contained true -o app/AvaloniaBinaries
+        
+      - name: 🚀 Electron Builder Build & Release
+        uses: electron-userland/electron-builder-action@v2
+        with:
+          # --publish always создает черновик релиза на GitHub.
+          # Если вы не хотите автоматический релиз, замените на --dir для локальной сборки
+          args: --publish always 
+        
+        env:
+          # ТОЛЬКО ТОКЕН GITHUB ДЛЯ ПУБЛИКАЦИИ АРТЕФАКТОВ:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+          # УДАЛЕНЫ ВСЕ ПЕРЕМЕННЫЕ ПОДПИСИ:
+          # CSC_LINK, CSC_KEY_PASSWORD, APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD

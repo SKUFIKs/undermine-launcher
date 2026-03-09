@@ -1,0 +1,14 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="UnderMine.Services.Logger.ProgressView"
+             Width="43" Height="43">
+	<Grid>
+		<TextBlock x:Name="PercentText"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="10"
+                   FontWeight="Bold"
+                   Foreground="White"
+                   Text="0%"/>
+	</Grid>
+</UserControl>
