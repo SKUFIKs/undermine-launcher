@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="UnderMine.IU.Controls.ToastControl"
+             IsHitTestVisible="False"
+             HorizontalAlignment="Center"
+             VerticalAlignment="Top">
+
+    <Border x:Name="ToastBorder"
+            Margin="0,-100,0,0"
+            Background="#D32F2F"
+            CornerRadius="12"
+            Padding="15,10"
+            Opacity="0"
+            BoxShadow="0 4 15 0 #40000000">
+
+        <Border.Transitions>
+            <Transitions>
+                <ThicknessTransition Property="Margin" Duration="0:0:0.3" Easing="CubicEaseOut" />
+                <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="CubicEaseOut" />
+            </Transitions>
+        </Border.Transitions>
+
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <Path x:Name="ToastIcon"
+                  Fill="White"
+                  Stretch="Uniform"
+                  Width="20" Height="20"
+                  Data="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.47 2,12C2,17.53 6.47,22 12,22C17.53,22 22,17.53 22,12C22,6.47 17.53,2 12,2Z" />
+
+            <TextBlock x:Name="ToastText"
+                       Text=""
+                       Foreground="White"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"
+                       MaxWidth="300" />
+        </StackPanel>
+    </Border>
+</UserControl>

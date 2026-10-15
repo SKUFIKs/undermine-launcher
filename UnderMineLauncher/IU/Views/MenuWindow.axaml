@@ -1,0 +1,280 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:models="clr-namespace:UnderMine.Models;assembly=UnderMineLauncher"
+		xmlns:logger="clr-namespace:UnderMine.Services.Logger;assembly=UnderMineLauncher"
+		xmlns:vm="clr-namespace:UnderMine.Services;assembly=UnderMineLauncher"
+		xmlns:controls="clr-namespace:UnderMine.IU.Controls;assembly=UnderMineLauncher"
+		mc:Ignorable="d"
+		x:Class="UnderMine.IU.MenuWindow"
+		RenderOptions.BitmapInterpolationMode="MediumQuality"
+		UseLayoutRounding="True"
+		Width="1177" Height="662"
+		CanResize="False"
+		WindowStartupLocation="CenterScreen"
+		SystemDecorations="None"
+		Background="Transparent"
+		Title="UnderMine">
+
+	<Window.Styles>
+		<Style Selector="Border.Card">
+			<Setter Property="Background" Value="#222222"/>
+			<Setter Property="CornerRadius" Value="15"/>
+		</Style>
+		<Style Selector="RadioButton.menu-btn">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Margin" Value="0"/>
+			<Setter Property="Padding" Value="10,5"/>
+			<Setter Property="Cursor" Value="Hand"/>
+		</Style>
+		<Style Selector="RadioButton.menu-btn TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="Foreground" Value="White"/>
+		</Style>
+		<Style Selector="Panel.ContentPage">
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Width" Value="910"/>
+			<Setter Property="Height" Value="662"/>
+		</Style>
+		<Style Selector="Panel.ContentPage > Border">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="Width" Value="876"/>
+			<Setter Property="Height" Value="513"/>
+			<Setter Property="Margin" Value="0,40,30,0"/>
+			<Setter Property="Background" Value="#222222"/>
+			<Setter Property="CornerRadius" Value="15"/>
+		</Style>
+
+		<Style Selector="ListBox.ServerList">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Padding" Value="0"/>
+		</Style>
+		<Style Selector="ListBoxItem">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Padding" Value="10,8"/>
+			<Setter Property="Margin" Value="0,2"/>
+			<Setter Property="CornerRadius" Value="8"/>
+			<Setter Property="BorderThickness" Value="2"/>
+			<Setter Property="BorderBrush" Value="Transparent"/>
+			<Setter Property="Transitions">
+				<Transitions>
+					<BrushTransition Property="Background" Duration="0:0:0.1"/>
+				</Transitions>
+			</Setter>
+		</Style>
+		<Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="#2E2E2E"/>
+		</Style>
+		<Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+			<Setter Property="Background" Value="#333333"/>
+			<Setter Property="BorderBrush" Value="#E76F2A"/>
+		</Style>
+	</Window.Styles>
+
+	<Panel>
+		<Border Background="#171717" CornerRadius="30" ClipToBounds="True" PointerPressed="TitleBar_PointerPressed">
+			<Grid ColumnDefinitions="263, *">
+
+				<Grid Grid.Column="0" RowDefinitions="Auto, *">
+					<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="23,25,0,0" HorizontalAlignment="Center">
+						<Image Source="avares://UnderMineLauncher/Assets/Images/UnderMineIcon.jpg" Width="50" Height="50" Stretch="Fill"/>
+						<StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+							<Label Classes="LiteTitle" Content="UnderMine" FontSize="20" Padding="0"/>
+							<Label Classes="LiteTitle" Content="Server" FontSize="20" Padding="0"/>
+						</StackPanel>
+					</StackPanel>
+
+					<StackPanel Grid.Row="1" Spacing="15" Margin="40,40,0,0" VerticalAlignment="Center">
+						<RadioButton x:Name="ServerSelectionButton" Click="ServerSelectionButton_OnClick" GroupName="MenuGroup" Classes="menu-btn" IsChecked="True">
+							<StackPanel Orientation="Horizontal" Spacing="10">
+								<Image Source="avares://UnderMineLauncher/Assets/Images/servers.jpg" Width="20" Height="20" />
+								<TextBlock Text="Servers" />
+							</StackPanel>
+						</RadioButton>
+
+						<RadioButton x:Name="ProfileButton" Click="ProfileButton_OnClick" GroupName="MenuGroup" Classes="menu-btn">
+							<StackPanel Orientation="Horizontal" Spacing="10">
+								<Image Source="avares://UnderMineLauncher/Assets/Images/profile.jpg" Width="20" Height="20" />
+								<TextBlock Text="Profile" />
+							</StackPanel>
+						</RadioButton>
+
+						<RadioButton x:Name="SettingsButton" Click="SettingsButton_OnClick" GroupName="MenuGroup" Classes="menu-btn">
+							<StackPanel Orientation="Horizontal" Spacing="10">
+								<Image Source="avares://UnderMineLauncher/Assets/Images/settings.jpg" Width="20" Height="20" />
+								<TextBlock Text="Settings" />
+							</StackPanel>
+						</RadioButton>
+
+						<Panel Height="30"/>
+
+						<RadioButton x:Name="ExitButton" Click="ExitButton_OnClick" GroupName="MenuGroup" Classes="menu-btn">
+							<StackPanel Orientation="Horizontal" Spacing="10">
+								<Image Source="avares://UnderMineLauncher/Assets/Images/exit.jpg" Width="20" Height="20" />
+								<TextBlock Text="Exit" />
+							</StackPanel>
+						</RadioButton>
+					</StackPanel>
+				</Grid>
+
+				<Panel Grid.Column="1">
+
+					<StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,30,0" Spacing="10" ZIndex="10">
+						<Border Width="200" Height="65" Background="#222222" CornerRadius="15">
+							<Grid ColumnDefinitions="Auto,*" Margin="10">
+								<Border Grid.Column="0" Width="40" Height="40" CornerRadius="20" ClipToBounds="True">
+									<Border.Background>
+										<ImageBrush Source="avares://UnderMineLauncher/Assets/Images/profile.jpg" Stretch="UniformToFill"/>
+									</Border.Background>
+								</Border>
+								<Label x:Name="UsernameLabel" Grid.Column="1" Classes="LiteLabel" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" FontSize="16"/>
+							</Grid>
+						</Border>
+					</StackPanel>
+
+					<Label x:Name="Version" Classes="LiteLabel" Margin="0,0,30,10" VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="12" />
+
+					<Panel x:Name="SettingsPanel" Classes="ContentPage" IsVisible="False">
+						<Border>
+							<Grid RowDefinitions="Auto, Auto, Auto, Auto, *" Margin="25,20,25,20">
+								<Label Grid.Row="0" Content="Game Settings" Classes="BigTitle" FontSize="24" />
+
+								<StackPanel Grid.Row="1" Margin="0,20,0,0" Spacing="5" Width="600" HorizontalAlignment="Left">
+									<Label Classes="LiteTitle" Content="Memory (RAM):" FontSize="15"/>
+									<Grid ColumnDefinitions="*, Auto" Margin="20,5,0,0">
+										<StackPanel Grid.Column="0">
+											<Slider x:Name="MemorySlider" IsSnapToTickEnabled="True" TickPlacement="BottomRight"
+											        Minimum="4096" Maximum="16384" TickFrequency="3072" SmallChange="3072" LargeChange="3072"/>
+											<Grid ColumnDefinitions="*,*,*,*,*" Margin="0,5,0,0">
+												<Label x:Name="FirstValue" Grid.Column="0" FontSize="10" Content="4096" HorizontalAlignment="Left"/>
+												<Label x:Name="SecondValue" Grid.Column="1" FontSize="10" Content="7168" HorizontalAlignment="Center"/>
+												<Label x:Name="ThirdValue" Grid.Column="2" FontSize="10" Content="10240" HorizontalAlignment="Center"/>
+												<Label x:Name="FourthValue" Grid.Column="3" FontSize="10" Content="13312" HorizontalAlignment="Center"/>
+												<Label x:Name="FifthValue" Grid.Column="4" FontSize="10" Content="16384" HorizontalAlignment="Right"/>
+											</Grid>
+										</StackPanel>
+										<TextBox Grid.Column="1" x:Name="MemoryTextBox" Width="95" Height="35" Margin="15,0,0,0" IsReadOnly="True" Text="6144" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+									</Grid>
+								</StackPanel>
+
+								<StackPanel Grid.Row="2" Margin="0,20,0,0" Spacing="5" Width="600" HorizontalAlignment="Left">
+									<Label Classes="LiteTitle" Content="Game installation path:" FontSize="15"/>
+									<Grid ColumnDefinitions="*, Auto" Margin="20,5,0,0">
+										<TextBox Grid.Column="0" x:Name="InstallationPath" Margin="0,0,20,0"/>
+										<Button Grid.Column="1" x:Name="OverviewSettings" Click="OverviewSettings_OnClick" Content="Browse" Width="90" Classes="secondary"/>
+									</Grid>
+								</StackPanel>
+
+								<StackPanel Grid.Row="3" Margin="0,20,0,0" Spacing="5" Width="600" HorizontalAlignment="Left">
+									<Label Classes="LiteTitle" Content="Java executable:" FontSize="15"/>
+									<Grid ColumnDefinitions="*, Auto" Margin="20,5,0,0">
+										<TextBox Grid.Column="0" x:Name="JavaPathTextBox" Watermark="C:\Program Files\Java\bin\javaw.exe" Margin="0,0,20,0"/>
+										<Button Grid.Column="1" x:Name="JavaPathBrowseButton" Click="JavaPathBrowseButton_OnClick" Content="Browse" Width="90" Classes="secondary"/>
+									</Grid>
+								</StackPanel>
+
+								<StackPanel Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Bottom" Spacing="20" Margin="10,0,0,10">
+									<Button x:Name="SaveButton" Click="SaveButton_OnClick" Classes="menu-btn" Width="158" Height="45" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#333">
+										<TextBlock Text="Save" />
+									</Button>
+									<Button x:Name="DefaultButton" Click="DefaultButton_OnClick" Classes="menu-btn" Width="158" Height="45" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#333">
+										<TextBlock Text="Default" />
+									</Button>
+								</StackPanel>
+							</Grid>
+						</Border>
+					</Panel>
+
+					<Panel x:Name="ProfilePanel" Classes="ContentPage" IsVisible="False">
+						<Border>
+							<ScrollViewer>
+								<TextBlock x:Name="ProfileTextBlock" Margin="20" Classes="NewsTitle" TextWrapping="Wrap" Foreground="#FFFFFF" />
+							</ScrollViewer>
+						</Border>
+					</Panel>
+
+					<Panel x:Name="PlayServer" Classes="ContentPage" IsVisible="False">
+						<Border>
+							<Grid RowDefinitions="Auto, *, Auto" Margin="25">
+								<Grid Grid.Row="0" ColumnDefinitions="40, 2*, 1*, 1*, 80" Margin="15,0,15,10">
+									<TextBlock Grid.Column="0" Text="ID" FontSize="11" Foreground="#C9C9C9" FontWeight="SemiBold"/>
+									<TextBlock Grid.Column="1" Text="SERVER NAME" FontSize="11" Foreground="#C9C9C9" FontWeight="SemiBold"/>
+									<TextBlock Grid.Column="2" Text="VERSION" FontSize="11" Foreground="#C9C9C9" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+									<TextBlock Grid.Column="3" Text="LOADER" FontSize="11" Foreground="#C9C9C9" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+									<TextBlock Grid.Column="4" Text="PING" FontSize="11" Foreground="#C9C9C9" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+								</Grid>
+
+								<ListBox Grid.Row="1" x:Name="ServerListBox" Classes="ServerList">
+									<ListBox.ItemTemplate>										<DataTemplate x:DataType="models:ServerList">
+											<Border Background="Transparent" CornerRadius="8" Margin="0,2" Padding="10">
+												<Grid ColumnDefinitions="40, 2*, 1*, 1*, 80">
+
+													<TextBlock Grid.Column="0"
+															   Text="{Binding Id}"
+															   FontSize="9"
+															   Foreground="#C0C0C0"
+															   VerticalAlignment="Center"/>
+
+													<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12">
+														<Image Source="avares://UnderMineLauncher/Assets/Images/servers.jpg" Width="20" Height="20" VerticalAlignment="Center"/>
+														<TextBlock Text="{Binding ServerName}" Foreground="White" FontWeight="Medium" VerticalAlignment="Center"/>
+													</StackPanel>
+
+													<TextBlock Grid.Column="2" Text="{Binding GameVersion}" Foreground="#5FD97A" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+													<TextBlock Grid.Column="3" Text="{Binding LoaderType}" Foreground="#D0D0D0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+													<StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+														<TextBlock Text="{Binding IPAddress}" Foreground="#5FD97A" VerticalAlignment="Center" FontSize="12"/>
+														<Rectangle Fill="#4CAF50" Width="3" Height="12" VerticalAlignment="Center" RadiusX="1" RadiusY="1"/>
+													</StackPanel>
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</ListBox.ItemTemplate>
+								</ListBox>
+
+								<TextBlock x:Name="EmptyServersText" Grid.Row="1"
+								           Text="No servers available yet. They will appear here as soon as they are added."
+								           HorizontalAlignment="Center" VerticalAlignment="Center"
+								           TextWrapping="Wrap" TextAlignment="Center" MaxWidth="420"
+								           Foreground="#C4C4C4" FontSize="14" IsVisible="False"/>
+
+								<Grid Grid.Row="2" ColumnDefinitions="*, Auto" Margin="0,20,0,0">
+									<Label x:Name="LogLabel" Grid.Column="0" VerticalAlignment="Center" Classes="LiteLabel" FontSize="11" Foreground="#C4C4C4"/>
+									<Button x:Name="PlayButton" Grid.Column="1" Content="PLAY" Click="PlayButton_OnClick" Classes="custom-Auth" Width="180" Height="45"/>
+								</Grid>
+							</Grid>
+						</Border>
+					</Panel>
+				</Panel>
+			</Grid>
+		</Border>
+
+		<Panel x:Name="ProgressBar" IsVisible="False" Width="275" Height="65" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,15,0,0" ZIndex="100">
+			<Border Background="#222222" CornerRadius="15">
+				<Grid ColumnDefinitions="Auto, *" Margin="15,0">
+					<Grid Grid.Column="0" Width="43" Height="43" VerticalAlignment="Center">
+						<logger:ProgressView x:Name="Loader" ZIndex="1" />
+						<TextBlock x:Name="PercentText" Text="0%" FontSize="10" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" ZIndex="10"/>
+					</Grid>
+					<Label x:Name="LogBox" Grid.Column="1" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="14" Classes="LiteLabel" Content="Loading..."/>
+				</Grid>
+			</Border>
+		</Panel>
+
+
+		<controls:ToastControl x:Name="MainToast"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Center"
+                       Margin="0,30,0,0"
+                       ZIndex="500"/>
+
+
+	</Panel>
+</Window>

@@ -1,0 +1,21 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="UnderMine.App">
+    <Application.Resources>
+        <!-- Фирменный акцент лаунчера. Переопределяет системный (синий)
+             цвет акцента темы Fluent: чекбоксы, слайдеры и другие
+             акцентные элементы становятся оранжевыми. -->
+        <Color x:Key="SystemAccentColor">#E76F2A</Color>
+        <Color x:Key="SystemAccentColorDark1">#C25E1E</Color>
+        <Color x:Key="SystemAccentColorDark2">#A24D18</Color>
+        <Color x:Key="SystemAccentColorDark3">#7D3B12</Color>
+        <Color x:Key="SystemAccentColorLight1">#F0834A</Color>
+        <Color x:Key="SystemAccentColorLight2">#F49B6B</Color>
+        <Color x:Key="SystemAccentColorLight3">#F9B58E</Color>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://UnderMineLauncher/Assets/Styles/Styles.axaml"/>
+    </Application.Styles>
+</Application>

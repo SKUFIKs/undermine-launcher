@@ -1,6 +1,27 @@
-﻿/UnderMine/UnderMine.csproj
+﻿# Build and IDE caches
 bin/
 obj/
+.vs/
+/UnderMine.sln.DotSettings.user
+
+# Personal settings
+*.user
+*.suo
+
+# Publish folders
 publish/
 publish-linux/
 Releases/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# User secrets
+secrets.json
+appsettings.Development.json
